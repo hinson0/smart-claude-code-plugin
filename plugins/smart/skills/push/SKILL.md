@@ -27,7 +27,43 @@ argument-hint: 无需参数.自动[check+add+commit+push]
 
 ## 阶段三：推送
 
-执行：`git push origin HEAD`
+### 3.1 检查 origin 是否已配置
+
+运行：`git remote get-url origin 2>/dev/null`
+
+- 若已配置：直接执行 `git push -u origin HEAD`，跳到 3.3。
+- 若未配置：继续 3.2。
+
+### 3.2 自动创建并关联 GitHub 远程仓库
+
+依次执行：
+
+1. 确认 `gh` CLI 已登录：`gh auth status`
+   - 若未登录，输出提示"请先运行 `gh auth login`"，并**停止**。
+
+2. 读取仓库名称：`basename $(git rev-parse --show-toplevel)`
+
+3. 读取当前 GitHub 用户名：`gh api user --jq .login`
+
+4. 检查远程是否已存在同名仓库：`gh repo view <用户名>/<仓库名> 2>/dev/null`
+   - 若已存在：直接关联，跳到步骤 6。
+   - 若不存在：继续步骤 5。
+
+5. 创建 GitHub 仓库（默认私有）：
+   ```
+   gh repo create <仓库名> --private --source=. --remote=origin
+   ```
+
+6. 若已存在但未关联，手动添加 remote：
+   ```
+   git remote add origin https://github.com/<用户名>/<仓库名>.git
+   ```
+
+### 3.3 执行推送
+
+```
+git push -u origin HEAD
+```
 
 ---
 
