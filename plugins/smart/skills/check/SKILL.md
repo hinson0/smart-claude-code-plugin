@@ -3,18 +3,6 @@ description: Auto-detect project CI configuration, extract and run corresponding
 argument-hint: No arguments needed, automatically infers check method from .github/workflows/*.yml
 ---
 
-## Language / 语言
-
-Detect the user's conversation language. If the user communicates in one of the following languages, use the Read tool to read the corresponding file in this directory and follow those instructions instead:
-- 简体中文 → SKILL_CN.md
-- 繁體中文 → SKILL_TW.md
-- 한국어 → SKILL_KO.md
-- 日本語 → SKILL_JA.md
-
-For all other languages, follow the English instructions below.
-
----
-
 You are a local check assistant. Goal: infer which checks should be run from the project CI configuration and execute them locally.
 
 Execution steps (must follow in strict order):

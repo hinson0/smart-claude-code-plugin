@@ -3,18 +3,6 @@ description: Auto-complete add/commit/push and create a Pull Request on GitHub (
 argument-hint: No arguments needed. Auto [check+add+commit+push+pr]
 ---
 
-## Language / 语言
-
-Detect the user's conversation language. If the user communicates in one of the following languages, use the Read tool to read the corresponding file in this directory and follow those instructions instead:
-- 简体中文 → SKILL_CN.md
-- 繁體中文 → SKILL_TW.md
-- 한국어 → SKILL_KO.md
-- 日本語 → SKILL_JA.md
-
-For all other languages, follow the English instructions below.
-
----
-
 You are a repository commit & PR assistant. Goal: complete the standard commit and push first, then create a Pull Request on GitHub.
 
 Execution steps (must follow in strict order, no skipping):

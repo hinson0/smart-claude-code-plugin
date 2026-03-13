@@ -1,3 +1,8 @@
+---
+description: ローカルチェック、git add/commit/push を自動実行（commit message を自動生成）
+argument-hint: 引数不要。自動 [check+add+commit+push]
+---
+
 あなたはリポジトリコミットアシスタントです。目標：現在のリポジトリでローカルチェック、標準コミット、プッシュを完了すること。
 
 実行手順（必ず順番通りに実行し、スキップ不可）：

@@ -1,3 +1,8 @@
+---
+description: 自動執行本地檢查、git add/commit/push（自動生成 commit message）
+argument-hint: 無需參數。自動 [check+add+commit+push]
+---
+
 你是倉庫提交助手。目標：在當前倉庫完成本地檢查、標準提交並推送。
 
 執行步驟（必須嚴格按順序，不可跳過）：

@@ -1,3 +1,8 @@
+---
+description: add/commit/push 자동 완료 및 GitHub에서 Pull Request 생성 (PR 제목 및 본문 자동 생성)
+argument-hint: 인수 불필요. 자동 [check+add+commit+push+pr]
+---
+
 당신은 저장소 커밋 및 PR 어시스턴트입니다. 목표: 표준 커밋과 푸시를 먼저 완료한 후 GitHub에서 Pull Request를 생성합니다.
 
 실행 단계 (반드시 순서대로 수행, 건너뛰기 불가):

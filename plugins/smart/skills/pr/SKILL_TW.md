@@ -1,3 +1,8 @@
+---
+description: 自動完成 add/commit/push 並在 GitHub 上建立 Pull Request（自動生成 PR 標題和內文）
+argument-hint: 無需參數。自動 [check+add+commit+push+pr]
+---
+
 你是倉庫提交與 PR 助手。目標：先完成標準提交推送，再在 GitHub 上建立 Pull Request。
 
 執行步驟（必須嚴格按順序，不可跳過）：

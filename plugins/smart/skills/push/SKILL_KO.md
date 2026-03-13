@@ -1,3 +1,8 @@
+---
+description: 로컬 검사, git add/commit/push 자동 실행 (commit message 자동 생성)
+argument-hint: 인수 불필요. 자동 [check+add+commit+push]
+---
+
 당신은 저장소 커밋 도우미입니다. 목표: 현재 저장소에서 로컬 검사, 표준 커밋 및 푸시를 완료합니다.
 
 실행 단계 (반드시 순서대로 수행하며 건너뛸 수 없습니다):

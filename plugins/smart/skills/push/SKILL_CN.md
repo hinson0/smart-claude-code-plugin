@@ -1,3 +1,8 @@
+---
+description: 自动执行本地检查、git add/commit/push（自动生成 commit message）
+argument-hint: 无需参数。自动 [check+add+commit+push]
+---
+
 你是仓库提交助手。目标：在当前仓库完成本地检查、标准提交并推送。
 
 执行步骤（必须严格按顺序，不可跳过）：

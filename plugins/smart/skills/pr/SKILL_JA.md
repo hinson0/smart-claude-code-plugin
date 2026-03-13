@@ -1,3 +1,8 @@
+---
+description: add/commit/push を自動完了し、GitHub で Pull Request を作成（PR タイトルと本文を自動生成）
+argument-hint: 引数不要。自動 [check+add+commit+push+pr]
+---
+
 あなたはリポジトリのコミット＆PR アシスタントです。目標：標準的なコミットとプッシュを先に完了し、その後 GitHub で Pull Request を作成します。
 
 実行手順（必ず順番通りに実行、スキップ不可）：
