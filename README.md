@@ -14,13 +14,15 @@ A Claude Code plugin that takes over the moment you finish writing code: runs ch
 
 ## Quick Start
 
-**1. Install the plugin**
+**1. Install the plugin** _(recommended)_
 
-In Claude Code, register the marketplace and install:
+In Claude Code, register the marketplace first:
 
 ```
 /plugin marketplace add hinson0/smart-claude-code-plugin
 ```
+
+Then install the plugin from this marketplace:
 
 ```
 /plugin install smart@smart-claude-code-plugin

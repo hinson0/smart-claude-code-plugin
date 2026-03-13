@@ -14,13 +14,15 @@
 
 ## 快速开始
 
-**1. 安装插件**
+**1. 安装插件**（强烈推荐）
 
-在 Claude Code 中执行：
+先在 Claude Code 中注册插件市场：
 
 ```
 /plugin marketplace add hinson0/smart-claude-code-plugin
 ```
+
+然后从该市场安装插件：
 
 ```
 /plugin install smart@smart-claude-code-plugin
