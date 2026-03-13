@@ -1,68 +1,78 @@
 ---
-description: 自动执行add+commit(自动生成 commit message）
-argument-hint: 无需参数,自动根据文件识别是单个or多个feature,对文件进行超级友好的分组提交.
+description: Automatically execute add+commit (auto-generate commit message)
+argument-hint: No arguments needed. Automatically identifies single or multiple features based on files and performs super-friendly grouped commits.
 ---
 
-你是仓库提交助手。目标：在当前仓库把"本次修改"完成一次标准提交（不含 push 和本地检查）。
+## Language / 语言
 
-执行步骤（必须严格按顺序）：
+Detect the user's conversation language. If the user communicates in one of the following languages, use the Read tool to read the corresponding file in this directory and follow those instructions instead:
+- 简体中文 → SKILL_CN.md
+- 繁體中文 → SKILL_TW.md
+- 한국어 → SKILL_KO.md
+- 日本語 → SKILL_JA.md
 
-1) 并行运行并读取以下信息：
+For all other languages, follow the English instructions below.
+
+---
+
+You are a repository commit assistant. Goal: complete a standard commit for the current changes in the repository (excluding push and local checks).
+
+Execution steps (must follow strictly in order):
+
+1) Run and read the following information in parallel:
 - `git status --short`
 - `git diff --staged`
 - `git diff`
 - `git log -5 --oneline`
 
-1) 判断是否有可提交变更：
-- 若没有任何变更，直接回复"当前无可提交改动"，并结束。
+2) Determine if there are committable changes:
+- If there are no changes at all, reply "No committable changes found" and stop.
 
-1) 语义分析，判断提交策略：
-- 读取 `git diff` 与 `git diff --staged` 内容，分析所有改动的目的与影响范围：
-  - **单 feature**：所有改动围绕同一个目标（如仅修复一个 bug、仅新增一个功能、仅重构一个模块） → 合并为一次提交。
-  - **多 feature**：改动跨越多个独立目标（如同时修复 bug + 新增功能、重构 A 模块 + 更新 B 模块配置） → 按 feature 拆分为多次提交。
-- **必须同时计入** `M`（已修改）、`A`（已暂存新文件）、`??`（未追踪新文件）三类，不得遗漏任何文件。
+3) Semantic analysis to determine commit strategy:
+- Read the content of `git diff` and `git diff --staged`, analyze the purpose and scope of all changes:
+  - **Single feature**: All changes revolve around the same goal (e.g., only fixing one bug, only adding one feature, only refactoring one module) → combine into a single commit.
+  - **Multiple features**: Changes span multiple independent goals (e.g., fixing a bug + adding a feature, refactoring module A + updating module B config) → split into multiple commits by feature.
+- **Must account for all three types**: `M` (modified), `A` (staged new files), and `??` (untracked new files). Do not omit any files.
 
-1) 生成 commit message（英文）：
-- 单 feature：
-  - 优先使用命令后提供的文本作为 commit message。
-  - 若未提供，基于改动生成 1 句英文 commit message，风格与最近提交保持一致。
-  - message 要聚焦"为什么改"，避免空泛。
-- 多 feature：
-  - 按 feature 将改动分组（优先按目录/模块边界分组）。
-  - 每个 feature 生成 1 句英文 commit message，聚焦"为什么改"。
-  - 若命令后提供了多段文本（用 `;` 分隔），按顺序作为各 feature 的 commit message；不足部分自动生成。
+4) Generate commit message (in English):
+- Single feature:
+  - Generate a 1-sentence English commit message based on the changes, keeping the style consistent with recent commits.
+  - The message should focus on "why the change was made", avoiding vague descriptions.
+- Multiple features:
+  - Group changes by feature (prefer grouping by directory/module boundaries).
+  - Generate a 1-sentence English commit message for each feature, focusing on "why the change was made".
 
-1) 执行提交：
-- 单 feature：
+5) Execute the commit:
+- Single feature:
   - `git add -A`
-  - 使用 HEREDOC 执行提交：
+  - Use HEREDOC to execute the commit:
 ```bash
 git commit -m "$(cat <<'EOF'
 <commit message>
 EOF
 )"
 ```
-- 多 feature：
-  - 按 feature 分组依次执行（`M` 修改文件和 `??` 新文件均须纳入分组）：
-    - `git add <该组文件或目录>`
-    - 使用 HEREDOC 提交该组：
+- Multiple features:
+  - Execute sequentially by feature group (both `M` modified files and `??` new files must be included in grouping):
+    - `git add <files or directories for this group>`
+    - Use HEREDOC to commit this group:
 ```bash
 git commit -m "$(cat <<'EOF'
 <feature commit message>
 EOF
 )"
 ```
-  - 若分组失败或存在强耦合无法安全拆分，合并为一次提交并说明原因。
+  - If grouping fails or there is strong coupling that prevents safe splitting, combine into a single commit and explain the reason.
 
-1) 输出结果（中文）：
-- 展示实际使用的 commit message。
-- 若为拆分提交，按顺序展示每个 feature 的 commit message 与包含的文件列表。
-- 展示 `git status` 的最终状态（确认工作区是否干净）。
-- 若失败，给出失败原因与下一步可执行修复命令。
+6) Output results (in English):
+- Display the actual commit message(s) used.
+- If split into multiple commits, display each feature's commit message and included file list in order.
+- Display the final `git status` output (confirm whether the working tree is clean).
+- If failed, provide the failure reason and actionable next-step commands.
 
-约束：
-- 不修改 git config。
-- 不使用 `--amend`、`--force`、`--no-verify`。
-- 不执行 git push。
-- 不执行本地检查（ruff、pytest、pnpm 等），检查由 smart-check 负责。
-- 仅执行与本次提交直接相关的命令，不做额外重构或文件修改。
+Constraints:
+- Do not modify git config.
+- Do not use `--amend`, `--force`, or `--no-verify`.
+- Do not execute git push.
+- Do not run local checks (ruff, pytest, pnpm, etc.) — checks are handled by smart-check.
+- Only execute commands directly related to this commit; do not perform additional refactoring or file modifications.

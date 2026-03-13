@@ -1,65 +1,77 @@
 ---
-description: 自动执行本地检查、git add/commit/push（支持自动生成 commit message）
-argument-hint: 无需参数.自动[check+add+commit+push]
+description: Auto-run local checks, git add/commit/push (with auto-generated commit messages)
+argument-hint: No arguments needed. Auto [check+add+commit+push]
 ---
 
-你是仓库提交助手。目标：在当前仓库完成本地检查、标准提交并推送。
+## Language / 语言
 
-执行步骤（必须严格按顺序，不可跳过）：
+Detect the user's conversation language. If the user communicates in one of the following languages, use the Read tool to read the corresponding file in this directory and follow those instructions instead:
+- 简体中文 → SKILL_CN.md
+- 繁體中文 → SKILL_TW.md
+- 한국어 → SKILL_KO.md
+- 日本語 → SKILL_JA.md
+
+For all other languages, follow the English instructions below.
 
 ---
 
-## 阶段一：本地检查
+You are a repository commit assistant. Goal: complete local checks, standard commit, and push in the current repository.
+
+Execution steps (must follow in strict order, no skipping):
+
+---
+
+## Phase 1: Local Checks
 
 @../check/SKILL.md
 
-- 若任一检查失败，**立即停止**，不执行后续阶段。
+- If any check fails, **stop immediately** and do not proceed to subsequent phases.
 
 ---
 
-## 阶段二：提交
+## Phase 2: Commit
 
 @../commit/SKILL.md
 
-- 若工作区无任何变更，跳过本阶段，直接进入阶段三。
+- If there are no changes in the working tree, skip this phase and proceed directly to Phase 3.
 
 ---
 
-## 阶段三：推送
+## Phase 3: Push
 
-### 3.1 检查 origin 是否已配置
+### 3.1 Check if origin is configured
 
-运行：`git remote get-url origin 2>/dev/null`
+Run: `git remote get-url origin 2>/dev/null`
 
-- 若已配置：直接执行 `git push -u origin HEAD`，跳到 3.3。
-- 若未配置：继续 3.2。
+- If configured: execute `git push -u origin HEAD` directly, skip to 3.3.
+- If not configured: continue to 3.2.
 
-### 3.2 自动创建并关联 GitHub 远程仓库
+### 3.2 Automatically create and link a GitHub remote repository
 
-依次执行：
+Execute in order:
 
-1. 确认 `gh` CLI 已登录：`gh auth status`
-   - 若未登录，输出提示"请先运行 `gh auth login`"，并**停止**。
+1. Confirm `gh` CLI is logged in: `gh auth status`
+   - If not logged in, output the prompt "Please run `gh auth login` first", and **stop**.
 
-2. 读取仓库名称：`basename $(git rev-parse --show-toplevel)`
+2. Read the repository name: `basename $(git rev-parse --show-toplevel)`
 
-3. 读取当前 GitHub 用户名：`gh api user --jq .login`
+3. Read the current GitHub username: `gh api user --jq .login`
 
-4. 检查远程是否已存在同名仓库：`gh repo view <用户名>/<仓库名> 2>/dev/null`
-   - 若已存在：直接关联，跳到步骤 6。
-   - 若不存在：继续步骤 5。
+4. Check if a remote repository with the same name already exists: `gh repo view <username>/<repo-name> 2>/dev/null`
+   - If it exists: link directly, skip to step 6.
+   - If it does not exist: continue to step 5.
 
-5. 创建 GitHub 仓库（默认私有）：
+5. Create a GitHub repository (private by default):
    ```
-   gh repo create <仓库名> --private --source=. --remote=origin
-   ```
-
-6. 若已存在但未关联，手动添加 remote：
-   ```
-   git remote add origin https://github.com/<用户名>/<仓库名>.git
+   gh repo create <repo-name> --private --source=. --remote=origin
    ```
 
-### 3.3 执行推送
+6. If it exists but is not linked, manually add the remote:
+   ```
+   git remote add origin https://github.com/<username>/<repo-name>.git
+   ```
+
+### 3.3 Execute push
 
 ```
 git push -u origin HEAD
@@ -67,23 +79,23 @@ git push -u origin HEAD
 
 ---
 
-## 输出结果（中文）
+## Output
 
-成功时展示：
-1. 阶段一的检查结果摘要。
-2. 阶段二实际使用的所有 commit message（若有改动）。
-3. 推送目标分支与结果。
-4. 最终 `git status`（确认工作区是否干净）。
+On success, display:
+1. Summary of Phase 1 check results.
+2. All commit messages actually used in Phase 2 (if there were changes).
+3. Push target branch and result.
+4. Final `git status` (confirm whether the working tree is clean).
 
-失败时展示：
-- 失败发生在哪个阶段与步骤。
-- 具体错误信息。
-- 下一步可执行的修复命令。
+On failure, display:
+- Which phase and step the failure occurred in.
+- Specific error message.
+- Next actionable fix command.
 
 ---
 
-## 约束
+## Constraints
 
-- 不修改 git config。
-- 不使用 `--amend`、`--force`、`--no-verify`。
-- 仅执行与本次提交直接相关的命令，不做额外重构或文件修改。
+- Do not modify git config.
+- Do not use `--amend`, `--force`, or `--no-verify`.
+- Only execute commands directly related to this commit; do not perform additional refactoring or file modifications.

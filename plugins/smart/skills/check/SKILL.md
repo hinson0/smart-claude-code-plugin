@@ -1,83 +1,95 @@
 ---
-description: 自动检测项目 CI 配置，提取并在本地运行对应的检查命令（通用，不依赖固定目录结构）
-argument-hint: 无需参数，自动从 .github/workflows/*.yml 推断检查方式
+description: Auto-detect project CI configuration, extract and run corresponding check commands locally (generic, no fixed directory structure dependency)
+argument-hint: No arguments needed, automatically infers check method from .github/workflows/*.yml
 ---
 
-你是本地检查助手。目标：从项目 CI 配置中推断应运行哪些检查，并在本地执行。
+## Language / 语言
 
-执行步骤（必须严格按顺序）：
+Detect the user's conversation language. If the user communicates in one of the following languages, use the Read tool to read the corresponding file in this directory and follow those instructions instead:
+- 简体中文 → SKILL_CN.md
+- 繁體中文 → SKILL_TW.md
+- 한국어 → SKILL_KO.md
+- 日本語 → SKILL_JA.md
 
-## 第一步：确认工作区有改动
+For all other languages, follow the English instructions below.
 
-运行 `git status --short`，同时计入 `M`、`A`、`??` 三类文件。
-- 若无任何改动：输出"当前无改动，跳过检查"，结束。
+---
 
-## 第二步：检测 CI 工作流文件
+You are a local check assistant. Goal: infer which checks should be run from the project CI configuration and execute them locally.
 
-运行：`ls .github/workflows/*.yml 2>/dev/null || ls .github/workflows/*.yaml 2>/dev/null`
+Execution steps (must follow in strict order):
 
-- 若**不存在**任何工作流文件：输出"未检测到 CI 工作流配置，跳过本地检查"，结束。
-- 若存在，继续第三步。
+## Step 1: Confirm workspace has changes
 
-## 第三步：从工作流文件推断检查工具
+Run `git status --short`, counting files with `M`, `A`, and `??` statuses.
+- If no changes: output "No changes detected, skipping checks", and stop.
 
-读取所有工作流文件内容，grep 以下关键词，建立"检查工具清单"：
+## Step 2: Detect CI workflow files
 
-| 检测关键词（CI 文件中出现） | 对应本地检查 |
+Run: `ls .github/workflows/*.yml 2>/dev/null || ls .github/workflows/*.yaml 2>/dev/null`
+
+- If **no** workflow files exist: output "No CI workflow configuration detected, skipping local checks", and stop.
+- If found, proceed to step 3.
+
+## Step 3: Infer check tools from workflow files
+
+Read all workflow file contents, grep for the following keywords, and build a "check tool inventory":
+
+| Detection keyword (appears in CI files) | Corresponding local check |
 |---|---|
 | `ruff` | Python lint |
 | `pytest` | Python test |
 | `mypy` | Python type check |
 | `eslint` | JS/TS lint |
-| `tsc` 或 `type-check` | TS type check |
-| `vitest` 或 `jest` | JS/TS test |
-| `turbo` | Turbo monorepo 检查 |
+| `tsc` or `type-check` | TS type check |
+| `vitest` or `jest` | JS/TS test |
+| `turbo` | Turbo monorepo check |
 | `go test` | Go test |
 | `golangci-lint` | Go lint |
 
-若**未检测到任何已知工具**：输出"CI 工作流中未发现已知检查工具，跳过本地检查"，结束。
+If **no known tools are detected**: output "No known check tools found in CI workflows, skipping local checks", and stop.
 
-## 第四步：确定本地运行方式
+## Step 4: Determine local execution method
 
-根据项目根目录存在的文件，确定执行前缀与包管理器：
+Based on files present in the project root directory, determine the execution prefix and package manager:
 
-- 存在 `uv.lock` → Python 命令使用 `uv run` 前缀
-- 存在 `pyproject.toml`（无 `uv.lock`）→ 直接运行（`ruff`、`pytest` 等）
-- 存在 `pnpm-lock.yaml` → JS/TS 使用 `pnpm`
-- 存在 `package-lock.json` → JS/TS 使用 `npm run`
-- 存在 `go.mod` → Go 直接运行
+- `uv.lock` exists → Python commands use `uv run` prefix
+- `pyproject.toml` exists (no `uv.lock`) → run directly (`ruff`, `pytest`, etc.)
+- `pnpm-lock.yaml` exists → JS/TS uses `pnpm`
+- `package-lock.json` exists → JS/TS uses `npm run`
+- `go.mod` exists → Go runs directly
 
-## 第五步：执行检查
+## Step 5: Execute checks
 
-按检查工具清单依次运行，所有检查均在仓库根目录执行：
+Run each tool in the check tool inventory sequentially, all checks executed from the repository root:
 
-**Python 类：**
-- `ruff` → `uv run ruff check . --fix`（或 `ruff check . --fix`）
-- `pytest` → `uv run pytest -v`（或 `pytest -v`）
-- `mypy` → `uv run mypy .`（或 `mypy .`）
+**Python:**
+- `ruff` → `uv run ruff check . --fix` (or `ruff check . --fix`)
+- `pytest` → `uv run pytest -v` (or `pytest -v`)
+- `mypy` → `uv run mypy .` (or `mypy .`)
 
-**JS/TS 类：**
-- `eslint` → `pnpm lint`（或 `npm run lint`）
-- `tsc` / `type-check` → `pnpm type-check`（或 `npx tsc --noEmit`）
-- `vitest` / `jest` → `pnpm test`（或 `npm test`）
-- `turbo` → 从 CI 文件提取 turbo 命令，原样执行（如 `pnpm turbo lint type-check build`）
+**JS/TS:**
+- `eslint` → `pnpm lint` (or `npm run lint`)
+- `tsc` / `type-check` → `pnpm type-check` (or `npx tsc --noEmit`)
+- `vitest` / `jest` → `pnpm test` (or `npm test`)
+- `turbo` → extract turbo command from CI file, execute as-is (e.g., `pnpm turbo lint type-check build`)
 
-**Go 类：**
+**Go:**
 - `go test` → `go test ./...`
 - `golangci-lint` → `golangci-lint run`
 
-## 第六步：输出结果（中文）
+## Step 6: Output results (in English)
 
-- 列出从 CI 检测到的工具清单。
-- 展示每项检查的执行结果（✅ 通过 / ❌ 失败）。
-- 若全部通过：输出"✅ 所有检查通过"。
-- 若任一失败：
-  - 输出具体错误信息。
-  - 给出可执行的修复命令。
-  - **不执行**任何 add / commit / push 操作。
+- List the tool inventory detected from CI.
+- Show the execution result for each check (pass / fail).
+- If all pass: output "All checks passed".
+- If any fail:
+  - Output the specific error message.
+  - Provide actionable fix commands.
+  - **Do not execute** any add / commit / push operations.
 
-## 约束
+## Constraints
 
-- 不修改 git config。
-- 不执行 git add / commit / push。
-- 不修改任何源文件（ruff `--fix` 除外，这是预期行为）。
+- Do not modify git config.
+- Do not execute git add / commit / push.
+- Do not modify any source files (except ruff `--fix`, which is expected behavior).
