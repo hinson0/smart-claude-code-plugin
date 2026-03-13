@@ -1,0 +1,13 @@
+{
+    "name": "smart-claude-code",
+    "owner": {
+        "name": "hinson0"
+    },
+    "plugins": [
+        {
+            "name": "smart",
+            "source": "./plugins/smart",
+            "description": "A smart claude code plugin."
+        }
+    ]
+}
