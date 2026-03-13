@@ -3,18 +3,6 @@ description: Automatically execute add+commit (auto-generate commit message)
 argument-hint: No arguments needed. Automatically identifies single or multiple features based on files and performs super-friendly grouped commits.
 ---
 
-## Language / 语言
-
-Detect the user's conversation language. If the user communicates in one of the following languages, use the Read tool to read the corresponding file in this directory and follow those instructions instead:
-- 简体中文 → SKILL_CN.md
-- 繁體中文 → SKILL_TW.md
-- 한국어 → SKILL_KO.md
-- 日本語 → SKILL_JA.md
-
-For all other languages, follow the English instructions below.
-
----
-
 You are a repository commit assistant. Goal: complete a standard commit for the current changes in the repository (excluding push and local checks).
 
 Execution steps (must follow strictly in order):
@@ -28,10 +16,18 @@ Execution steps (must follow strictly in order):
 2) Determine if there are committable changes:
 - If there are no changes at all, reply "No committable changes found" and stop.
 
-3) Semantic analysis to determine commit strategy:
-- Read the content of `git diff` and `git diff --staged`, analyze the purpose and scope of all changes:
-  - **Single feature**: All changes revolve around the same goal (e.g., only fixing one bug, only adding one feature, only refactoring one module) → combine into a single commit.
-  - **Multiple features**: Changes span multiple independent goals (e.g., fixing a bug + adding a feature, refactoring module A + updating module B config) → split into multiple commits by feature.
+3) Semantic analysis to determine commit strategy (CRITICAL — default to splitting):
+- Read the content of `git diff` and `git diff --staged`, then perform a **structured file-level analysis**:
+  a. **List each changed file and its purpose** — for every file in the diff, write one line: `<file path> → <purpose>` (e.g., "fix auth bug", "add i18n support", "update docs").
+  b. **Group by independent purpose** — files sharing the same purpose form one group. Different purposes = different groups.
+  c. **Determine strategy**:
+    - If ALL files share exactly ONE purpose → **single commit**.
+    - If files belong to 2+ distinct purposes → **multiple commits** (one per purpose). This is **mandatory**, not optional.
+- **Splitting rules (strictly enforced)**:
+  - Do NOT bundle unrelated changes under a vague umbrella like "update project" or "various improvements".
+  - Different conventional commit types (feat + fix, feat + refactor, fix + docs, etc.) almost always indicate multiple features — **split them**.
+  - Adding new files for feature A + modifying existing files for feature B = two commits, not one.
+  - When in doubt, **split**. Too many small commits is always better than one bloated commit mixing unrelated changes.
 - **Must account for all three types**: `M` (modified), `A` (staged new files), and `??` (untracked new files). Do not omit any files.
 
 4) Generate commit message (in English):
@@ -43,7 +39,7 @@ Execution steps (must follow strictly in order):
   - Generate a 1-sentence English commit message for each feature, focusing on "why the change was made".
 
 5) Execute the commit:
-- Single feature:
+- Single feature (ONLY when step 3 confirms all files share one purpose):
   - `git add -A`
   - Use HEREDOC to execute the commit:
 ```bash
@@ -52,9 +48,9 @@ git commit -m "$(cat <<'EOF'
 EOF
 )"
 ```
-- Multiple features:
+- Multiple features (**NEVER use `git add -A`** — each commit must only add its own files):
   - Execute sequentially by feature group (both `M` modified files and `??` new files must be included in grouping):
-    - `git add <files or directories for this group>`
+    - `git add <specific files for this group>` (list every file explicitly, do not use `-A` or `.`)
     - Use HEREDOC to commit this group:
 ```bash
 git commit -m "$(cat <<'EOF'
