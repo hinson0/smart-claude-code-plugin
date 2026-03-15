@@ -31,22 +31,38 @@ This design addresses three focused improvements:
 **Where:** Step 7 (gather basic information), add step 7.3
 
 **Logic:**
-1. In step 7 (parallel info gathering), add: read project root `CLAUDE.md` (if exists)
-2. Scan for language directives: patterns like `Always respond in ...`, `language:`, `ALWAYS use ... in`, etc.
-3. If a forced language setting is detected → PR title and body use that language
+1. In step 7 (parallel info gathering), add a third bullet point: read project root `CLAUDE.md` (if exists)
+2. Use semantic understanding (not regex) to detect language directives — common patterns include `Always respond in ...`, `language:`, `ALWAYS use ... in`, etc., possibly with Markdown formatting like `**bold**`
+3. If a forced language setting is detected → apply to PR output per the scope rules below
 4. If not detected → default to English (current behavior)
 
-**Affected steps:**
-- Step 7: Add 7.3 (read CLAUDE.md)
-- Step 11: Title and body language conditional on detected language
+**Search scope:** Only project-level `CLAUDE.md` (in the git repo root). Global `~/.claude/CLAUDE.md` and `~/.claude/rules/` are NOT checked — those are user-level settings that Claude Code already applies automatically. This step only detects project-specific overrides.
+
+**Language override scope by PR section:**
+
+| Section | Override behavior |
+|---------|------------------|
+| Title | Use detected language |
+| Summary bullets | Use detected language |
+| Section headers (`## Summary`, etc.) | Keep English (for GitHub readability) |
+| Commits list | Keep original commit messages as-is (never translate) |
+| Test Plan items | Use detected language |
+
+**Conflict resolution:** If multiple contradictory language directives are found in CLAUDE.md, use the most specific one (e.g., "PR must be in Chinese" beats "Always respond in English"). If ambiguous, default to English.
 
 **Example text to add in SKILL files (English version):**
 
-> 7.3) Read the project's `CLAUDE.md` file (if it exists) and check for explicit language directives (e.g., "Always respond in ...", "language:" settings). If a forced output language is found, use that language for the PR title and body in step 11. Otherwise, default to English.
+> 7) Gather basic information (run in parallel):
+> - `git branch --show-current` (current branch name, referred to as `HEAD_BRANCH`)
+> - `git log -1 --oneline` (latest commit, used to determine single-commit scenario)
+> - Read the project's `CLAUDE.md` file (if it exists) and check for explicit language directives (semantic detection, e.g., "Always respond in ...", "language:" settings). If a forced output language is found, use that language for the PR title, summary, and test plan in step 11 (but keep section headers in English and commit messages as-is). Otherwise, default to English.
 
 **Example text to add in SKILL files (Chinese version):**
 
-> 7.3) 读取项目根目录的 `CLAUDE.md`（若存在），检查是否包含强制输出语言设置（如"Always respond in ..."、"language:" 等指令）。若检测到强制语言，则步骤 11 中的 PR 标题和正文使用该语言；否则默认英文。
+> 7) 收集基础信息（并行运行）：
+> - `git branch --show-current`（当前分支名，记为 `HEAD_BRANCH`）
+> - `git log -1 --oneline`（最新一条 commit，用于判断单 commit 场景）
+> - 读取项目根目录的 `CLAUDE.md`（若存在），语义检测是否包含强制输出语言设置（如"Always respond in ..."、"language:" 等指令）。若检测到强制语言，则步骤 11 中的 PR 标题、Summary 和 Test Plan 使用该语言（但 section headers 保持英文，commit messages 保持原文）；否则默认英文。
 
 ### 2. Test Plan Smart Generation
 
@@ -77,6 +93,20 @@ Generate test items based on the conventional commit types found in the commit l
 
 **Specificity requirement:** Each test item must reference the actual changes in this PR. Generic items like "verify functionality works" are prohibited.
 
+**Good example:**
+```markdown
+- [ ] Authentication endpoint returns 401 for expired tokens
+- [ ] Cache invalidation triggers on user profile update
+```
+
+**Bad example:**
+```markdown
+- [ ] Verify the feature works correctly
+- [ ] Check that nothing is broken
+```
+
+**Fallback for non-conventional commits:** If a commit message does not have a recognized type prefix (e.g., `"Update README"`, `"WIP"`), infer the intent from the commit message content and file changes, then generate appropriate test items. Do not skip these commits.
+
 **Example text to add in SKILL files (English version):**
 
 > ## Test Plan
@@ -88,14 +118,23 @@ Generate test items based on the conventional commit types found in the commit l
 > - `test` commits → verify tests pass and coverage is adequate
 > - `perf` commits → verify performance improvement is measurable
 > - `chore`/`ci` commits → verify build/CI pipeline runs correctly
+> - Commits without a type prefix → infer intent from message/files and generate appropriate items
 >
 > Use `- [ ]` format (unchecked/pending), not `- [x]`. Each item must be specific to the actual changes in this PR — no generic "verify it works" items.
 
 ### 3. Summary Micro-tuning
 
-No structural changes. Add a quality guideline to the existing Summary section:
+No structural changes. Add a quality guideline to the existing Summary section.
+
+**Where:** Step 11, Summary bullet point description
+
+**Example text to add in SKILL files (English version):**
 
 > Each bullet point in Summary should answer "what changed" AND "why" — not just list files or repeat commit messages. Focus on the intent and impact of the change.
+
+**Example text to add in SKILL files (Chinese version):**
+
+> Summary 中的每条要点必须回答"改了什么"和"为什么改"——不要只是列出文件名或重复 commit message。聚焦改动的意图和影响。
 
 ## Files to Modify
 
