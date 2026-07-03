@@ -48,7 +48,7 @@ Resolution precedence (stop at the first hit):
    | Personal KB | `~/knowledges/md/{date}/` | Personal dated knowledge base (backward-compatible prior convention) |
    | Other | (custom) | Any path the user types |
 
-   After any pick in 3a/3b, **persist** the resolved value to the local `.smart/settings.json` by setting its `knowledges_dir` key — **read-modify-write**, preserving any other keys already in the file (e.g. `learning` / `learning_ratios` owned by `/smart:learning`); never overwrite the whole file with a single-key object. So future runs skip the question. In the Step 6 report, state where it was saved and — when a local file was written — note that moving it to `~/.smart/settings.json` makes it a global default for every project.
+   After any pick in 3a/3b, **persist** the resolved value to the local `.smart/settings.json` by setting its `knowledges_dir` key — **read-modify-write**, preserving any other keys already in the file; never overwrite the whole file with a single-key object. So future runs skip the question. In the Step 6 report, state where it was saved and — when a local file was written — note that moving it to `~/.smart/settings.json` makes it a global default for every project.
 
 **Path tokens and normalization** (applied to the resolved value, from whichever source):
 
@@ -59,7 +59,7 @@ Resolution precedence (stop at the first hit):
 
 Once resolved, treat the directory as `<target-dir>` throughout. The path is fixed for this run and is not re-asked or overridden later.
 
-**`settings.json` format** — distill owns the `knowledges_dir` key; read it with the Read tool. Other keys may share this file (e.g. `learning` / `learning_ratios` from `/smart:learning`), so always **read-modify-write** and preserve keys you do not own — never replace the whole file with a single-key object. Ignore a file silently if missing or malformed (fall through per the precedence above):
+**`settings.json` format** — distill owns the `knowledges_dir` key; read it with the Read tool. Other keys may share this file, so always **read-modify-write** and preserve keys you do not own — never replace the whole file with a single-key object. Ignore a file silently if missing or malformed (fall through per the precedence above):
 
 ```json
 { "knowledges_dir": "~/knowledges/md/{date}" }
