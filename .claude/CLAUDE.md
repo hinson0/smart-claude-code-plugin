@@ -11,58 +11,37 @@ Codex 格式插件，自动化 commit → push → PR 流程（push 内含 versi
 > **双格式并存（铁律）**：本插件同时支持 Codex 和 Claude Code 两个宿主，二者读各自的清单文件，互不冲突，**任何一方都不可删**：
 >
 > - Codex：`.agents/plugins/marketplace.json` + `plugins/smart/.codex-plugin/plugin.json`
-> - Claude Code：`.claude-plugin/marketplace.json` + `plugins/smart/.claude-plugin/plugin.json`（CC 用干净 semver，不带 `+codex.*` build 元数据；其余组件 skills/hooks/agents 由 CC 按约定自动发现）
+> - Claude Code：`.claude-plugin/marketplace.json` + `plugins/smart/.claude-plugin/plugin.json`（CC 用干净 semver，不带 `+codex.*` build 元数据；其余组件 skills/hooks/agents 由 CC 按约定自动发现。`CN.md` 是纯中文参考文件，不会被当作 skill 或组件加载）
 >   两套 plugin.json 的主版本号必须一致。
 
 ```
 根目录
 ├── .agents/plugins/marketplace.json # Codex marketplace 注册文件（指向 plugins/smart）
 ├── .claude-plugin/marketplace.json  # Claude Code marketplace 注册文件（指向 plugins/smart）
-├── assets/                          # i18n/ 多语言镜像 + imgs/ 截图资源
+├── assets/imgs/                     # 截图资源
 ├── README.md / README_CN/TW/KO/JA.md # 多语言用户文档
 └── docs/                            # 设计文档（gitignored，不提交）
 
-assets/i18n/cn/smart/             # CN 镜像目录（仅供阅读，结构与 plugins/smart/ 对称）
-├── agents/                       # 空占位，暂无 agent
-├── hooks/
-│   ├── hooks.json
-│   ├── greet.sh                  # 会话开始 hook
-│   └── session-logs.py
-└── skills/                       # CN skills（中文版，仅供参考）
-    ├── check/SKILL.md
-    ├── commit/SKILL.md
-    ├── distill/                   # 会话知识蒸馏（SKILL.md + references/）
-    ├── help/SKILL.md
-    ├── hud/SKILL.md
-    ├── op/SKILL.md
-    ├── pr/SKILL.md
-    ├── push/SKILL.md
-    ├── token-log/SKILL.md
-    └── version/SKILL.md
-
-plugins/smart/                    # EN 主插件目录（被 Codex 和 Claude Code 同时加载）
+plugins/smart/                    # 主插件目录（被 Codex 和 Claude Code 同时加载）
 ├── .codex-plugin/plugin.json     # Codex 插件元数据
 ├── .claude-plugin/plugin.json    # Claude Code 插件元数据（清单文件，缺失则 CC 无法加载插件）
 ├── agents/                       # 空占位，暂无 agent
 ├── hooks/
 │   ├── hooks.json                # hook 配置
 │   ├── greet.sh                  # 会话开始 hook
-│   └── session-logs.py           # hook 输入日志（PreToolUse）
+│   ├── session-logs.py           # hook 输入日志（PreToolUse）
+│   └── CN.md                     # hooks 中文说明（仅供阅读，不被加载）
+├── rules/
+│   ├── fastapi.md / pydantic-v2.md / python-3.14.md / sqlalchemy-v2.md
+│   └── CN.md                     # 4 份规则的中文汇总（仅供阅读，不被加载）
 └── skills/                       # EN skills（按 Agent Skills 规范，脚本在各自 scripts/ 子目录）
-    ├── check/SKILL.md
-    ├── commit/SKILL.md
-    ├── distill/                   # 会话知识蒸馏（SKILL.md + references/）
-    ├── help/SKILL.md
-    ├── hud/SKILL.md
-    ├── op/SKILL.md
-    ├── pr/SKILL.md
-    ├── push/SKILL.md
-    ├── sendshot/SKILL.md
-    ├── token-log/SKILL.md
-    └── version/SKILL.md
+    ├── <name>/SKILL.md           # 英文版（被宿主加载）
+    ├── <name>/CN.md              # 同目录中文翻译（仅供阅读，不被加载）
+    ├── distill/                  # 除 SKILL.md 外还有 references/；其 CN.md = 正文 + 参考文档中文
+    └── …（check / commit / help / hud / learning / local / op / pr / push / sendshot / token-log / version / wfb）
 ```
 
-语言版本组织：EN 文件在 `plugins/smart/`（被加载），CN 文件在 `assets/i18n/cn/smart/`（仅供阅读参考），文件名完全相同。
+语言版本组织：中文不再单独成树。每个组件目录下英文原件（`SKILL.md`、脚本、`hooks.json`、`rules/*.md`）被宿主加载，对应的 `CN.md` 是**同目录**的中文翻译，仅供阅读、不被宿主加载。带 `references/` 的 skill（distill / op / token-log）把参考文档中文一并并入该 skill 的 `CN.md`。
 
 ## 架构原则
 
@@ -77,10 +56,10 @@ plugins/smart/                    # EN 主插件目录（被 Codex 和 Claude Co
 
 ## 注意事项
 
-- 修改任何 SKILL.md 内容后，必须同步更新 `assets/i18n/cn/smart/` 目录中的对应文件
-- 修改 hooks/assets 的脚本和文件：逻辑与结构保持 EN/CN 一致，但语言严格分离——
-  - `plugins/` 下所有文件（注释、description、skill body 等）全英文
-  - `assets/i18n/cn/` 下所有文件（注释、description、skill body 等）全中文
+- 修改任何 `SKILL.md` 内容后，必须同步更新**同目录**的 `CN.md`（中文翻译）；hooks / rules 同理，改动后更新各自目录的 `CN.md`
+- EN/CN 语言严格分离，逻辑与结构保持一致——
+  - `plugins/` 下**除 `CN.md` 外**的所有文件（`SKILL.md`、脚本、`hooks.json`、`rules/*.md` 的注释、description、body 等）全英文
+  - 每个 `CN.md` 全中文，与同目录的英文文件一一对应（带 `references/` 的 skill：其 `CN.md` 含正文 + 参考文档中文）
 - commit message 遵循 Conventional Commits：`<type>(<scope>): <description>`
   - type: feat, fix, refactor, docs, test, chore, perf, ci
   - scope: 可选，指明改动范围（如 mobile, api, auth）；省略时格式为 `<type>: <description>`
@@ -91,16 +70,13 @@ plugins/smart/                    # EN 主插件目录（被 Codex 和 Claude Co
 ## 常用命令
 
 ```bash
-# 验证 EN skills 引用路径
-grep -r '@\.\./' plugins/smart/skills/ --include='*.md' -h | sort -u
+# 验证 skill 引用路径（EN 原件；CN.md 内的 @../ 仅为文档指针，不被执行）
+grep -r '@\.\./' plugins/smart/skills/ --include='SKILL.md' -h | sort -u
 
-# 验证 CN skills 引用路径
-grep -r '@\.\./' assets/i18n/cn/smart/skills/ --include='*.md' -h | sort -u
-
-# 检查 EN/CN 两个语言版本是否齐全
+# 检查每个 skill 是否 EN/CN 齐全（SKILL.md + CN.md 都在）
 for d in plugins/smart/skills/*/; do
   name=$(basename "$d")
-  echo "=== $name ===" && ls "$d"SKILL.md "assets/i18n/cn/smart/skills/$name/SKILL.md"
+  echo "=== $name ===" && ls "$d"SKILL.md "$d"CN.md
 done
 
 # 测试完整管道（push 含 version bump；check 仅在 /smart:pr 内自动运行，不可单独调用）
@@ -110,6 +86,6 @@ done
 ## 开发工作流
 
 1. 修改 `skills/<name>/SKILL.md`（英文版为主）
-2. 同步更新 `assets/i18n/cn/smart/skills/<name>/SKILL.md`
+2. 同步更新**同目录**的 `skills/<name>/CN.md`（中文翻译）
 3. 验证 skill 引用路径正确（`@../` 前缀）
 4. 测试完整管道：commit → push → pr
