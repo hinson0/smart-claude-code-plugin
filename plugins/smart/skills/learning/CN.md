@@ -89,6 +89,43 @@ argument-hint: "[0|1] —— 1=开启，0=关闭，留空=查看状态"
 <!-- SMART:LEARNING:END -->
 ```
 
+## 格式示例（仅说明，不注入）
+
+下面展示参与规则块第 1 步那条规则会产出的样子。它们只是**文档**：块携带的是*规则*，这些示例**不会**被注入 `CLAUDE.local.md`——只在调用本 skill 时加载，而非每个会话都载入。规则是生成器，这些是示例输出。
+
+**【新增文件】** —— 整份文件都是新的：
+
+```
+【新增文件】 src/utils/retry.ts —— 指数退避重试包装器
+export async function retry<T>(fn: () => Promise<T>, max = 3): Promise<T> {
+  for (let i = 0; ; i++) {
+    try { return await fn() }
+    catch (e) { if (i >= max) throw e; await sleep(2 ** i * 100) }
+  }
+}
+```
+
+**【修改】** —— 改写现有行，用 `-`/`+` diff 呈现：
+
+```
+【修改】 src/api/client.ts@fetchUser —— 用 retry 包裹 fetch
+- const res = await fetch(url)
++ const res = await retry(() => fetch(url))
+```
+
+**【新增代码】** —— 不替换任何现有行的追加：
+
+```
+【新增代码】 src/api/client.ts@顶部import
+import { retry } from '../utils/retry'
+```
+
+**【删除】** —— 无需代码块，在锚点处点名目标即可：
+
+```
+【删除】 src/api/client.ts@8-10 —— 旧的局部 sleep()，已被 utils/retry 取代
+```
+
 ## 约束
 
 - 只触碰 `CLAUDE.local.md` 的标记区域；绝不破坏用户的其他笔记。

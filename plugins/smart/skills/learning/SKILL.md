@@ -89,6 +89,43 @@ The user hand-writes the code themselves to learn. Whenever you would normally w
 <!-- SMART:LEARNING:END -->
 ```
 
+## Format examples (illustrative — not injected)
+
+These show what the rule in step 1 of the participation block produces. They are documentation only: the block carries the *rule*, and these examples are **not** injected into `CLAUDE.local.md` — they load when this skill is invoked, not during every session. The rule is the generator; these are sample output.
+
+**[New file]** — the whole file is new:
+
+```
+[New file] src/utils/retry.ts — exponential-backoff retry wrapper
+export async function retry<T>(fn: () => Promise<T>, max = 3): Promise<T> {
+  for (let i = 0; ; i++) {
+    try { return await fn() }
+    catch (e) { if (i >= max) throw e; await sleep(2 ** i * 100) }
+  }
+}
+```
+
+**[Modify]** — existing lines rewritten, shown as a `-`/`+` diff:
+
+```
+[Modify] src/api/client.ts@fetchUser — wrap fetch in retry
+- const res = await fetch(url)
++ const res = await retry(() => fetch(url))
+```
+
+**[New code]** — added lines that replace nothing:
+
+```
+[New code] src/api/client.ts@top-imports
+import { retry } from '../utils/retry'
+```
+
+**[Delete]** — no code block, just name the target at the anchor:
+
+```
+[Delete] src/api/client.ts@8-10 — old local sleep(), superseded by utils/retry
+```
+
 ## Constraints
 
 - Only ever touch the marked region of `CLAUDE.local.md`; never clobber the user's other notes.
