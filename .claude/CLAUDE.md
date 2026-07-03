@@ -37,11 +37,11 @@ plugins/smart/                    # 主插件目录（被 Codex 和 Claude Code 
 └── skills/                       # EN skills（按 Agent Skills 规范，脚本在各自 scripts/ 子目录）
     ├── <name>/SKILL.md           # 英文版（被宿主加载）
     ├── <name>/CN.md              # 同目录中文翻译（仅供阅读，不被加载）
-    ├── distill/                  # 除 SKILL.md 外还有 references/；其 CN.md = 正文 + 参考文档中文
+    ├── distill/                  # 除 SKILL.md 外还有 references/；CN.md 仅译正文，参考文档各自成 references/CN[<名字>].md
     └── …（check / commit / help / hud / learning / local / op / pr / push / sendshot / token-log / version / wfb）
 ```
 
-语言版本组织：中文不再单独成树。每个组件目录下英文原件（`SKILL.md`、脚本、`hooks.json`、`rules/*.md`）被宿主加载，对应的 `CN.md` 是**同目录**的中文翻译，仅供阅读、不被宿主加载。带 `references/` 的 skill（distill / op / token-log）把参考文档中文一并并入该 skill 的 `CN.md`。
+语言版本组织：中文不再单独成树。每个组件目录下英文原件（`SKILL.md`、脚本、`hooks.json`、`rules/*.md`）被宿主加载，对应的 `CN.md` 是**同目录**的中文翻译，仅供阅读、不被宿主加载。带 `references/` 的 skill（distill / op / token-log）：其 `CN.md` 只翻译 `SKILL.md` 正文；`references/` 下每个英文 md（如 `diff-rules.md`）各自对应**同目录**的 `CN[<名字>].md`（如 `CN[diff-rules].md`）中文翻译——方括号命名保证不会被宿主当作参考文档 `@` 引用误加载。
 
 ## 架构原则
 
@@ -56,10 +56,10 @@ plugins/smart/                    # 主插件目录（被 Codex 和 Claude Code 
 
 ## 注意事项
 
-- 修改任何 `SKILL.md` 内容后，必须同步更新**同目录**的 `CN.md`（中文翻译）；hooks / rules 同理，改动后更新各自目录的 `CN.md`
+- 修改任何 `SKILL.md` 内容后，必须同步更新**同目录**的 `CN.md`（中文翻译）；改动 `references/<名字>.md` 后同步更新同目录的 `CN[<名字>].md`；hooks / rules 同理，改动后更新各自目录的 `CN.md`
 - EN/CN 语言严格分离，逻辑与结构保持一致——
   - `plugins/` 下**除 `CN.md` 外**的所有文件（`SKILL.md`、脚本、`hooks.json`、`rules/*.md` 的注释、description、body 等）全英文
-  - 每个 `CN.md` 全中文，与同目录的英文文件一一对应（带 `references/` 的 skill：其 `CN.md` 含正文 + 参考文档中文）
+  - 每个 `CN.md` 全中文，与同目录的英文文件一一对应（带 `references/` 的 skill：`CN.md` 只对应 `SKILL.md` 正文；`references/*.md` 各自对应 `references/CN[<名字>].md`）
 - commit message 遵循 Conventional Commits：`<type>(<scope>): <description>`
   - type: feat, fix, refactor, docs, test, chore, perf, ci
   - scope: 可选，指明改动范围（如 mobile, api, auth）；省略时格式为 `<type>: <description>`
