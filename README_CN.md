@@ -80,7 +80,7 @@
 - **会话知识蒸馏** — `/smart:distill` 从当前会话抽取有价值的问答对，按主题聚类成 markdown 文件，落盘到知识库。目标目录读自本地 `.smart/settings.json`；若本地缺失，则用 `AskUserQuestion` 询问是复用全局 `~/.smart/settings.json` 还是新建本地配置——两者都没有时再问落盘目录——随后把选择保存到本地，之后静默。目录询问留在主会话；繁重的抽取与落盘随后在后台 **fork** 中进行，主上下文只收到一份精简总结。默认 `.smart/knowledges/`；`{date}` 占位符支持按日期嵌套的目录（如 `~/knowledges/md/{date}`）。重复/新增/差分三态比对让重复蒸馏只追加不重复，已 review 文件（`.printed.md` 或有同名 PDF）绝不触碰。
 - **Workflow 模型分层** — `/smart:wfb` 让 Workflow 脚本更省 token：按难度给每个 `agent()` 分层（机械活用 haiku、躯干用 sonnet、收口与重要/硬实现用 opus），在 fan-out 前剪枝，并用 schema 压缩输出。编写任何 Workflow 脚本时自动应用。
 - **剪贴板截图上传** — `/smart:sendshot` 安装一个跨平台的 `sendshot` shell 函数：抓取剪贴板图片，通过 `scp` 上传到远程主机（如 EC2），随后打印并把远程路径回写剪贴板。支持 WSL（PowerShell 读 Windows 剪贴板）和 macOS（`pngpaste`/`osascript`）。zsh 下还会把 **`Ctrl+G`** 绑定为在任意提示符处触发 sendshot。配置——主机、密钥、远程目录——位于 `~/.smart/settings.json`，运行时读取，所以换主机无需重装；远程目录用 `mkdir -p` 自动创建。
-- **学习模式** — `/smart:learning 1` 开启协作编码模式：由*你*亲手编写代码中有意义的部分。划分是一张 层×类 网格——frontend/backend/db × 脚手架/业务——每个数字是*你*亲手编写的占比（0 = Claude 全写，100 = 你全写；默认：frontend 0/30、backend 30/70、db 0/100）。每个任务里 Claude 把自己那份直接落盘，并把你那份整份作为"卡住再看"的参考解法打到控制台（框架在前、答案在后），让你无需再起一轮对话，然后审查你落盘的代码再继续。开关与网格保存在 `.smart/settings.json`（`learning` + `learning_ratios`，与 distill 共用，位于已 git-ignore 的 `.smart/` 目录）；开启时把规则注入 `.claude/CLAUDE.local.md` 使其每个会话持续生效，`/smart:learning config backend.business=100 frontend.boilerplate=0` 调单格，`/smart:learning 0` 移除该块。
+- **学习模式** — `/smart:learning 1` 开启一种简单的协作编码模式：由*你*亲手编写代码。它是一个纯粹的开/关开关——没有占比、没有配置。开启时，凡是 Claude 本会写的代码都改为打到控制台——每段标明 新增文件 / 新增代码 / 修改 / 删除，并附文件与位置——由你敲入，然后 Claude 审查你落盘的代码再继续，每次只处理一个任务。开启时把规则注入 `.claude/CLAUDE.local.md`（Claude Code 每次会话载入的、已 git-ignore 的项目级记忆）使其持续生效；该块是否存在就是全部状态，`/smart:learning 0` 移除它。`.smart/settings.json` 里不存任何东西。
 
 ---
 
@@ -107,7 +107,7 @@
 | `/smart:distill [目录]` | 把当前会话蒸馏成按主题命名的知识文件（默认 `.smart/knowledges/`） |
 | `/smart:wfb` | 编写 Workflow 脚本时的省 token、模型分层指导（按难度选 haiku/sonnet/opus） |
 | `/smart:sendshot [install\|config\|uninstall]` | 安装跨平台 `sendshot` 函数（剪贴板图片 → `scp` 到远程 → 复制远程路径）；配置在 `~/.smart/settings.json` |
-| `/smart:learning [0\|1\|config]` | 切换学习模式——由*你*亲手写一部分代码；层×类 网格（frontend/backend/db × 脚手架/业务）各格占比可在 `.smart/settings.json` 配置。Claude 把你那份打到控制台作后备，再审查你落盘的代码。`1`=开，`0`=关，`config layer.kind=NN`=调单格（如 `backend.business=100`），留空=状态。规则持久化在 `.claude/CLAUDE.local.md` |
+| `/smart:learning [0\|1]` | 切换学习模式——由*你*亲手写代码；Claude 把每段打到控制台并标明 新增文件 / 新增代码 / 修改 / 删除 供你敲入，再审查你落盘的代码。`1`=开，`0`=关，留空=状态。状态就是注入到 `.claude/CLAUDE.local.md` 的块——无设置、无占比 |
 
 ---
 
