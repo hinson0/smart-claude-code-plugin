@@ -1,10 +1,10 @@
 ---
-name: op
-description: This skill should be used when the user says "analyze","optimize plugins", "disable unused plugins", "save context", "reduce context usage", "which plugins do I need", "clean up plugins", "focus context", "trim plugins", or wants to detect the project type and disable irrelevant plugins to save context window space. Invoked explicitly via /smart:op.
+name: optimize-tokens
+description: This skill should be used when the user says "analyze","optimize plugins", "disable unused plugins", "save context", "reduce context usage", "which plugins do I need", "clean up plugins", "focus context", "trim plugins", or wants to detect the project type and disable irrelevant plugins to save context window space. Invoked explicitly via /smart:optimize-tokens.
 argument-hint: No arguments needed. Automatically detects project type and recommends plugin changes.
 ---
 
-# Analyze — Context-Aware Plugin Optimizer
+# optimize-tokens — Context-Aware Plugin Optimizer
 
 Detect the current project type, identify enabled plugins irrelevant to this project, and offer to disable them — reducing context window overhead from always-loaded plugin metadata.
 
@@ -112,7 +112,7 @@ Display a final summary:
 - Detected project type(s)
 - Plugins disabled (count and names)
 - Plugins kept (count)
-- Reminder: "Run `/smart:op` again after switching projects to re-optimize."
+- Reminder: "Run `/smart:optimize-tokens` again after switching projects to re-optimize."
 
 ## Edge Cases
 
