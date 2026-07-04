@@ -53,6 +53,7 @@ plugins/smart/                    # 主插件目录（被 Codex 和 Claude Code 
 - **版本自动升级**：push 管道在提交后、推送前自动执行 version bump（commit → version → push）；PR 不再单独处理版本
 - **本地检查前置于 PR**：check 作为 PR 管道的第一阶段运行（check → commit → version → push → pr），检查不过立即停止；check **不属于** push 管道
 - **版本文件自动检测**：version skill 自动检测 plugin.json / package.json / pyproject.toml，monorepo 中按变更文件归属独立 bump
+- **模型分层（per-skill）**：`check` / `version` / `push` 用 `haiku`（机械活：跑 CI 检查、SemVer 计算、git 操作），`commit` / `pr` 用 `sonnet`（要生成 commit message、语义分组决策、PR 标题正文）。SKILL.md frontmatter 的 `model` 字段是 **per-turn override，仅在该 skill 被独立激活时生效**；push / pr 通过 `@../` 内联引用上游 skill，内联不会二次激活上游 skill，故**管道内一律由入口 skill 的模型统治**——`/smart:push` 全程 haiku（内联的 commit 步骤也跑 haiku，非 sonnet），`/smart:pr` 全程 sonnet（其内联的 check/version/push 也跑 sonnet）。想要 sonnet 质量的 commit message，单独调用 `/smart:commit`。改 `model` 值须同步 SKILL.md 与同目录 CN.md 两处。
 
 ## 注意事项
 
