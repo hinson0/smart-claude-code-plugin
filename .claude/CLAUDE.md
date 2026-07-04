@@ -38,10 +38,10 @@ plugins/smart/                    # 主插件目录（被 Codex 和 Claude Code 
     ├── <name>/SKILL.md           # 英文版（被宿主加载）
     ├── <name>/CN.md              # 同目录中文翻译（仅供阅读，不被加载）
     ├── distill/                  # 除 SKILL.md 外还有 references/；CN.md 仅译正文，参考文档各自成 references/CN[<名字>].md
-    └── …（check / commit / help / hud / learning / local / op / pr / push / sendshot / token-log / version / wfb）
+    └── …（check / commit / help / hud / learning / local / optimize-tokens / pr / push / sendshot / version / wfb）
 ```
 
-语言版本组织：中文不再单独成树。每个组件目录下英文原件（`SKILL.md`、脚本、`hooks.json`、`rules/*.md`）被宿主加载，对应的 `CN.md` 是**同目录**的中文翻译，仅供阅读、不被宿主加载。带 `references/` 的 skill（distill / op / token-log）：其 `CN.md` 只翻译 `SKILL.md` 正文；`references/` 下每个英文 md（如 `diff-rules.md`）各自对应**同目录**的 `CN[<名字>].md`（如 `CN[diff-rules].md`）中文翻译——方括号命名保证不会被宿主当作参考文档 `@` 引用误加载。
+语言版本组织：中文不再单独成树。每个组件目录下英文原件（`SKILL.md`、脚本、`hooks.json`、`rules/*.md`）被宿主加载，对应的 `CN.md` 是**同目录**的中文翻译，仅供阅读、不被宿主加载。带 `references/` 的 skill（distill / optimize-tokens）：其 `CN.md` 只翻译 `SKILL.md` 正文；`references/` 下每个英文 md（如 `diff-rules.md`）各自对应**同目录**的 `CN[<名字>].md`（如 `CN[diff-rules].md`）中文翻译——方括号命名保证不会被宿主当作参考文档 `@` 引用误加载。
 
 ## 架构原则
 
