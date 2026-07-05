@@ -70,11 +70,13 @@ The user hand-writes the code themselves to learn. Whenever you would normally w
 
 **Per-task loop:**
 
-1. **Print, don't write.** Print each piece as one compact block — a header line then the code, nothing else (no "type this in" trailer, no separate purpose line):
+1. **Print, don't write.** Print each piece as a header line *followed by* the code in a **language-tagged fenced code block**, so the terminal syntax-highlights it. Never wrap the header inside the fence, and never leave the fence untagged — a bare (untagged) fence renders monochrome and is hard to read:
 
-   `[tag] path@anchor — one-line note`
+   `**[tag]** path@anchor — one-line note`
 
-   Pick the tag by the effect on disk: **[New file]** (file didn't exist) · **[New code]** (added lines that replace nothing — an import, an appended function) · **[Modify]** (existing lines rewritten — render as a `-`/`+` diff) · **[Delete]** (name what to remove at the anchor, no code block). The anchor is a function name or line range so the user knows where it lands.
+   Then the fenced block, tagged so tokens are coloured: for **[New file]** / **[New code]** tag the fence with the file's language (`ts`, `tsx`, `py`, `go`, …); for **[Modify]** tag it `diff` and write `-` old / `+` new lines so removed lines render red and added lines green.
+
+   Pick the tag by the effect on disk: **[New file]** (file didn't exist) · **[New code]** (added lines that replace nothing — an import, an appended function) · **[Modify]** (existing lines rewritten) · **[Delete]** (name what to remove at the anchor, no code block). The anchor is a function name or line range so the user knows where it lands.
 2. **The user lands it.** The user types the code into the file themselves — that typing is the learning act. Do not write their code to disk for them.
 3. **Review what landed.** Read the actual file on disk and review what the user wrote — correctness, style, and whether it fits the surrounding code. Acknowledge what is right first, then list issues by severity (must-fix vs. nice-to-have). Iterate if needed.
 4. **Advance only after it passes review.** Move to the next task only when the landed code is solid.
@@ -93,10 +95,13 @@ The user hand-writes the code themselves to learn. Whenever you would normally w
 
 These show what the rule in step 1 of the participation block produces. They are documentation only: the block carries the *rule*, and these examples are **not** injected into `CLAUDE.local.md` — they load when this skill is invoked, not during every session. The rule is the generator; these are sample output.
 
-**[New file]** — the whole file is new:
+Note the shape in every example: the **header line sits outside the fence**, and the **fence is tagged with a language** (`ts`, `diff`, …). That is what makes the terminal syntax-highlight the code; a bare fence — or a header line stuffed inside the fence — falls back to unreadable monochrome.
 
-```
-[New file] src/utils/retry.ts — exponential-backoff retry wrapper
+**[New file]** — the whole file is new; tag the fence with the file's language so every token is coloured:
+
+````
+**[New file]** src/utils/retry.ts — exponential-backoff retry wrapper
+```ts
 export async function retry<T>(fn: () => Promise<T>, max = 3): Promise<T> {
   for (let i = 0; ; i++) {
     try { return await fn() }
@@ -104,26 +109,31 @@ export async function retry<T>(fn: () => Promise<T>, max = 3): Promise<T> {
   }
 }
 ```
+````
 
-**[Modify]** — existing lines rewritten, shown as a `-`/`+` diff:
+**[Modify]** — existing lines rewritten; tag the fence `diff` so `-` lines render red and `+` lines green:
 
-```
-[Modify] src/api/client.ts@fetchUser — wrap fetch in retry
+````
+**[Modify]** src/api/client.ts@fetchUser — wrap fetch in retry
+```diff
 - const res = await fetch(url)
 + const res = await retry(() => fetch(url))
 ```
+````
 
-**[New code]** — added lines that replace nothing:
+**[New code]** — added lines that replace nothing; tag with the file's language:
 
-```
-[New code] src/api/client.ts@top-imports
+````
+**[New code]** src/api/client.ts@top-imports
+```ts
 import { retry } from '../utils/retry'
 ```
+````
 
 **[Delete]** — no code block, just name the target at the anchor:
 
 ```
-[Delete] src/api/client.ts@8-10 — old local sleep(), superseded by utils/retry
+**[Delete]** src/api/client.ts@8-10 — old local sleep(), superseded by utils/retry
 ```
 
 ## Constraints
