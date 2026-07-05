@@ -2,6 +2,7 @@
 name: distill
 description: 当用户要求蒸馏、总结、归档、持久化或保存当前会话/聊天到知识库时使用；包括提到 /smart:distill、distill、知识库、会话主题、问答归档、当前 CC 输出、把这次聊天落盘，或指定范围/目标目录做会话知识沉淀。仅适用于当前对话上下文，不用于读取源目录文件。
 argument-hint: 可选 —— 收窄范围（如"最近 5 轮"、"关于 langgraph 的部分"）或指定目标目录。默认提炼整场会话并落盘到 .smart/knowledges/。
+model: sonnet
 ---
 
 # distill — 从当前会话提炼知识落盘
@@ -65,17 +66,45 @@ argument-hint: 可选 —— 收窄范围（如"最近 5 轮"、"关于 langgrap
 { "knowledges_dir": "~/knowledges/md/{date}" }
 ```
 
-## 把重活交给后台 fork
+## 两段式模型分层:sonnet 分析、haiku 落盘
 
-Step 0 —— 解析 `<目标目录>`(含可能的 `AskUserQuestion`)—— **在主会话内联执行**,因为交互式提问就该留在用户这边。其后的一切(扫描 `<目标目录>`、三态比对、读已有文件、写文件)才是烧 token 的部分,把它交给一个**后台 fork**,让主上下文保持干净、只收到最终总结。
+蒸馏是两类成本轮廓截然不同的活,因此分跑在两个模型层级上:
 
-`<目标目录>` 一旦确定,就用 Agent 工具 spawn 一个 fork(`subagent_type: fork`)。fork **继承整段对话**——所以 worker 读得到要蒸馏的会话——而它自己的读取、比对、写入都**不回灌主上下文**,只有最终消息返回。交给它这样一个任务:
+- **分析 —— 需要判断力,跑 `sonnet`。** 读对话、判断哪些轮次值得留、聚成主题、对 `<目标目录>` 做 `duplicate/new/diff` 三态比对,并为每个要写的文件产出**已提炼好、已格式化的成品内容**(关键结论 bullet、抽取的代码、坑/Why 正文,以及 `diff` 合并所需的精确 `Edit` 参数)。所有智力活都在这里。
+- **落盘 —— 机械活,跑 `haiku`。** 拿着这些成品内容做纯文件 IO:`Write` 新文件、`Edit` 追加、打印 Step 6 汇总。零语义判断,不重读对话。
 
-> 你是蒸馏 worker,以 fork 身份运行。`<目标目录>` 已解析为 `<已解析路径>` —— 不要重新解析,也不要调用 `AskUserQuestion`。按 distill skill 的**扫描范围铁律**、**已 review 文件豁免**和 **Step 1–6**(都在上文可见)蒸馏你继承到的这段对话。所有读写都限定在 `<目标目录>` 内。自己干活 —— **不要**再委派。只返回 Step 6 的总结报告。
+本 skill 的 frontmatter 钉死 `model: sonnet`,因此单独调用 `/smart:distill` 时整个 turn(含下面 spawn 的分析 fork)都跑 sonnet。(`model` 字段是 per-turn override,只在该 skill 被**直接激活**时生效;distill 是终端 skill、不被任何管道内联,所以钉死是安全的。)
 
-随后把 fork 的总结作为本 skill 的结果转达给用户。若环境不支持 fork(旧版 Claude Code),就直接内联跑 Step 1–6 —— 指令完全一样,只是少了隔离。
+**流程:**
 
-下文即 fork 要执行的内容。
+1. **Step 0 在主会话内联解析 `<目标目录>`**(sonnet)—— `AskUserQuestion` 交互该留在用户这边。
+2. **spawn 分析 fork**(`subagent_type: fork`)。它**继承整段对话**——读得到要蒸馏的会话——且总是跑当前 turn 的模型,即 **sonnet**;它的读取、比对都**不回灌主上下文**。交给它这样一个任务:
+
+   > 你是蒸馏分析员,以 fork 身份运行。`<目标目录>` 已解析为 `<已解析路径>` —— 不要重新解析,也不要调用 `AskUserQuestion`。对你继承到的对话应用**扫描范围铁律**、**已 review 文件豁免**和 **Step 1–5**,所有读取限定在 `<目标目录>` 内。产出一份**落盘计划(write-plan)**(见下):每个主题的已格式化成品内容 + 精确的文件操作。**不要**自己写知识文件 —— 而是 spawn 一个 `model: haiku` 子 agent,把计划交给它执行,再返回它的 Step 6 汇总。
+
+3. **fork 把 write-plan 交给一个 `haiku` 子 agent** —— 一个普通 agent(不是 fork;它不需要对话,只需要计划)。haiku 逐条对文件系统执行,并打印 Step 6 汇总。因为它从不看对话,计划必须是完全格式化好的:**haiku 是誊写员,不是作者** —— 这正是所有内容生成都留在 sonnet 的原因。
+4. **总结逐级上传**:haiku → fork → 主会话 → 用户。
+
+> **为什么这里让 fork 再委派**(有悖于通常的"fork 自己干活"):目的正是把便宜的机械落盘从 sonnet 挪到 haiku。fork 保住昂贵的判断,只把誊写外包出去。
+
+**优雅降级:**
+
+- 没有 `haiku` 子 agent → fork 自己写文件,仍跑 sonnet。结果正确,只是没做成本分层。
+- 完全不支持 fork → 在主会话内联跑 Step 1–5(sonnet),再 spawn haiku 落盘;若连子 agent 都没有,就全部内联、单模型跑完。
+
+### 落盘计划(sonnet → haiku 的交接物)
+
+分析 fork 产出它,并原样交给 haiku 落盘员。它承载**成品内容**,所以 haiku 什么都不决定:
+
+- **每个主题** —— 恰好是以下之一:
+  - `write` → 路径 `<目标目录>/<topic-key>.md` + 完整文件正文(已按 Step 5 格式化)。
+  - `edit-append` → 路径 + 精确的 `Edit` `old_string`/`new_string`(fork 读过该文件,知道锚点)。
+  - `skip` → 重复项;仅报告。
+- **汇总数据**(供 haiku 无需重算即可打印 Step 6):范围行、保留/丢弃计数、主题数、active/frozen 文件数、new/diff/duplicate/frozen-hit 计数,以及新增/合并/frozen 文件清单。
+
+haiku 顺着计划走 —— `write`→`Write`、`edit-append`→`Edit`、`skip`→不做 —— 再用汇总数据打印 Step 6 表格。
+
+下文(扫描范围铁律、已 review 文件豁免、Step 1–6)都是**分析 fork** 到 write-plan 为止的职责;`haiku` 落盘员只负责执行。
 
 ## 扫描范围铁律
 
@@ -214,11 +243,11 @@ def list_target_files(target_dir: str) -> tuple[list[str], list[str]]:
 
 字段命名、代码块语言标识、Why/How 段落、来源标注、删除许可清单,全部规范参见 `references/format-spec.md`。
 
-差分合并用 Edit `old_string`/`new_string` 增量追加;新增用 Write 整文件落盘。
+这一步的格式化产出的是**内容**,不是文件。把每个新增主题的完整正文、以及每个差分的精确 `Edit` `old_string`/`new_string`,都放进 write-plan(见*两段式模型分层*)。真正的 `Write`(整份新文件)和 `Edit`(增量追加)由 `haiku` 落盘员执行 —— 它照抄你格式化好的内容,所以别给它留任何要决定的东西。
 
 ### Step 6 — 输出汇总报告
 
-执行结束在对话中输出简表(不写文件):
+`haiku` 落盘员写完后,用 write-plan 里的汇总数据打印这张表 —— 在对话中输出简表(绝不写文件):
 
 ```
 范围: 本次会话 (24 轮) → .smart/knowledges/

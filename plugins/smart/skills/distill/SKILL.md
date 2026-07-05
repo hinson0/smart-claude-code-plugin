@@ -2,6 +2,7 @@
 name: distill
 description: Use when the user asks to distill, summarize, archive, persist, or save the current session/conversation into a knowledge base; mentions /smart:distill, distill, knowledge base, session topics, Q&A archive, current CC output, or "write this chat to disk"; or provides a scope/target directory for session knowledge capture. Applies only to current conversation context, not source files.
 argument-hint: Optional — narrow the scope ("last 5 rounds", "the part about langgraph") or name a target directory. Defaults to the whole session written to .smart/knowledges/.
+model: sonnet
 ---
 
 # distill — Persist Knowledge Extracted From the Current Session
@@ -65,17 +66,45 @@ Once resolved, treat the directory as `<target-dir>` throughout. The path is fix
 { "knowledges_dir": "~/knowledges/md/{date}" }
 ```
 
-## Delegate the Heavy Work to a Background Fork
+## Two-Stage Model Tiering: sonnet analyzes, haiku writes
 
-Step 0 — resolving `<target-dir>`, including any `AskUserQuestion` — runs **inline in the main session**, because interactive prompts belong with the user. Everything after it (scanning `<target-dir>`, the three-state comparison, reading existing files, writing) is the token-heavy part. Hand that to a **background fork** so the main context stays clean and receives only the final summary.
+Distillation is two kinds of work with very different cost profiles, so it runs on two model tiers:
 
-Once `<target-dir>` is fixed, spawn a fork with the Agent tool (`subagent_type: fork`). A fork inherits this whole conversation — so the worker can read the session it needs to distill — while its own reads, diffs, and writes stay out of the main context; only its final message comes back. Hand it a task like:
+- **Analysis — needs judgment, runs on `sonnet`.** Reading the conversation, deciding which rounds are worth keeping, clustering them into topics, the three-state `duplicate/new/diff` comparison against `<target-dir>`, and producing the **finished, formatted content** for every file to write (the Key Takeaways bullets, the extracted code, the Pitfall/Why prose, and — for a `diff` merge — the exact `Edit` arguments). All the intelligence lives here.
+- **Writing — mechanical, runs on `haiku`.** Taking that finished content and doing pure filesystem I/O: `Write` new files, `Edit` appends, print the Step 6 summary. No semantic judgment, no re-reading the conversation.
 
-> You are the distillation worker, running as a fork. `<target-dir>` is already resolved to `<resolved path>` — do not re-resolve it or call `AskUserQuestion`. Distill the conversation you have inherited per the distill skill's **Scope Iron Law**, **Reviewed-File Exemption**, and **Steps 1–6** (all visible above in this conversation). Confine every read and write to `<target-dir>`. Do the work yourself — do **not** delegate again. Return only the Step 6 summary report.
+This skill's frontmatter pins `model: sonnet`, so invoking `/smart:distill` on its own runs the whole turn — including the analysis fork below — on sonnet. (A `model` field is a per-turn override that only bites when the skill is activated directly; distill is a terminal skill nothing inlines, so the pin is safe.)
 
-Then relay the fork's summary to the user as the skill's result. If forks are unavailable (older Claude Code without fork support), run Steps 1–6 inline instead — the instructions are identical, only the context isolation is lost.
+**The flow:**
 
-Everything below is what the fork carries out.
+1. **Step 0 resolves `<target-dir>` inline in the main session** (sonnet) — the `AskUserQuestion` prompt belongs with the user.
+2. **Spawn the analysis fork** (`subagent_type: fork`). It inherits this whole conversation — so it can read the session to distill — and always runs on the current turn's model, i.e. **sonnet**; its reads and diffs stay out of the main context. Hand it a task like:
+
+   > You are the distillation analyst, running as a fork. `<target-dir>` is already resolved to `<resolved path>` — do not re-resolve it or call `AskUserQuestion`. Apply the **Scope Iron Law**, the **Reviewed-File Exemption**, and **Steps 1–5** to the conversation you inherited, confining every read to `<target-dir>`. Produce a **write-plan** (see below): the finished, formatted content plus the exact file operation for each topic. Do **not** write the knowledge files yourself — instead spawn a `model: haiku` sub-agent, hand it the plan to execute, and return its Step 6 summary.
+
+3. **The fork hands the write-plan to a `haiku` sub-agent** — a plain agent (not a fork; it needs no conversation, only the plan). haiku executes each entry against the filesystem and prints the Step 6 summary. Because it never sees the conversation, the plan must be fully formatted: **haiku is a copyist, not an author** — this is exactly why all content generation stays on sonnet.
+4. **Return the summary** up the chain: haiku → fork → main session → user.
+
+> **Why the fork re-delegates** (against the usual "a fork does the work itself"): the whole point is to move the cheap, mechanical writing off sonnet and onto haiku. The fork keeps the expensive judgment and delegates only the copying.
+
+**Degrade gracefully:**
+
+- No `haiku` sub-agent available → the fork writes the files itself, still on sonnet. Correct, just not cost-tiered.
+- No fork support at all → run Steps 1–5 inline in the main session (sonnet), then spawn the haiku writer; if sub-agents are unavailable too, do everything inline on one model.
+
+### The write-plan (the sonnet → haiku hand-off)
+
+The analysis fork produces this and passes it to the haiku writer verbatim. It carries **finished content**, so haiku decides nothing:
+
+- **Per topic** — exactly one of:
+  - `write` → path `<target-dir>/<topic-key>.md` + the complete file body, already formatted per Step 5.
+  - `edit-append` → path + the exact `Edit` `old_string`/`new_string` (the fork read the file, so it knows the anchor).
+  - `skip` → a duplicate; report only.
+- **Summary data** (so haiku prints Step 6 without recomputing): the scope line, kept/discarded counts, topic count, active/frozen file counts, the new/diff/duplicate/frozen-hit tallies, and the new-file / merged-file / frozen-file lists.
+
+haiku walks the plan — `write`→`Write`, `edit-append`→`Edit`, `skip`→nothing — then prints the Step 6 table from the summary data.
+
+Everything below (Scope Iron Law, Reviewed-File Exemption, Steps 1–6) is the **analysis fork's** job up to the write-plan; the `haiku` writer only executes it.
 
 ## Scope Iron Law
 
@@ -214,11 +243,11 @@ Organize each topic file with this template:
 
 Field naming, code-block language tags, Why/How sections, source annotation, and the deletion-allowlist are all specified in `references/format-spec.md`.
 
-For diff merges, use Edit `old_string`/`new_string` to append incrementally; for new topics, use Write for the whole file.
+This formatting produces the **content**, not the file. Put each new topic's complete body, and each diff's exact `Edit` `old_string`/`new_string`, into the write-plan (see *Two-Stage Model Tiering*). The `haiku` writer performs the actual `Write` (whole new file) and `Edit` (incremental append) — it copies what you formatted, so leave nothing for it to decide.
 
 ### Step 6 — Output the Summary Report
 
-At the end, print a compact table to the conversation (do not write it to a file):
+The `haiku` writer prints this once it finishes writing, from the write-plan's summary data — a compact table to the conversation (never to a file):
 
 ```
 Scope: this session (24 rounds) → .smart/knowledges/
