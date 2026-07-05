@@ -81,6 +81,7 @@
 - **Workflow 模型分層** — `/smart:wfb` 讓 Workflow 腳本更省 token：按難度給每個 `agent()` 分層（機械活用 haiku、軀幹用 sonnet、收口與重要/硬實作用 opus），在 fan-out 前剪枝，並用 schema 壓縮輸出。編寫任何 Workflow 腳本時自動套用。
 - **剪貼簿截圖上傳** — `/smart:sendshot` 安裝一個跨平台的 `sendshot` shell 函數：擷取剪貼簿圖片，透過 `scp` 上傳到遠端主機（如 EC2），隨後印出並把遠端路徑回寫剪貼簿。支援 WSL（PowerShell 讀 Windows 剪貼簿）和 macOS（`pngpaste`/`osascript`）。zsh 下還會把 **`Ctrl+G`** 綁定為在任意提示符處觸發 sendshot。設定——主機、金鑰、遠端目錄——位於 `~/.smart/settings.json`，執行時讀取，所以換主機無需重裝；遠端目錄用 `mkdir -p` 自動建立。
 - **學習模式** — `/smart:learning 1` 開啟一種簡單的協作編碼模式：由*你*親手編寫程式碼。它是一個純粹的開/關開關——沒有占比、沒有設定。開啟時，凡是 Claude 本會寫的程式碼都改為印到主控台——每段標明 新增檔案 / 新增程式碼 / 修改 / 刪除，並附檔案與位置——由你敲入，然後 Claude 審查你落盤的程式碼再繼續，每次只處理一個任務。開啟時把規則注入 `.claude/CLAUDE.local.md`（Claude Code 每次工作階段載入的、已 git-ignore 的專案級記憶）使其持續生效；該塊是否存在就是全部狀態，`/smart:learning 0` 移除它。`.smart/settings.json` 裡不存任何東西。
+- **對話待辦錨點** — `/smart:todo` 把 Claude 在工作階段中發散出的決策收進持久的 `.smart/todo-list.md`，釘住唯一的**主線**（分支再多也衝不掉），並把發散的決策停成對帳後的**分支**——重複呼叫會合併進既有條目，而非堆疊出一堆重複。每次執行都重新把主線擺到最前面，在對話跑偏時把你拉回來。`main <目標>` 設定錨點，`done <id>` 結掉某項。已 git-ignore，個人的專案級草稿。
 
 ---
 
@@ -108,6 +109,7 @@
 | `/smart:wfb` | 編寫 Workflow 腳本時的省 token、模型分層指導（按難度選 haiku/sonnet/opus） |
 | `/smart:sendshot [install\|config\|uninstall]` | 安裝跨平台 `sendshot` 函數（剪貼簿圖片 → `scp` 到遠端 → 複製遠端路徑）；設定在 `~/.smart/settings.json` |
 | `/smart:learning [0\|1]` | 切換學習模式——由*你*親手寫程式碼；Claude 把每段印到主控台並標明 新增檔案 / 新增程式碼 / 修改 / 刪除 供你敲入，再審查你落盤的程式碼。`1`=開，`0`=關，留空=狀態。狀態就是注入到 `.claude/CLAUDE.local.md` 的塊——無設定、無占比 |
+| `/smart:todo [main <目標>\|done <id>]` | 把工作階段中發散的決策錨定在 `.smart/todo-list.md`——釘住的主線 + 對帳後的分支；每次執行都重述主線把你拉回來。`main`=設定主線，`done`=結掉某項，留空=擷取並對帳 |
 
 ---
 
