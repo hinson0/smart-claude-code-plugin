@@ -30,6 +30,7 @@ plugins/smart/                    # 主插件目录（被 Codex 和 Claude Code 
 │   ├── hooks.json                # hook 配置
 │   ├── greet.sh                  # 会话开始 hook
 │   ├── session-logs.py           # hook 输入日志（PreToolUse）
+│   ├── notebook-capture.py       # 开放线索捕获（Stop）
 │   └── CN.md                     # hooks 中文说明（仅供阅读，不被加载）
 ├── rules/
 │   ├── fastapi.md / pydantic-v2.md / python-3.14.md / sqlalchemy-v2.md
@@ -38,7 +39,7 @@ plugins/smart/                    # 主插件目录（被 Codex 和 Claude Code 
     ├── <name>/SKILL.md           # 英文版（被宿主加载）
     ├── <name>/CN.md              # 同目录中文翻译（仅供阅读，不被加载）
     ├── distill/                  # 除 SKILL.md 外还有 references/；CN.md 仅译正文，参考文档各自成 references/CN[<名字>].md
-    └── …（check / commit / help / hud / learning / local / optimize-tokens / pr / push / sendshot / todo / version / wfb）
+    └── …（check / commit / help / hud / learning / local / notebook / optimize-tokens / pr / push / sendshot / todo / version / wfb）
 ```
 
 语言版本组织：中文不再单独成树。每个组件目录下英文原件（`SKILL.md`、脚本、`hooks.json`、`rules/*.md`）被宿主加载，对应的 `CN.md` 是**同目录**的中文翻译，仅供阅读、不被宿主加载。带 `references/` 的 skill（distill / optimize-tokens）：其 `CN.md` 只翻译 `SKILL.md` 正文；`references/` 下每个英文 md（如 `diff-rules.md`）各自对应**同目录**的 `CN[<名字>].md`（如 `CN[diff-rules].md`）中文翻译——方括号命名保证不会被宿主当作参考文档 `@` 引用误加载。
@@ -55,6 +56,7 @@ plugins/smart/                    # 主插件目录（被 Codex 和 Claude Code 
 - **版本文件自动检测**：version skill 自动检测 plugin.json / package.json / pyproject.toml，monorepo 中按变更文件归属独立 bump
 - **模型分层（per-skill）**：`check` / `version` / `push` 用 `haiku`（机械活：跑 CI 检查、SemVer 计算、git 操作），`commit` / `pr` 用 `sonnet`（要生成 commit message、语义分组决策、PR 标题正文）。SKILL.md frontmatter 的 `model` 字段是 **per-turn override，仅在该 skill 被独立激活时生效**；push / pr 通过 `@../` 内联引用上游 skill，内联不会二次激活上游 skill，故**管道内一律由入口 skill 的模型统治**——`/smart:push` 全程 haiku（内联的 commit 步骤也跑 haiku，非 sonnet），`/smart:pr` 全程 sonnet（其内联的 check/version/push 也跑 sonnet）。想要 sonnet 质量的 commit message，单独调用 `/smart:commit`。改 `model` 值须同步 SKILL.md 与同目录 CN.md 两处。
 - **模型分层（skill 内部跨阶段）**：`distill` 是唯一在**单个 skill 内部跨阶段分层**的 skill。frontmatter 钉 `model: sonnet` 让分析阶段（价值判断 / 主题聚类 / 三态比对 / 内容提炼与格式化）跑 sonnet；其分析 fork 再**内部 spawn 一个 `model: haiku` 子 agent** 做纯落盘（`Write`/`Edit` 知识文件 + 打印汇总）。根本约束：haiku 子 agent **不继承对话**，只能誊写 fork 已格式化好的成品内容，绝不做语义判断——这就是为何一切内容生成必须留在 sonnet、haiku 只搬运。fork 之所以破例「再委派」，正是为把便宜的机械落盘从 sonnet 挪到 haiku。
+- **notebook 双层捕获（hook + skill）**：`notebook` 是唯一同时用 hook 和 skill 的功能。`Stop` hook（`hooks/notebook-capture.py`）在每次回复后**确定性**抓取 CC 的 `★ Insight` / 建议下一步标记块进 `.smart/notebook.md`（不靠 CC 自觉，防线索被对话发散掩埋）；`/smart:notebook` skill（`model: sonnet`）补上 hook 解析不了的自由形式线索、并管理 open/closed 状态。两层共享 `.smart/notebook.md`，均读-改-写、保留对方条目（尤其 hook 的 `<!-- h:... -->` 去重指纹）。与 `todo`（决策+主线）、`distill`（知识 Q/A）正交——notebook 追踪**未闭合线索**。
 
 ## 注意事项
 

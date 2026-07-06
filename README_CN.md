@@ -82,6 +82,7 @@
 - **剪贴板截图上传** — `/smart:sendshot` 安装一个跨平台的 `sendshot` shell 函数：抓取剪贴板图片，通过 `scp` 上传到远程主机（如 EC2），随后打印并把远程路径回写剪贴板。支持 WSL（PowerShell 读 Windows 剪贴板）和 macOS（`pngpaste`/`osascript`）。zsh 下还会把 **`Ctrl+G`** 绑定为在任意提示符处触发 sendshot。配置——主机、密钥、远程目录——位于 `~/.smart/settings.json`，运行时读取，所以换主机无需重装；远程目录用 `mkdir -p` 自动创建。
 - **学习模式** — `/smart:learning 1` 开启一种简单的协作编码模式：由*你*亲手编写代码。它是一个纯粹的开/关开关——没有占比、没有配置。开启时，凡是 Claude 本会写的代码都改为打到控制台——每段标明 新增文件 / 新增代码 / 修改 / 删除，并附文件与位置——由你敲入，然后 Claude 审查你落盘的代码再继续，每次只处理一个任务。开启时把规则注入 `.claude/CLAUDE.local.md`（Claude Code 每次会话载入的、已 git-ignore 的项目级记忆）使其持续生效；该块是否存在就是全部状态，`/smart:learning 0` 移除它。`.smart/settings.json` 里不存任何东西。
 - **会话待办锚点** — `/smart:todo` 把 Claude 在会话中发散出的决策收进持久的 `.smart/todo-list.md`，钉住唯一的**主线**（分支再多也冲不掉），并把发散的决策停成对账后的**分支**——重复调用会合并进既有条目，而非堆叠出一堆重复。每次运行都重新把主线摆到最前面，在对话跑偏时把你拉回来。`main <目标>` 设定锚点，`done <id>` 结掉某项。已 git-ignore，个人的项目级草稿。
+- **开放线索记录本** — `/smart:notebook` 维护一份 Claude 在对话中途抛出的*开放线索*滚动清单——它在追别的问题时顺带抛出的 `★ Insight`、建议的下一步、反问，这些会随对话发散被掩埋。一个 `Stop` **hook** 在*每次*回复后自动捕获带标记的块（确定性——不会被跳过或遗忘），skill 则补上 hook 解析不了的自由形式线索、去重，并让你用 `done <id>` 闭合一条。落盘到 `.smart/notebook.md`（已 git-ignore）。区别于 `todo`（二选一决策）和 `distill`（知识归档）——它追踪的是尚未跟进的东西。
 
 ---
 
@@ -110,6 +111,7 @@
 | `/smart:sendshot [install\|config\|uninstall]` | 安装跨平台 `sendshot` 函数（剪贴板图片 → `scp` 到远程 → 复制远程路径）；配置在 `~/.smart/settings.json` |
 | `/smart:learning [0\|1]` | 切换学习模式——由*你*亲手写代码；Claude 把每段打到控制台并标明 新增文件 / 新增代码 / 修改 / 删除 供你敲入，再审查你落盘的代码。`1`=开，`0`=关，留空=状态。状态就是注入到 `.claude/CLAUDE.local.md` 的块——无设置、无占比 |
 | `/smart:todo [main <目标>\|done <id>]` | 把会话中发散的决策锚定在 `.smart/todo-list.md`——钉住的主线 + 对账后的分支；每次运行都重述主线把你拉回来。`main`=设定主线，`done`=结掉某项，留空=捕获并对账 |
+| `/smart:notebook [done <id>]` | 把 Claude 抛出的开放线索（★ Insight、建议的下一步、反问）追踪进 `.smart/notebook.md`，防止被掩埋。`Stop` hook 每次回复自动捕获带标记的块；skill 补自由形式线索并管理状态。`done`=闭合一条，留空=挖掘并列出 |
 
 ---
 
