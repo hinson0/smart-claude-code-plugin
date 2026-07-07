@@ -74,7 +74,7 @@ The user hand-writes the code themselves to learn. Whenever you would normally w
 
    `**[tag]** path@anchor — one-line note`
 
-   Then the fenced block, tagged so tokens are coloured: for **[New file]** / **[New code]** tag the fence with the file's language (`ts`, `tsx`, `py`, `go`, …); for **[Modify]** tag it `diff` and write `-` old / `+` new lines so removed lines render red and added lines green.
+   Then the fenced block, tagged with the file's language (`ts`, `tsx`, `py`, `go`, …) so tokens are coloured — **never tag it `diff`**. The block holds clean, prefix-free code the user can select and paste whole. For **[New file]** / **[New code]** the block is the new code. For **[Modify]** the block is the **final rewritten code only** — no `-`/`+` markers — and the header note (after the em-dash) says what it replaces / which old lines to delete, so the user knows what the block supersedes and never has to strip prefixes after copying.
 
    Pick the tag by the effect on disk: **[New file]** (file didn't exist) · **[New code]** (added lines that replace nothing — an import, an appended function) · **[Modify]** (existing lines rewritten) · **[Delete]** (name what to remove at the anchor, no code block). The anchor is a function name or line range so the user knows where it lands.
 2. **The user lands it.** The user types the code into the file themselves — that typing is the learning act. Do not write their code to disk for them.
@@ -95,7 +95,7 @@ The user hand-writes the code themselves to learn. Whenever you would normally w
 
 These show what the rule in step 1 of the participation block produces. They are documentation only: the block carries the *rule*, and these examples are **not** injected into `CLAUDE.local.md` — they load when this skill is invoked, not during every session. The rule is the generator; these are sample output.
 
-Note the shape in every example: the **header line sits outside the fence**, and the **fence is tagged with a language** (`ts`, `diff`, …). That is what makes the terminal syntax-highlight the code; a bare fence — or a header line stuffed inside the fence — falls back to unreadable monochrome.
+Note the shape in every example: the **header line sits outside the fence**, and the **fence is tagged with a language** (`ts`, `py`, …). That is what makes the terminal syntax-highlight the code; a bare fence — or a header line stuffed inside the fence — falls back to unreadable monochrome.
 
 **[New file]** — the whole file is new; tag the fence with the file's language so every token is coloured:
 
@@ -111,13 +111,12 @@ export async function retry<T>(fn: () => Promise<T>, max = 3): Promise<T> {
 ```
 ````
 
-**[Modify]** — existing lines rewritten; tag the fence `diff` so `-` lines render red and `+` lines green:
+**[Modify]** — existing lines rewritten; tag the fence with the file's **language** (not `diff`) and show the **final code only**, so the block selects-and-pastes clean with no `+`/`-` to strip. Say what it replaces in the header note:
 
 ````
-**[Modify]** src/api/client.ts@fetchUser — wrap fetch in retry
-```diff
-- const res = await fetch(url)
-+ const res = await retry(() => fetch(url))
+**[Modify]** src/api/client.ts@fetchUser — wrap fetch in retry (replaces the bare `await fetch(url)`)
+```ts
+const res = await retry(() => fetch(url))
 ```
 ````
 
