@@ -62,7 +62,7 @@ This skill manages only the region between its markers in `.claude/CLAUDE.local.
 
 Inject exactly this content between the markers. **Localize the prose to the user's working language** — the language of their `CLAUDE.local.md` and conversation. The English below is the canonical version to translate; do not change its meaning, only its language.
 
-```markdown
+````markdown
 <!-- SMART:LEARNING:BEGIN -->
 ## Learning mode (ON)
 
@@ -74,12 +74,38 @@ The user hand-writes the code themselves to learn. Whenever you would normally w
 
    `**[tag]** path@anchor — one-line note`
 
-   Then the fenced block, tagged with the file's language (`ts`, `tsx`, `py`, `go`, …) so tokens are coloured — **never tag it `diff`**. The block holds clean, prefix-free code the user can select and paste whole. For **[New file]** / **[New code]** the block is the new code. For **[Modify]** the block is the **final rewritten code only** — no `-`/`+` markers — and the header note (after the em-dash) says what it replaces / which old lines to delete, so the user knows what the block supersedes and never has to strip prefixes after copying.
+   Then the fenced block(s), tagged so tokens are coloured. For **[New file]** / **[New code]** print **one** fence tagged with the file's language (`ts`, `tsx`, `py`, `go`, …), holding the clean, prefix-free new code. For **[Modify]** print **two** fences: first a `diff`-tagged fence holding **only the removed lines** (each a `- ` line) so deletions render red and stay obvious — the user reads these, never copies them; then a fence tagged with the file's language holding **only the final new code** (no `+`/`-` markers) so the user selects and pastes it whole. The split is deliberate: `-` lines you *read* (red is a feature), `+` lines you *copy* (a prefix is a nuisance) — so never put `+` lines in a copyable block; additions are always prefix-free.
 
    Pick the tag by the effect on disk: **[New file]** (file didn't exist) · **[New code]** (added lines that replace nothing — an import, an appended function) · **[Modify]** (existing lines rewritten) · **[Delete]** (name what to remove at the anchor, no code block). The anchor is a function name or line range so the user knows where it lands.
 2. **The user lands it.** The user types the code into the file themselves — that typing is the learning act. Do not write their code to disk for them.
 3. **Review what landed.** Read the actual file on disk and review what the user wrote — correctness, style, and whether it fits the surrounding code. Acknowledge what is right first, then list issues by severity (must-fix vs. nice-to-have). Iterate if needed.
 4. **Advance only after it passes review.** Move to the next task only when the landed code is solid.
+
+**Format examples — match these shapes exactly:**
+
+New file → one fence in the file's language, clean code:
+**[New file]** src/db/pool.ts — postgres connection pool
+```ts
+export const pool = new Pool({ max: 10 })
+```
+
+New code (adds lines, replaces nothing) → one fence:
+**[New code]** src/db/pool.ts@imports
+```ts
+import { Pool } from 'pg'
+```
+
+Modify → **two** fences: a `diff` holding only the removed `-` lines (red — you only read them), then a clean fence with the final code (no `+`, you copy it whole):
+**[Modify]** src/db/pool.ts@query — add a 5s statement timeout
+```diff
+- return pool.query(sql, params)
+```
+```ts
+return pool.query({ text: sql, values: params, query_timeout: 5000 })
+```
+
+Delete → no fence; name the target at the anchor:
+**[Delete]** src/db/pool.ts@40-44 — legacy sleepRetry(), superseded by the pool timeout
 
 **Working agreement:**
 
@@ -89,13 +115,13 @@ The user hand-writes the code themselves to learn. Whenever you would normally w
 - **Don't invent domain values.** Codes, keys, identifiers, and enum values must be checked against the real system, not guessed.
 - **Review with calibration.** Categorize feedback by severity; praise what is correct so the rest of the feedback is trusted.
 <!-- SMART:LEARNING:END -->
-```
+````
 
 ## Format examples (illustrative — not injected)
 
-These show what the rule in step 1 of the participation block produces. They are documentation only: the block carries the *rule*, and these examples are **not** injected into `CLAUDE.local.md` — they load when this skill is invoked, not during every session. The rule is the generator; these are sample output.
+The participation block above now carries condensed few-shot examples of all four tags, so they are injected every session and the format holds without re-invoking this skill. The fuller examples below are documentation only — they load when this skill is invoked, and exist so a maintainer can inspect each shape in isolation.
 
-Note the shape in every example: the **header line sits outside the fence**, and the **fence is tagged with a language** (`ts`, `py`, …). That is what makes the terminal syntax-highlight the code; a bare fence — or a header line stuffed inside the fence — falls back to unreadable monochrome.
+Note the shape in every example: the **header line sits outside the fence**, and every **fence is tagged** — a language (`ts`, `py`, …) for code to copy, or `diff` for the removed-lines block of a **[Modify]**. That is what makes the terminal syntax-highlight the code; a bare fence — or a header line stuffed inside the fence — falls back to unreadable monochrome.
 
 **[New file]** — the whole file is new; tag the fence with the file's language so every token is coloured:
 
@@ -111,10 +137,13 @@ export async function retry<T>(fn: () => Promise<T>, max = 3): Promise<T> {
 ```
 ````
 
-**[Modify]** — existing lines rewritten; tag the fence with the file's **language** (not `diff`) and show the **final code only**, so the block selects-and-pastes clean with no `+`/`-` to strip. Say what it replaces in the header note:
+**[Modify]** — existing lines rewritten. Print **two** fences: a `diff` fence with **only the removed lines** (`-`, renders red — the user reads these, never copies them), then a **language** fence with **only the final code** (no `+`, selects-and-pastes clean). Deletions stay obvious in red; additions stay prefix-free for copying:
 
 ````
-**[Modify]** src/api/client.ts@fetchUser — wrap fetch in retry (replaces the bare `await fetch(url)`)
+**[Modify]** src/api/client.ts@fetchUser — swap the bare fetch for a retry wrapper
+```diff
+- const res = await fetch(url)
+```
 ```ts
 const res = await retry(() => fetch(url))
 ```
