@@ -11,8 +11,8 @@ Codex 格式插件，自动化 commit → push → PR 流程（push 内含 versi
 > **双格式并存（铁律）**：本插件同时支持 Codex 和 Claude Code 两个宿主，二者读各自的清单文件，互不冲突，**任何一方都不可删**：
 >
 > - Codex：`.agents/plugins/marketplace.json` + `plugins/smart/.codex-plugin/plugin.json`
-> - Claude Code：`.claude-plugin/marketplace.json` + `plugins/smart/.claude-plugin/plugin.json`（CC 用干净 semver，不带 `+codex.*` build 元数据；其余组件 skills/hooks/agents 由 CC 按约定自动发现。`CN.md` 是纯中文参考文件，不会被当作 skill 或组件加载）
->   两套 plugin.json 的主版本号必须一致。
+> - Claude Code：`.claude-plugin/marketplace.json` + `plugins/smart/.claude-plugin/plugin.json`（其余组件 skills/hooks/agents 由 CC 按约定自动发现。`CN.md` 是纯中文参考文件，不会被当作 skill 或组件加载）
+>   两套 plugin.json 必须使用完全相同的干净 semver，不添加 `+codex.*` 或其他宿主专用构建元数据。
 
 ```
 根目录

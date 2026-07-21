@@ -61,7 +61,7 @@
 - **自動 CI 偵測** — 讀取 `.github/workflows/*.yml`，在本機執行對應檢查（ruff、pytest、mypy、eslint、tsc、vitest、jest、go test、turbo 等）。自動從 lock 檔案偵測套件管理器。
 - **兩階段智慧提交分組** — 第一階段按 type 硬分割（feat vs fix vs refactor），第二階段按目的對同類 type 進行語義分割。杜絕無關變更混入同一次提交。
 - **Conventional Commits** — 所有 commit message 自動遵循 `<type>(<scope>): <description>` 格式。優先尊重專案 `AGENTS.md` / `CLAUDE.md` 設定和既有 `git log` 風格。
-- **自動版本升級** — 自動偵測版本檔案（`.codex-plugin/plugin.json`、`package.json`、`pyproject.toml`），分析 commit 類型，在推送前自動 bump 語義化版本號。Monorepo 中按檔案歸屬對映到對應 package，各自獨立升級。
+- **自動版本升級** — 自動偵測版本檔案（`.codex-plugin/plugin.json`、`package.json`、`pyproject.toml`），分析 commit 類型，在推送前自動 bump 語義化版本號。Monorepo 中按檔案歸屬對映到對應 package，各自獨立升級。雙宿主外掛清單使用完全相同的乾淨 SemVer，不加入宿主專用建置中繼資料。
 - **自動建立 GitHub 倉庫** — 未設定 remote？自動在 GitHub 建立私有倉庫、設為 origin 並推送，全程無需手動操作。
 - **語言一致性** — PR 標題、摘要和測試計畫自動與 commit message 使用相同語言。預設英文，可透過專案 `AGENTS.md` / `CLAUDE.md` 覆蓋。
 

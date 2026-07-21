@@ -61,7 +61,7 @@ The friendliest way is right inside a Codex session — no clone needed:
 - **Auto CI Detection** — Reads `.github/workflows/*.yml` and runs matching checks locally (ruff, pytest, mypy, eslint, tsc, vitest, jest, go test, turbo, and more). Auto-detects package manager from lock files.
 - **Two-Phase Smart Commit Grouping** — Phase 1 hard-splits by type (feat vs fix vs refactor), Phase 2 semantically splits within the same type by purpose. No unrelated changes sneak into a single commit.
 - **Conventional Commits** — All commit messages automatically follow `<type>(<scope>): <description>` format. Respects project `AGENTS.md` / `CLAUDE.md` overrides and existing `git log` style.
-- **Auto Version Bump** — Detects version files (`.codex-plugin/plugin.json`, `package.json`, `pyproject.toml`), analyzes commit types, and bumps semantic version before push. In monorepos, maps changed files to their owning package and bumps each independently.
+- **Auto Version Bump** — Detects version files (`.codex-plugin/plugin.json`, `package.json`, `pyproject.toml`), analyzes commit types, and bumps semantic version before push. In monorepos, maps changed files to their owning package and bumps each independently. Dual-host plugin manifests receive the same clean SemVer without host-specific build metadata.
 - **Auto GitHub Repo Creation** — No remote configured? It creates a private repo on GitHub, sets it as origin, and pushes — all automatically.
 - **Consistent Language** — PR title, summary, and test plan automatically use the same language as commit messages. Defaults to English; overridable via project `AGENTS.md` / `CLAUDE.md`.
 
