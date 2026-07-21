@@ -61,7 +61,7 @@
 - **CI 自動検出** — `.github/workflows/*.yml` を読み取り、対応するローカルチェックを実行（ruff、pytest、mypy、eslint、tsc、vitest、jest、go test、turbo など）。lock ファイルからパッケージマネージャーを自動検出します。
 - **2フェーズスマートコミットグルーピング** — フェーズ1では type で強制分割（feat vs fix vs refactor）、フェーズ2では同一 type 内で目的別に意味的分割。無関係な変更が1つのコミットに混入することを防止。
 - **Conventional Commits** — すべての commit message が自動的に `<type>(<scope>): <description>` 形式に従います。プロジェクト `AGENTS.md` / `CLAUDE.md` の設定と既存の `git log` スタイルを優先的に尊重します。
-- **自動バージョンバンプ** — バージョンファイル（`.codex-plugin/plugin.json`、`package.json`、`pyproject.toml`）を自動検出し、コミットタイプを分析してプッシュ前にセマンティックバージョンを自動バンプ。モノレポでは変更ファイルを所属パッケージにマッピングし、それぞれ独立にバンプします。
+- **自動バージョンバンプ** — バージョンファイル（`.codex-plugin/plugin.json`、`package.json`、`pyproject.toml`）を自動検出し、コミットタイプを分析してプッシュ前にセマンティックバージョンを自動バンプ。モノレポでは変更ファイルを所属パッケージにマッピングし、それぞれ独立にバンプします。デュアルホストのプラグインマニフェストには、ホスト固有のビルドメタデータを付けず、完全に同じクリーンな SemVer を書き込みます。
 - **GitHub リポジトリ自動作成** — remote 未設定？自動で GitHub にプライベートリポジトリを作成し、origin に設定してプッシュします。手動操作は一切不要です。
 - **言語の一貫性** — PR タイトル、概要、テストプランは commit message と同じ言語を自動的に使用します。デフォルトは英語で、プロジェクトの `AGENTS.md` / `CLAUDE.md` で変更可能。
 

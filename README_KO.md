@@ -61,7 +61,7 @@
 - **CI 자동 감지** — `.github/workflows/*.yml`을 읽고 해당하는 로컬 검사를 실행 (ruff, pytest, mypy, eslint, tsc, vitest, jest, go test, turbo 등). lock 파일에서 패키지 매니저를 자동 감지합니다.
 - **2단계 스마트 커밋 그룹화** — 1단계에서 type별 강제 분리(feat vs fix vs refactor), 2단계에서 동일 type 내 목적별 의미 분리. 무관한 변경이 하나의 커밋에 섞이는 것을 방지.
 - **Conventional Commits** — 모든 commit message가 자동으로 `<type>(<scope>): <description>` 형식을 따릅니다. 프로젝트 `AGENTS.md` / `CLAUDE.md` 설정과 기존 `git log` 스타일을 우선 존중합니다.
-- **자동 버전 범프** — 버전 파일(`.codex-plugin/plugin.json`, `package.json`, `pyproject.toml`)을 자동 감지하고, 커밋 유형을 분석하여 푸시 전에 시맨틱 버전을 자동 범프합니다. 모노레포에서는 변경된 파일을 해당 패키지에 매핑하여 각각 독립적으로 범프합니다.
+- **자동 버전 범프** — 버전 파일(`.codex-plugin/plugin.json`, `package.json`, `pyproject.toml`)을 자동 감지하고, 커밋 유형을 분석하여 푸시 전에 시맨틱 버전을 자동 범프합니다. 모노레포에서는 변경된 파일을 해당 패키지에 매핑하여 각각 독립적으로 범프합니다. 이중 호스트 플러그인 매니페스트에는 호스트별 빌드 메타데이터 없이 동일한 깨끗한 SemVer를 기록합니다.
 - **GitHub 저장소 자동 생성** — remote 미설정? 자동으로 GitHub에 비공개 저장소를 생성하고 origin으로 설정한 뒤 푸시합니다. 수동 작업이 전혀 필요 없습니다.
 - **언어 일관성** — PR 제목, 요약, 테스트 계획이 자동으로 commit message와 동일한 언어를 사용합니다. 기본값은 영어이며, 프로젝트 `AGENTS.md` / `CLAUDE.md`로 변경 가능.
 

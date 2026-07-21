@@ -79,7 +79,7 @@ A single commit may map to **multiple** version files if it changed files across
 For each version file with associated commits:
 
 1. Read current version:
-- **JSON** (`.codex-plugin/plugin.json`, `.claude-plugin/plugin.json`, `package.json`): read root-level `"version"` field. If the value carries SemVer build metadata (`<a.b.c>+codex.<timestamp>`), bump from the `a.b.c` core only — the `+…` suffix never affects the version math.
+- **JSON** (`.codex-plugin/plugin.json`, `.claude-plugin/plugin.json`, `package.json`): read root-level `"version"` field. If a legacy plugin manifest carries SemVer build metadata (`<a.b.c>+...`), bump from the `a.b.c` core and discard the metadata when applying the new version.
    - **Expo** (`app.json`): read `expo.version` (nested under the `"expo"` key).
    - **TOML** (`pyproject.toml`): read `version` under `[project]`. If absent, check `[tool.poetry]`.
 
@@ -101,8 +101,8 @@ For each version file with associated commits:
 Update the `version` field in each version file using the Edit tool:
 
 - **JSON** (`plugin.json`, `package.json`): match and replace the root-level `"version": "<old_version>"`. Two rules for plugin manifests:
-  - **Build metadata** — if the old value is `<a.b.c>+codex.<timestamp>`, write `<new core>+codex.<fresh timestamp>` (regenerate via `date +%Y%m%d%H%M%S`); a clean manifest (e.g. `.claude-plugin/plugin.json`) stays plain `<new core>` with no suffix.
-  - **Dual manifests in sync** — when a plugin ships both a `.codex-plugin/` and a `.claude-plugin/` manifest, bump them to the **same** core version; their main version must always match.
+  - **Clean plugin SemVer** — always write a plain `<new_version>` without build metadata to plugin manifests. Remove any legacy `+codex.*` or other build metadata instead of preserving it.
+  - **Dual manifests in exact sync** — when a plugin ships both a `.codex-plugin/` and a `.claude-plugin/` manifest, write the **same complete version string** to both.
 - **Expo** (`app.json`): the version is nested — match the surrounding context to avoid ambiguity:
   ```json
   "expo": {
@@ -117,7 +117,7 @@ Update the `version` field in each version file using the Edit tool:
 Stage all modified version files and create a **single** commit:
 
 - Single version file — subject: `chore(version): bump version to <new_version>`
-- The two host manifests of the **same** plugin (Codex + Claude Code) share one core version — treat them as a single version: subject `chore(version): bump version to <new_version>`.
+- The two host manifests of the **same** plugin (Codex + Claude Code) share one clean version — treat them as a single version: subject `chore(version): bump version to <new_version>`.
 - Genuinely different version files (separate packages) — subject: `chore(version): bump versions`, body lists each bump.
 
 ```bash
@@ -150,4 +150,4 @@ Display a summary table:
 - Do not push — pushing is handled by the push/PR pipeline or the user.
 - If no version file is detected or no new commits exist, do nothing.
 - Never mix changes from different packages — each version file is bumped based only on commits that touched its scope.
-- Dual-host plugins (`.codex-plugin/plugin.json` + `.claude-plugin/plugin.json`) are one logical version: always bump both to the same core, refreshing only the Codex `+codex.<timestamp>` build metadata.
+- Dual-host plugins (`.codex-plugin/plugin.json` + `.claude-plugin/plugin.json`) are one logical version: always write the same clean SemVer to both manifests and never add host-specific build metadata.
