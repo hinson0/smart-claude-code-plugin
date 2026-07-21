@@ -1,6 +1,6 @@
 ---
 name: show
-description: 当用户希望把冗长交付物渲染成可视化 HTML 审阅页时使用本 skill。通过 `/smart:show`、"show"、"用 HTML 展示"、"做成页面"、"渲染成网页"、"生成审阅页"、"render as html"、"html page" 触发，或当用户对着方案、分析、评审、报告、Markdown 文件抱怨"太长了看不下去"、"头晕"、"too long to read"时使用。无参数 = 渲染当前对话的主交付物；`.md` 路径参数 = 渲染该文件。生成单文件、零 JavaScript 的自包含 HTML 页面，写入 `.smart/pages/` 并在浏览器打开。仅为展示层——页面是派生视图，绝不是事实来源。
+description: 当用户希望把冗长交付物渲染成可视化 HTML 审阅页时使用本 skill。通过 `/smart:show`、"show"、"用 HTML 展示"、"做成页面"、"渲染成网页"、"生成审阅页"、"render as html"、"html page" 触发，或当用户对着方案、分析、评审、报告、Markdown 文件抱怨"太长了看不下去"、"头晕"、"too long to read"时使用。无参数 = 渲染当前对话的主交付物；`.md` 路径参数 = 渲染该文件。每次运行都生成一个带时间戳、单文件、零 JavaScript 的新自包含 HTML 页面，写入 `.smart/pages/`，保留此前所有页面，并在浏览器打开新页面。仅为展示层——页面是派生视图，绝不是事实来源。
 argument-hint: "无参数 = 渲染当前对话交付物；<path>.md = 渲染该文件；尾随词语可缩小主题"
 model: sonnet
 ---
@@ -11,7 +11,7 @@ model: sonnet
 
 没人会读完 300 行的 Markdown 长墙——注意力在 100 行左右就耗尽了。本 skill 把交付物渲染成一个带布局、色彩、导航和折叠的单页 HTML，让人真正读得下去、做得了决策。
 
-一条原则统摄一切：**Markdown/对话是 Source，HTML 是 View。** 内容变化时从源头重新生成页面；绝不通过原地编辑页面来改变含义，页面也永远不替代原始文件、spec 或代码。
+一条原则统摄一切：**Markdown/对话是 Source，HTML 是 View。** 内容变化时从源头生成新的不可变页面快照；绝不通过编辑或覆盖旧快照来改变含义，页面也永远不替代原始文件、spec 或代码。
 
 ## 输入模式
 
@@ -52,12 +52,12 @@ model: sonnet
 - **零 JavaScript。** 折叠用 `<details>`、导航用锚点、对比用并排面板。确需 tab 切换时用 `references/layouts.md` 里的纯 CSS 方案——依然无脚本。
 - **出处页脚强制**（模板的 `footer.meta` 块）：生成时间、commit SHA、来源。出处不明的审阅页无法作为决策依据。
 - **不落密钥。** 源内容里出现 token、密钥、凭证、内网 URL 时一律脱敏。
-- **派生视图。** 绝不通过修改已有页面来改变含义——从源头重新生成。
+- **派生、不可变视图。** 绝不修改或覆盖已有页面——改为从源头生成带时间戳的新快照。
 
 ## 第 3 步——落盘、打开、汇报
 
 1. 确保 `.smart/` 已被 git 忽略（与其他 smart 草稿文件同一约定；缺失时补进 `.gitignore`）。
-2. 写入 `.smart/pages/<YYYY-MM-DD>-<主题-slug>.html`（kebab-case slug；日期用 `date +%F`）。同日同主题重跑即覆盖——这正是"重新生成"模型的预期行为。
+2. 用 `date '+%F-%H%M%S'` 取得本次运行唯一时间戳，再选择 `.smart/pages/<YYYY-MM-DD>-<HHMMSS>-<主题-slug>.html`（kebab-case slug）。写入前必须先确定最终未占用路径：若该路径已存在，依次追加 `-2`、`-3`，直到找到未占用路径。绝不把已有页面路径交给写入或编辑操作；每次调用都必须保留此前所有页面，把它们作为不可变审阅资产。
 3. 打开：macOS 用 `open <file>`，Linux 用 `xdg-open <file>`。都没有就只打印路径。
 4. 控制台汇报，最多三行：文件绝对路径、所用配方、section 列表。
 
