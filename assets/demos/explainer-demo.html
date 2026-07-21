@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>notebook 双层捕获机制：hook × skill 如何协同</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --panel:#ffffff; --panel-2:#fbfbfd;
+    --fg:#1a1d24; --muted:#5a6170; --line:#e4e7ec;
+    --accent:#3358d4; --accent-soft:#eaefff;
+    --good:#0f9960; --good-soft:#e6f7ef;
+    --bad:#d1393e;  --bad-soft:#fdeceb;
+    --warn:#b76e00; --warn-soft:#fff4e0;
+    --code-bg:#0f1117; --code-fg:#dbe2f0;
+    --shadow:0 1px 2px rgba(20,22,30,.04), 0 8px 24px rgba(20,22,30,.05);
+    --radius:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#14161c; --panel:#1b1e26; --panel-2:#20232c;
+      --fg:#e9ebf1; --muted:#9aa1b2; --line:#2c303c;
+      --accent:#7c96ff; --accent-soft:#232a4a;
+      --good:#3ddc97; --good-soft:#173328;
+      --bad:#ff6b6b;  --bad-soft:#3a1f20;
+      --warn:#ffb454; --warn-soft:#3a2c12;
+      --code-bg:#0b0d12; --code-fg:#d7deee;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--fg);line-height:1.65;
+    font:14.5px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI","Hiragino Sans GB","Noto Sans CJK SC",sans-serif}
+  .layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:32px;
+    max-width:1280px;margin:0 auto;padding:28px 24px 80px}
+
+  /* ---- TOC sidebar (card) ---- */
+  nav.toc{position:sticky;top:24px;align-self:start;max-height:calc(100vh - 48px);overflow-y:auto;
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 16px;box-shadow:var(--shadow)}
+  nav.toc .brand{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 10px 4px}
+  nav.toc a{display:block;padding:6px 8px;border-radius:8px;color:var(--muted);
+    text-decoration:none;font-size:13.5px;margin-bottom:2px}
+  nav.toc a:hover{background:var(--accent-soft);color:var(--accent)}
+  nav.toc a.l2{padding-left:20px;font-size:13px}
+
+  main{min-width:0}
+
+  /* ---- hero header (card) ---- */
+  header.hero{background:linear-gradient(135deg,var(--accent-soft),var(--panel));
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:30px 32px 24px;margin-bottom:22px;box-shadow:var(--shadow)}
+  header.hero h1{font-size:27px;margin:0 0 8px;letter-spacing:-.01em;line-height:1.3}
+  header.hero p.sub{margin:0;color:var(--muted);font-size:15px;max-width:70ch}
+
+  /* ---- sections are white cards on the gray page ---- */
+  section{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px 28px;margin-bottom:20px;box-shadow:var(--shadow);scroll-margin-top:20px}
+  section h2{font-size:19px;margin:0 0 16px;display:flex;align-items:center;gap:10px}
+  section h2 .num{display:inline-flex;align-items:center;justify-content:center;
+    width:26px;height:26px;border-radius:8px;background:var(--accent-soft);
+    color:var(--accent);font-size:13px;font-weight:700;flex:none}
+  section h3{font-size:15.5px;margin:22px 0 10px}
+  section h3:first-of-type{margin-top:4px}
+  p{margin:0 0 12px}
+  a{color:var(--accent)}
+  .dim{color:var(--muted)}
+
+  /* ---- stat tiles ---- */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:4px 0 8px}
+  .tile{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:15px 16px}
+  .tile .v{font-size:22px;font-weight:700;line-height:1.2}
+  .tile .v.good{color:var(--good)} .tile .v.bad{color:var(--bad)} .tile .v.accent{color:var(--accent)}
+  .tile .k{font-size:12.5px;color:var(--muted);margin-top:4px}
+
+  /* ---- badges ---- */
+  .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700}
+  .badge.high{background:var(--bad-soft);color:var(--bad)}
+  .badge.med{background:var(--warn-soft);color:var(--warn)}
+  .badge.low{background:var(--good-soft);color:var(--good)}
+
+  /* ---- callouts ---- */
+  .callout{border:1px solid var(--accent);background:var(--accent-soft);
+    border-radius:10px;padding:12px 16px;margin:12px 0;font-size:14px}
+  .callout b{color:var(--accent)}
+  .callout.warn{border-color:var(--warn);background:var(--warn-soft)}
+  .callout.warn b{color:var(--warn)}
+  .callout.risk{border-color:var(--bad);background:var(--bad-soft)}
+  .callout.risk b{color:var(--bad)}
+  .callout.ok{border-color:var(--good);background:var(--good-soft)}
+  .callout.ok b{color:var(--good)}
+
+  /* ---- two-panel comparison (e.g. goals vs non-goals) ---- */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:12px 0}
+  .panel{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--panel-2)}
+  .panel.good{background:var(--good-soft);border-color:var(--good)}
+  .panel.warn{background:var(--warn-soft);border-color:var(--warn)}
+  .panel>.hd{font-weight:700;margin-bottom:10px;font-size:13.5px;display:flex;align-items:center;gap:6px}
+  .panel ul{margin:0;padding-left:20px}
+  .panel li{margin-bottom:6px;font-size:14px}
+
+  /* ---- option cards: N alternatives, chosen one highlighted ---- */
+  .options{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin:6px 0}
+  .opt{border:1px solid var(--line);border-radius:12px;padding:18px;background:var(--panel-2);position:relative}
+  .opt.chosen{border-color:var(--good);background:var(--good-soft);box-shadow:0 0 0 1px var(--good)}
+  .opt .tag{position:absolute;top:-11px;right:14px;background:var(--good);color:#fff;
+    font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px}
+  .opt h4{margin:0 0 10px;font-size:14.5px}
+  .pro,.con{font-size:13px;margin-bottom:6px;padding-left:18px;position:relative}
+  .pro::before{content:"+";position:absolute;left:0;color:var(--good);font-weight:800}
+  .con::before{content:"\2013";position:absolute;left:0;color:var(--bad);font-weight:800}
+
+  /* ---- collapsible ---- */
+  details{border:1px solid var(--line);border-radius:10px;margin:10px 0;padding:0 14px;background:var(--panel-2)}
+  details summary{cursor:pointer;font-weight:600;padding:10px 0;list-style-position:inside}
+  details[open] summary{border-bottom:1px solid var(--line);margin-bottom:8px}
+
+  /* ---- code (dark block in both themes) ---- */
+  pre{background:var(--code-bg);color:var(--code-fg);border-radius:12px;
+    padding:14px 16px;overflow-x:auto;font-size:12.8px;line-height:1.6}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.94em}
+  :not(pre)>code{background:var(--panel-2);border:1px solid var(--line);border-radius:5px;
+    padding:1px 5px;color:var(--fg)}
+
+  /* ---- tables ---- */
+  .tablewrap{overflow-x:auto;margin:6px 0 4px}
+  table{border-collapse:collapse;width:100%;font-size:13.8px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:12.5px;text-transform:uppercase;
+    letter-spacing:.03em;background:var(--panel-2)}
+  tr:last-child td{border-bottom:none}
+
+  /* ---- acceptance checklist ---- */
+  ul.check{list-style:none;padding-left:2px;margin:6px 0}
+  ul.check li{padding-left:26px;position:relative;margin:8px 0;font-size:14px}
+  ul.check li::before{content:"\2610";position:absolute;left:0;color:var(--muted)}
+  ul.check li.done::before{content:"\2611";color:var(--good)}
+
+  /* ---- inline SVG diagrams ---- */
+  figure{margin:14px 0;text-align:center}
+  figure svg{max-width:100%;height:auto}
+  figcaption{font-size:12.5px;color:var(--muted);margin-top:8px}
+
+  /* ---- provenance footer ---- */
+  footer.meta{margin-top:36px;padding:14px 4px 0;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--muted)}
+  footer.meta code{font-size:12px}
+
+  @media (max-width:900px){
+    .layout{grid-template-columns:1fr;gap:20px;padding:20px 14px 48px}
+    nav.toc{position:static;max-height:none}
+    .grid2{grid-template-columns:1fr}
+  }
+  @media print{
+    nav.toc{display:none}
+    .layout{grid-template-columns:1fr}
+    section{box-shadow:none;page-break-inside:avoid}
+    details{page-break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="toc">
+    <div class="brand">notebook 双层捕获</div>
+    <a href="#sec-1">1. 是什么、在哪</a>
+    <a href="#sec-2">2. 心智模型</a>
+    <a href="#sec-3">3. 架构图</a>
+    <a href="#sec-4">4. 两层各自如何工作</a>
+    <a href="#sec-4-hook" class="l2">hook 层：Stop 事件触发</a>
+    <a href="#sec-4-skill" class="l2">skill 层：用户显式调用</a>
+    <a href="#sec-4-protocol" class="l2">共享协议：读-改-写</a>
+    <a href="#sec-5">5. 边界与陷阱</a>
+    <a href="#sec-6">6. 想改点什么，该动哪层</a>
+  </nav>
+  <main>
+    <header class="hero">
+      <h1>notebook 双层捕获机制：hook × skill 如何协同</h1>
+      <p class="sub">拆解 smart 插件里 notebook 功能如何用 hook + skill 两条通道共同维护 <code>.smart/notebook.md</code>：各自职责、协作协议与常见陷阱。</p>
+    </header>
+
+    <section id="sec-1">
+      <h2><span class="num">1</span> 是什么、在哪</h2>
+      <p>smart 插件里，<b>notebook</b> 是唯一同时用 <b>hook</b> 和 <b>skill</b> 两条通道实现的功能。它要解决的问题是：长对话中 Claude 抛出的洞见（<code>★ Insight</code> 块）和"建议下一步"经常被后续讨论淹没，用户回头想找的时候已经翻不到了。notebook 把这些<b>未闭合线索</b>持久化到 <code>.smart/notebook.md</code>，并追踪它们的 open / closed 状态。</p>
+      <p>它与另外两个持久化组件严格正交：</p>
+      <ul>
+        <li><b>todo</b> — 决策与主线，防止对话跑偏</li>
+        <li><b>distill</b> — 知识问答对，供 RAG 检索</li>
+        <li><b>notebook</b>（本页主角） — 只管还没处理完的<b>未闭合线索</b></li>
+      </ul>
+      <div class="tiles">
+        <div class="tile"><div class="v accent">2</div><div class="k">捕获通道：hook + skill</div></div>
+        <div class="tile"><div class="v">3</div><div class="k">核心文件（capture.py / SKILL.md / notebook.md）</div></div>
+        <div class="tile"><div class="v">无</div><div class="k">确定性层模型（纯 Python 正则）</div></div>
+        <div class="tile"><div class="v accent">sonnet</div><div class="k">语义层模型</div></div>
+      </div>
+    </section>
+
+    <section id="sec-2">
+      <h2><span class="num">2</span> 心智模型</h2>
+      <div class="callout">
+        <b>一句话版本：</b> 两条通道写同一份文件——Stop hook 在每次回复结束后自动扫描固定格式的标记块，零遗漏但认死格式；<code>/smart:notebook</code> skill 由用户显式调用，能读懂自由形式的线索、管理 open/closed 状态流转。二者靠内容指纹（<code>&lt;!-- h:... --&gt;</code>）去重协议共存：谁都不能整文件重写，只能先读全文再增量修改。
+      </div>
+    </section>
+
+    <section id="sec-3">
+      <h2><span class="num">3</span> 架构图</h2>
+      <figure>
+        <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="notebook 双层捕获架构图">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/>
+            </marker>
+          </defs>
+
+          <!-- Box A: Claude 回复 -->
+          <rect x="20" y="30" width="150" height="50" rx="10" style="fill:var(--panel-2);stroke:var(--line)"/>
+          <text x="95" y="60" text-anchor="middle" style="fill:var(--fg);font-size:13px">Claude 回复</text>
+
+          <!-- Box B: hook -->
+          <rect x="230" y="30" width="190" height="50" rx="10" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+          <text x="325" y="55" text-anchor="middle" style="fill:var(--accent);font-size:12.5px;font-weight:700">notebook-capture.py</text>
+          <text x="325" y="70" text-anchor="middle" style="fill:var(--muted);font-size:11px">Stop hook · 确定性层</text>
+
+          <!-- Box C: skill -->
+          <rect x="20" y="175" width="310" height="50" rx="10" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+          <text x="175" y="197" text-anchor="middle" style="fill:var(--accent);font-size:12.5px;font-weight:700">/smart:notebook</text>
+          <text x="175" y="212" text-anchor="middle" style="fill:var(--muted);font-size:11px">用户显式调用 · 语义层（sonnet）</text>
+
+          <!-- Box Target -->
+          <rect x="560" y="90" width="180" height="70" rx="10" style="fill:var(--good-soft);stroke:var(--good)"/>
+          <text x="650" y="120" text-anchor="middle" style="fill:var(--good);font-size:13px;font-weight:700">.smart/notebook.md</text>
+          <text x="650" y="137" text-anchor="middle" style="fill:var(--muted);font-size:10.5px">open / closed 区</text>
+
+          <!-- Arrow A -> B -->
+          <line x1="170" y1="55" x2="222" y2="55" style="stroke:var(--muted);stroke-width:2" marker-end="url(#arrow)"/>
+          <text x="196" y="45" text-anchor="middle" style="fill:var(--muted);font-size:10.5px">Stop 事件</text>
+
+          <!-- Arrow B -> Target -->
+          <line x1="420" y1="58" x2="556" y2="112" style="stroke:var(--accent);stroke-width:2" marker-end="url(#arrow)"/>
+          <text x="470" y="70" text-anchor="middle" style="fill:var(--accent);font-size:10.5px">追加（带指纹）</text>
+
+          <!-- Arrow C -> Target -->
+          <line x1="330" y1="195" x2="556" y2="150" style="stroke:var(--accent);stroke-width:2" marker-end="url(#arrow)"/>
+          <text x="470" y="205" text-anchor="middle" style="fill:var(--accent);font-size:10.5px">读-改-写（保留指纹）</text>
+        </svg>
+        <figcaption>两条通道在不同触发条件下写入同一份 .smart/notebook.md：hook 层负责兜底捕获，skill 层负责语义整理与状态管理。</figcaption>
+      </figure>
+    </section>
+
+    <section id="sec-4">
+      <h2><span class="num">4</span> 两层各自如何工作</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>层</th><th>载体</th><th>触发</th><th>模型</th><th>擅长</th></tr></thead>
+          <tbody>
+            <tr><td>确定性层</td><td><code>hooks/notebook-capture.py</code>（Stop hook）</td><td>每次 Claude 回复结束后自动运行</td><td>无（纯 Python）</td><td>抓取格式固定的标记块，零遗漏</td></tr>
+            <tr><td>语义层</td><td><code>/smart:notebook</code> skill</td><td>用户显式调用</td><td>sonnet</td><td>识别自由形式的线索、管理状态流转</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>设计动机：<b>不能指望 Claude 自觉记录</b>。如果只有 skill 层，用户忘了调用，线索就丢了；如果只有 hook 层，非标记格式的线索（比如对话里随口提到的"这里以后要改"）抓不到。两层叠加才能既兜底又全面。</p>
+
+      <h3 id="sec-4-hook">hook 层：Stop 事件触发</h3>
+      <p><code>Stop</code> 事件在 Claude 每次回复结束时触发，<code>notebook-capture.py</code> 收到的输入里包含本次回复的完整文本。处理流程：</p>
+      <ol>
+        <li><b>解析标记块</b>：用正则匹配 <code>★ Insight ───</code> 到 <code>───</code> 的围栏，以及"建议下一步 / Next steps"引导的列表段</li>
+        <li><b>生成指纹</b>：对每条捕获内容计算短哈希，写成 HTML 注释 <code>&lt;!-- h:a1b2c3 --&gt;</code> 附在条目后</li>
+        <li><b>去重</b>：读取现有 <code>.smart/notebook.md</code>，指纹已存在的条目跳过——同一个洞见在多轮回复里反复出现时只落一次盘</li>
+        <li><b>追加写入</b>：新条目追加到 open 区，带捕获时间戳</li>
+      </ol>
+      <p>hook 层从不做语义判断，也从不改动已有条目的状态——它只保证"标记块必然落盘"这一件事。</p>
+
+      <h3 id="sec-4-skill">skill 层：用户显式调用</h3>
+      <p><code>/smart:notebook</code>（<code>model: sonnet</code>）做 hook 做不了的三件事：</p>
+      <ol>
+        <li><b>自由形式捕获</b>：通读当前对话，把没有 <code>★</code> 标记但明显是未闭合线索的内容（"回头看看那个内存泄漏"、"这个配置先硬编码，之后要抽出来"）提炼成条目</li>
+        <li><b>状态管理</b>：把已经解决的线索移到 closed 区，合并语义重复的条目</li>
+        <li><b>汇报</b>：按 open 时长排序输出当前未闭合线索，提醒用户最老的悬案</li>
+      </ol>
+
+      <h3 id="sec-4-protocol">共享协议：读-改-写</h3>
+      <p>两层共用 <code>.smart/notebook.md</code>（git-ignored 的个人草稿状态）。因为两个写入方互不知晓对方何时运行，协议是强制的：</p>
+      <div class="callout risk"><b>硬约束：</b> skill 层合并条目时必须保留 hook 层的 <code>&lt;!-- h:... --&gt;</code> 指纹——丢了指纹，hook 层下次就会把同一条洞见当新内容再写一遍，产生重复。</div>
+      <ul>
+        <li>任何一方写入前必须<b>先读全文</b>，在现有内容上增改，绝不整文件重写</li>
+        <li>hook 层只追加 open 区，绝不触碰 closed 区和 skill 层写的条目</li>
+      </ul>
+    </section>
+
+    <section id="sec-5">
+      <h2><span class="num">5</span> 边界与陷阱</h2>
+      <div class="callout risk"><b>指纹是唯一的去重依据：</b> 手工编辑 notebook.md 时删掉了 <code>&lt;!-- h:... --&gt;</code> 注释，对应洞见会在下次回复后"复活"。</div>
+      <div class="callout warn"><b>hook 解析依赖围栏格式：</b> <code>★ Insight</code> 块如果被输出样式改了围栏字符，正则会漏抓——改输出样式时要同步核对 <code>notebook-capture.py</code> 的正则。</div>
+      <div class="callout warn"><b>两层时序无保证：</b> skill 正在整理时 hook 可能又追加了新条目，所以 skill 的读-改-写窗口要尽量短，且只对读到的内容负责。</div>
+      <div class="callout"><b>不是任务管理器：</b> 闭合一条线索的标准是"这件事有了结论或不再重要"，不是"做完了"——做完与否归 todo 管。</div>
+    </section>
+
+    <section id="sec-6">
+      <h2><span class="num">6</span> 想改点什么，该动哪层</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>需求</th><th>改哪里</th></tr></thead>
+          <tbody>
+            <tr><td>新增一种自动捕获的标记格式</td><td>hook：<code>notebook-capture.py</code> 加正则</td></tr>
+            <tr><td>调整线索的分类/排序逻辑</td><td>skill：<code>skills/notebook/SKILL.md</code></td></tr>
+            <tr><td>换指纹算法或去重策略</td><td>两层都要改，且要兼容存量指纹</td></tr>
+            <tr><td>notebook.md 换存放路径</td><td>两层都要改 + 迁移脚本</td></tr>
+            <tr><td>捕获内容语言/格式微调</td><td>skill 优先；hook 只在围栏格式变化时动</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="meta">
+      Generated 2026-07-21 17:16 · source: /Users/a114514/smart-claude-code-plugins/docs/skill-workspace/show/fixtures/notebook-capture-explainer.md · commit <code>3ee402b</code>
+      · by /smart:show — derived review page; regenerate instead of editing.
+    </footer>
+  </main>
+</div>
+</body>
+</html>

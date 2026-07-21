@@ -84,6 +84,7 @@
 - **单 Cycle TDD 教学门禁** — `/smart:advance-one-step` 每次只推进一个已经展示的完整 Red → Green cycle。说 `next` 由 agent 落盘当前 cycle；你自己落盘后说 `review`，由 agent 只读审查。通过后只展示下一个 cycle 并停止，人工复制时必须给出可搜索的准确代码锚点。
 - **会话待办锚点** — `/smart:todo` 把 Claude 在会话中发散出的决策收进持久的 `.smart/todo-list.md`，钉住唯一的**主线**（分支再多也冲不掉），并把发散的决策停成对账后的**分支**——重复调用会合并进既有条目，而非堆叠出一堆重复。每次运行都重新把主线摆到最前面，在对话跑偏时把你拉回来。`main <目标>` 设定锚点，`done <id>` 结掉某项。已 git-ignore，个人的项目级草稿。
 - **开放线索记录本** — `/smart:notebook` 维护一份 Claude 在对话中途抛出的*开放线索*滚动清单——它在追别的问题时顺带抛出的 `★ Insight`、建议的下一步、反问，这些会随对话发散被掩埋。一个 `Stop` **hook** 在*每次*回复后自动捕获带标记的块（确定性——不会被跳过或遗忘），skill 则补上 hook 解析不了的自由形式线索、去重，并让你用 `done <id>` 闭合一条。落盘到 `.smart/notebook.md`（已 git-ignore）。区别于 `todo`（二选一决策）和 `distill`（知识归档）——它追踪的是尚未跟进的东西。
+- **HTML 审阅页** — `/smart:show` 把冗长交付物——当前对话的方案/分析/评审，或一个 Markdown 文件——渲染成单文件、零 JavaScript 的自包含 HTML 审阅页并在浏览器打开。灰底白卡视觉系统：粘性目录、编号章节、风险徽章、方案对比卡（选定项高亮）、内联 SVG 架构图与 `<details>` 折叠。三种固定版式配方（plan-review / explainer / report）保证每次生成的页面结构一致。每页强制携带出处页脚（时间、commit SHA、来源），且仅是派生视图——Markdown 仍是事实来源。输出到 `.smart/pages/`（已 git-ignore）。示例见 `assets/demos/`。
 
 ---
 
@@ -114,6 +115,7 @@
 | `/smart:advance-one-step` | 推进一个完整 Red → Green 教学 cycle。说 `next` 由 agent 落盘，说 `review` 审查你已落盘的内容；通过后只展示下一个 cycle 并停止 |
 | `/smart:todo [main <目标>\|done <id>]` | 把会话中发散的决策锚定在 `.smart/todo-list.md`——钉住的主线 + 对账后的分支；每次运行都重述主线把你拉回来。`main`=设定主线，`done`=结掉某项，留空=捕获并对账 |
 | `/smart:notebook [done <id>]` | 把 Claude 抛出的开放线索（★ Insight、建议的下一步、反问）追踪进 `.smart/notebook.md`，防止被掩埋。`Stop` hook 每次回复自动捕获带标记的块；skill 补自由形式线索并管理状态。`done`=闭合一条，留空=挖掘并列出 |
+| `/smart:show [<path>.md]` | 把当前对话交付物（或指定 Markdown 文件）渲染成自包含零 JS 的 HTML 审阅页，写入 `.smart/pages/` 并在浏览器打开。三种版式配方：plan-review / explainer / report |
 
 ---
 
