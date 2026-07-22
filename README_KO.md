@@ -84,7 +84,7 @@
 - **단일 Cycle TDD 교육 게이트** — `/smart:advance-one-step`은 이미 제시된 Red → Green cycle을 한 번에 정확히 하나만 진행합니다. `next`라고 하면 agent가 현재 cycle을 저장하고, 직접 저장한 뒤 `review`라고 하면 agent가 읽기 전용으로 검토합니다. 통과 후에는 다음 cycle만 제시하고 멈추며, 수동 복사를 위해 검색 가능한 정확한 코드 앵커를 제공합니다.
 - **대화 할 일 앵커** — `/smart:todo`는 세션 중 Claude가 꺼내 놓는 결정들을 지속적인 `.smart/todo-list.md`에 담아, 분기가 아무리 늘어도 묻히지 않는 하나의 **메인라인**을 고정하고, 갈라져 나온 결정들을 대조·정리된 **브랜치**로 세워 둡니다 — 재실행 시 중복을 쌓지 않고 기존 항목에 병합합니다. 매 실행마다 메인라인을 다시 앞으로 꺼내, 대화가 곁길로 샜을 때 당신을 되돌려 놓습니다. `main <목표>`로 앵커를 설정하고, `done <id>`로 항목을 마무리합니다. git-ignore되는 프로젝트별 개인 스크래치.
 - **열린 루프 노트북** — `/smart:notebook`은 Claude가 대화 도중 꺼내 놓는 *열린 루프*(open loop)의 실시간 목록을 유지합니다 — 다른 것을 좇다가 꺼낸 `★ Insight`, 제안된 다음 단계, 후속 질문들로, 대화가 갈라지면서 묻혀 버립니다. `Stop` **hook**이 *매* 응답 후 표시된 블록을 자동으로 포착하고(결정적 — 건너뛰거나 잊을 수 없음), skill은 hook이 파싱할 수 없는 자유 형식 단서를 추가하고 중복을 제거하며 `done <id>`로 루프를 닫게 해 줍니다. `.smart/notebook.md`에 저장(git-ignore). `todo`(양자택일 결정), `distill`(지식 아카이브)과 구별 — 이것은 아직 후속 처리되지 않은 것을 추적합니다.
-- **HTML 리뷰 페이지** — `/smart:show`는 긴 산출물 — 현재 대화의 계획/분석/리뷰 또는 Markdown 파일 — 을 단일 파일, 제로 JavaScript의 자체 완결형 HTML 리뷰 페이지로 렌더링해 브라우저로 엽니다. 회색 배경 + 흰 카드 비주얼 시스템: 고정 목차, 번호 섹션, 리스크 배지, 대안 비교 카드(선택안 강조), 인라인 SVG 다이어그램, `<details>` 접기. 세 가지 고정 레이아웃 레시피(plan-review / explainer / report)가 페이지 구조의 일관성을 보장합니다. 모든 페이지는 출처 푸터(시간, commit SHA, 소스)를 필수로 포함하며 파생 뷰일 뿐 — Markdown이 여전히 사실의 원천입니다. `.smart/pages/`에 출력(git-ignore). 데모는 `assets/demos/` 참고.
+- **HTML 리뷰 페이지** — `/smart:show`는 긴 산출물 — 현재 대화의 계획/분석/리뷰 또는 Markdown 파일 — 을 단일 파일, 제로 JavaScript의 자체 완결형 HTML 리뷰 페이지로 렌더링해 브라우저로 엽니다. 회색 배경 + 흰 카드 비주얼 시스템: 고정 목차, 번호 섹션, 리스크 배지, 대안 비교 카드(선택안 강조), 인라인 SVG 다이어그램, `<details>` 접기. 세 가지 고정 레이아웃 레시피(plan-review / explainer / report)가 페이지 구조의 일관성을 보장합니다. 모든 페이지는 출처 푸터(시간, commit SHA, 소스)를 필수로 포함하며 파생 뷰일 뿐 — Markdown이 여전히 사실의 원천입니다. 실행할 때마다 `.smart/pages/`(git-ignore)에 타임스탬프가 붙은 새 파일을 쓰며, 이전 페이지를 덮어쓰지 않고 불변 리뷰 자산으로 보존합니다. 데모는 `assets/demos/` 참고.
 
 ---
 
@@ -115,7 +115,7 @@
 | `/smart:advance-one-step` | 하나의 완전한 Red → Green 교육 cycle을 진행합니다. `next`는 agent가 저장하고, `review`는 사용자가 저장한 내용을 검토합니다. 통과 후 다음 cycle만 제시하고 멈춥니다 |
 | `/smart:todo [main <목표>\|done <id>]` | 세션에서 갈라져 나온 결정을 `.smart/todo-list.md`에 앵커 — 고정된 메인라인 + 대조·정리된 브랜치; 매 실행마다 메인라인을 다시 꺼내 되돌려 놓음. `main`=메인라인 설정, `done`=항목 마무리, 비어 있음=수집 및 대조 |
 | `/smart:notebook [done <id>]` | Claude가 꺼내는 열린 루프(★ Insight, 제안된 다음 단계, 후속 질문)를 `.smart/notebook.md`에 추적해 묻히지 않게 함. `Stop` hook이 매 응답마다 표시된 블록을 자동 포착; skill은 자유 형식 단서를 추가하고 상태를 관리. `done`=루프 닫기, 비어 있음=수집 및 목록 |
-| `/smart:show [<path>.md]` | 현재 대화 산출물(또는 Markdown 파일)을 자체 완결형 제로 JS HTML 리뷰 페이지로 렌더링해 `.smart/pages/`에 쓰고 브라우저로 열기. 레이아웃 레시피 3종: plan-review / explainer / report |
+| `/smart:show [<path>.md]` | 현재 대화 산출물(또는 Markdown 파일)을 타임스탬프가 붙은 새로운 자체 완결형 제로 JS HTML 리뷰 페이지로 렌더링해 `.smart/pages/`에 쓰고, 이전 페이지를 보존한 채 브라우저로 열기. 레이아웃 레시피 3종: plan-review / explainer / report |
 
 ---
 

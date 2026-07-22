@@ -1,6 +1,6 @@
 ---
 name: show
-description: This skill should be used when the user wants a long deliverable rendered as a visual HTML review page. Trigger on `/smart:show`, "show", "用 HTML 展示", "做成页面", "渲染成网页", "生成审阅页", "render as html", "html page", or complaints like "太长了看不下去", "头晕", "too long to read" aimed at a plan, analysis, review, report, or Markdown file. No args = render the current conversation's main deliverable; a `.md` path argument = render that file. Writes one self-contained, zero-JavaScript HTML page to `.smart/pages/` and opens it in the browser. Presentation layer only — the page is a derived view, never a source of truth.
+description: This skill should be used when the user wants a long deliverable rendered as a visual HTML review page. Trigger on `/smart:show`, "show", "用 HTML 展示", "做成页面", "渲染成网页", "生成审阅页", "render as html", "html page", or complaints like "太长了看不下去", "头晕", "too long to read" aimed at a plan, analysis, review, report, or Markdown file. No args = render the current conversation's main deliverable; a `.md` path argument = render that file. Each run writes a new timestamped, self-contained, zero-JavaScript HTML page to `.smart/pages/`, preserves all earlier pages, and opens the new page in the browser. Presentation layer only — the page is a derived view, never a source of truth.
 argument-hint: "no args = render current conversation's deliverable; <path>.md = render that file; trailing words narrow the topic"
 model: sonnet
 ---
@@ -11,7 +11,7 @@ model: sonnet
 
 Nobody reads a 300-line Markdown wall — attention dies about 100 lines in. This skill renders a deliverable as a single HTML page with layout, color, navigation, and folding, so a human can actually review it and decide.
 
-One principle governs everything: **Markdown/conversation is the Source, HTML is the View.** The page is regenerated from the source whenever content changes; it is never edited in place to change meaning, and it never replaces the original file, spec, or code.
+One principle governs everything: **Markdown/conversation is the Source, HTML is the View.** Generate a new immutable page snapshot from the source whenever content changes; never edit or overwrite an earlier snapshot to change meaning, and never replace the original file, spec, or code.
 
 ## Input modes
 
@@ -52,12 +52,12 @@ Generate *content* HTML only — never rewrite or restyle the skeleton's CSS. Th
 - **Zero JavaScript.** Folding is `<details>`, navigation is anchors, comparison is side-by-side panels. If tab switching is genuinely needed, use the pure-CSS pattern in `references/layouts.md` — still no scripts.
 - **Footer metadata is mandatory** (the template's `footer.meta` block): generation time, commit SHA, source. A review page whose provenance is unknown cannot be trusted for decisions.
 - **No secrets.** Redact tokens, keys, credentials, and internal URLs if they appear in the source content.
-- **Derived view.** Never modify an existing page to change meaning — regenerate from the source instead.
+- **Derived, immutable view.** Never modify or overwrite an existing page — generate a new timestamped snapshot from the source instead.
 
 ## Step 3 — Write, open, report
 
 1. Ensure `.smart/` is git-ignored (same convention as the other smart scratch files; append to `.gitignore` if missing).
-2. Write to `.smart/pages/<YYYY-MM-DD>-<topic-slug>.html` (kebab-case slug; date from `date +%F`). A rerun on the same topic the same day overwrites — that is the regeneration model working as intended.
+2. Capture one run stamp with `date '+%F-%H%M%S'`, then choose `.smart/pages/<YYYY-MM-DD>-<HHMMSS>-<topic-slug>.html` (kebab-case slug). Resolve the final unused path **before writing**: if that path already exists, append `-2`, then `-3`, and so on until the path is unused. Never pass an existing page path to a write or edit operation; every invocation must preserve all earlier pages as immutable review assets.
 3. Open it: `open <file>` on macOS, `xdg-open <file>` on Linux. If neither exists, just print the path.
 4. Console report, three lines max: the absolute file path, the recipe used, and the section list.
 
