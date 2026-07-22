@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "annotations": [
+    {
+      "fileUri": "file:///Users/a114514/smart-claude-code-plugins/plugins/smart/skills/show/references/layouts.md",
+      "file": "plugins/smart/skills/show/references/layouts.md",
+      "origin": {
+        "kind": "manual"
+      },
+      "message": "111",
+      "author": "Anonymous",
+      "timestamp": "2026-07-21T09:24:21.736Z",
+      "languageId": "markdown",
+      "id": "6e6b3cd6-406c-42e3-b8db-d5541a397ede",
+      "schemaVersion": 2,
+      "startOffset": 755,
+      "endOffset": 898,
+      "lineHash": "b9492ebf",
+      "contextBefore": [
+        "",
+        "- The page is a gray canvas with white cards: wrap **each top-level section in `<section id=\"sec-N\">`** — the template styles `section` as a card. Never place content between sections outside a card.",
+        "- Every `h2` starts with a number chip and gets a matching TOC entry: `<h2><span class=\"num\">N</span> Title</h2>`; `h3` may get `l2` TOC entries when the page is long."
+      ],
+      "contextAfter": [
+        "- Anything longer than ~30 lines that is *supporting evidence* (full code listings, long tables, raw data) goes inside `<details>` — visible structure, optional depth.",
+        "- Diagrams are inline SVG only. Keep them simple: `<rect>` boxes + `<line>`/`<path>` arrows + `<text>` labels, using `currentColor` and the CSS variables' hex values sparingly so they adapt to dark mode reasonably.",
+        ""
+      ],
+      "state": "active"
+    }
+  ]
+}
