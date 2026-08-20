@@ -2,10 +2,19 @@
 name: commit
 description: 当用户想要提交已暂存或未暂存的改动（如"commit"、"提交"、"保存改动"、"完成了"、"make a commit"）时使用。仅执行提交操作——不做 CI 检测、不做 version bump、不做 push。
 argument-hint: 无需参数。自动识别单个或多个 feature，按 feature 分组提交。
-model: sonnet
+model: haiku
 ---
 
 目标：在当前仓库把"本次修改"完成一次标准提交。本 skill **仅执行提交**——不做检查、不做 version bump、不做 push。
+
+## 宿主路由
+
+- **Claude Code：** frontmatter 将本轮固定为 `haiku`。直接执行下方“提交工作流”。
+- **Codex commit worker：** 若调度 prompt 明确说明你是 commit worker，跳过本节余下内容，直接执行“提交工作流”，不得再次委派。
+- **Codex 主 agent：** 不得读取 diff、决定分组、生成 message、暂存文件或提交。只派生一个继承完整当前上下文的子 agent，并给出指令：“你是 commit worker。读取本 `commit/SKILL.md`，跳过‘宿主路由’，执行‘提交工作流’直到第 6 步，不得再次委派。”指定模型 `gpt-5.6-luna`、reasoning effort `low`，等待其完成后原样转述结果，不得重做其分析。
+- 若 Luna 仅因模型不可用而派生失败，使用相同 worker 指令且不指定模型重试一次，让用户配置的默认子 agent 生效。若重试仍失败，报告失败并停止；主 agent 不得自行执行工作流。
+
+## 提交工作流
 
 执行步骤（必须严格按顺序）：
 

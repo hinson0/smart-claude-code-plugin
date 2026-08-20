@@ -2,10 +2,19 @@
 name: commit
 description: This skill should be used when the user wants to commit staged or unstaged changes (e.g. "commit", "save my work", "done", "make a commit"). Performs only the commit operation — no CI checks, no version bump, no push.
 argument-hint: No arguments needed. Automatically identifies single or multiple features based on files and performs grouped commits.
-model: sonnet
+model: haiku
 ---
 
 Goal: Complete a standard commit for the current repository changes. This skill performs ONLY the commit — no checks, no version bump, no push.
+
+## Host routing
+
+- **Claude Code:** the frontmatter pins this turn to `haiku`. Execute the Commit Workflow below directly.
+- **Codex commit worker:** if the dispatch prompt explicitly identifies you as the commit worker, skip the rest of this section and execute the Commit Workflow directly. Never delegate again.
+- **Codex primary agent:** do not inspect diffs, decide groups, generate messages, stage files, or commit. Spawn exactly one subagent with the complete current context and this instruction: “You are the commit worker. Read this `commit/SKILL.md`, skip Host routing, and execute the Commit Workflow through Step 6. Do not delegate.” Request model `gpt-5.6-luna` with reasoning effort `low`, then wait and relay its result without redoing its analysis.
+- If the Luna spawn fails because that model is unavailable, retry exactly once with the same worker instruction and no model override so the user's configured default subagent model applies. If that retry fails, report the failure and stop; the primary agent must not execute the workflow itself.
+
+## Commit Workflow
 
 Execution steps (must follow strictly in order):
 

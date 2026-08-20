@@ -31,8 +31,8 @@ argument-hint: "[skill|hook|agent]（空=显示全部）"
 
 | 命令 | 说明 | 参数 |
 |------|------|------|
-| /smart:check | 自动检测 CI 并执行检查 | （无） |
 | /smart:commit | 语义分组提交 | （无） |
+| /smart:close-issue | 安全核对或关闭单个 GitLab Issue | IID 或 URL |
 | ...  | ...  | ...  |
 ```
 

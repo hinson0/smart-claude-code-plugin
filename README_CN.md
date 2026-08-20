@@ -6,17 +6,9 @@
 
 </div>
 
-> 写完代码？直接说 **"发个PR"**，检查、提交、推送、PR 全自动搞定。
->
-> 不想开 PR，只想 push？说 **"推一下"**。
->
-> 只想 commit？说 **"提交"**。
->
-> 也可以用斜杠命令：`/smart:pr`、`/smart:push`、`/smart:commit`。
+> 写完代码？直接说 **“提交”**——Smart 会拆开不相关改动、生成聚焦的 message，并按组提交。
 
-一个同时支持 **Claude Code** 和 **Codex** 的插件。代码写完之后，说一句话就行——它自动检查、提交、推送，并向 `main` 分支创建 Pull Request，无需任何额外操作。一句 `push`，自动拆分多 feature、生成 commit message 并推送，效果如下：
-
-![demo](./assets/imgs/cn.png)
+这是一个同时支持 **Claude Code** 与 **Codex** 的插件，提供低成本语义提交、可审计的 GitLab Issue 收口、会话工具和工程规则。
 
 ---
 
@@ -55,24 +47,21 @@
 
 ## 特性
 
-**核心流水线**
+**Smart Commit**
 
-- **Fail-Fast 管道** — 任意步骤失败立即停止，不会出现残缺推送或错误 PR。
-- **自动 CI 检测** — 读取 `.github/workflows/*.yml`，在本地运行对应检查（ruff、pytest、mypy、eslint、tsc、vitest、jest、go test、turbo 等）。自动从 lock 文件检测包管理器。
-- **两阶段智能提交分组** — 第一阶段按 type 硬分割（feat vs fix vs refactor），第二阶段按目的对同类 type 进行语义分割。杜绝无关改动混入同一次提交。
-- **Conventional Commits** — 所有 commit message 自动遵循 `<type>(<scope>): <description>` 格式。优先尊重项目 `AGENTS.md` / `CLAUDE.md` 配置和已有 `git log` 风格。
-- **自动版本升级** — 自动检测版本文件（`.codex-plugin/plugin.json`、`package.json`、`pyproject.toml`），分析 commit 类型，在推送前自动 bump 语义化版本号。Monorepo 中按文件归属映射到对应 package，各自独立升级。双宿主插件清单使用完全相同的干净 SemVer，不添加宿主专用构建元数据。
-- **自动创建 GitHub 仓库** — 未配置 remote？自动在 GitHub 创建私有仓库、设为 origin 并推送，全程无需手动操作。
-- **语言一致性** — PR 标题、摘要和测试计划自动与 commit message 使用相同语言。默认英文，可通过项目 `AGENTS.md` / `CLAUDE.md` 覆盖。
+- **低成本执行** — Claude Code 使用 Haiku；Codex 把完整提交工作流交给一个低 reasoning 的 GPT-5.6 Luna worker，并允许一次默认子 agent 兜底。
+- **语义分组** — type 是硬边界，purpose 是软边界，独立改动必须成为独立提交。
+- **仓库感知 message** — 依次遵循项目规则、近期 Git 历史和 Conventional Commits。
+- **仅提交** — 不执行 CI 检查、版本修改、push 或创建 PR。
 
 **保护与自动化**
 
 - **会话 Hook** — 会话开始时问候（通过 macOS `say` TTS 语音播报）。
 - **会话日志** — 每次工具调用的完整输入数据均记录到 `.smart/session-logs/`，便于事后调试和审计。
+- **可审计的 GitLab Issue 收口** — `/smart:close-issue` 默认只读核对单个 Issue。明确授权关闭后，它会检查工作区 clean、实现 commit、本地目标分支与刷新后的远端目标分支，再先发布开发资产记录、后关闭 Issue。仅使用 `glab`，不会推导出 push、merge、创建 MR/PR、修改 checklist 或标签的权限。
 
 **实用工具**
 
-- **可视化进度追踪** — 管道阶段以实时任务列表显示，包含待执行/执行中/已完成状态、计时和 token 统计。
 - **HUD / Statusline 安装器** — 一条命令安装功能丰富的状态栏，显示模型、Git 分支、上下文用量、速率限制、系统资源和工具调用统计。提供两个安装级别（简化版 / 完整版）及从备份恢复，仅 user 作用域。
 - **帮助概览** — `/smart:help` 动态扫描并列出所有技能、hook 和 agent 及其描述。
 - **Joke Teller Agent** — 在合适的时机讲个程序员笑话，缓解工作压力。
@@ -95,17 +84,14 @@
 | 你说的话 | 执行效果 |
 |---|---|
 | "commit" / "提交" / "完成了" | 仅智能提交（暂存 + 分组 + 提交） |
-| "push" / "推一下" | commit → version → push |
-| "发个PR" / "create PR" / "open a pull request" | check → commit → version → push → PR |
+| "这个 Issue 能关吗" / "关闭 GitLab Issue 42" | 只读收口门禁，或在明确授权后 note → close |
 
 **⌨️ 斜杠命令** — 精确控制：
 
 | 命令 | 作用 |
 |---|---|
 | `/smart:commit` | 仅提交（智能分组，自动生成 message） |
-| `/smart:version [基准分支]` | 分析 commit 并升级版本号（自动检测版本文件；任意分支均可运行） |
-| `/smart:push` | commit → version → push（不创建 PR） |
-| `/smart:pr [目标分支]` | 完整流程：check → commit → version → push → PR（默认目标分支：`main`） |
+| `/smart:close-issue <IID或URL>` | 只读核对单个 GitLab Issue；明确授权关闭后，先发布可审计的开发资产记录，再关闭 Issue |
 | `/smart:hud [0\|1\|2\|reset\|normal\|all]` | 安装状态栏（`1`/`normal`=简化版，`2`/`all`=完整版）或恢复备份（`0`/`reset`），user 作用域 |
 | `/smart:help [skill\|hook\|agent]` | 显示所有插件组件概览（或按类别筛选） |
 | `/smart:distill [目录]` | 把当前会话蒸馏成按主题命名的知识文件（默认 `.smart/knowledges/`） |
@@ -119,124 +105,13 @@
 
 ---
 
-## 流水线
+## Smart Commit
 
-### 总览
+`/smart:commit` 读取状态、已暂存和未暂存 diff、近期历史；为每个变更文件输出具体 purpose 与 type；先按 type、再按不相关 purpose 拆分，并分别提交。
 
-```
-/smart:pr
-    │
-    ├── 1. check   — 自动 CI 检测，本地执行
-    │
-    ├── 2. commit  — 两阶段语义分析，智能分组提交
-    │
-    ├── 3. version — 语义化版本升级（支持 monorepo）
-    │
-    ├── 4. push    — 推送到 origin（需要时自动创建 GitHub 仓库）
-    │
-    └── 5. pr      — 生成并创建 Pull Request
-```
+Claude Code 使用 `haiku` 执行整个 turn。Codex 把完整工作流交给一个低 reasoning 的 `gpt-5.6-luna` worker；Luna 不可用时，用用户配置的默认子 agent 重试一次。主 agent 不自行分组或提交。
 
-每个阶段是独立的 skill，通过 `@../path/SKILL.md` 引用串联。任意阶段失败则立即停止整条流水线。
-
-### 阶段一：Check
-
-自动检测项目 CI 配置，在本地运行对应检查。
-
-**工作流程：**
-
-1. 扫描 `.github/workflows/*.yml`，识别工具关键字
-2. 匹配工具：`ruff`、`pytest`、`mypy`、`eslint`、`tsc`、`vitest`、`jest`、`go test`、`golangci-lint`、`turbo` 等
-3. 从 lock 文件检测包管理器（`uv.lock` → `uv run`、`pnpm-lock.yaml` → `pnpm`、`package-lock.json` → `npm run`、`go.mod` → 直接执行）
-4. 顺序执行所有检测到的检查——任一失败即阻断后续流程
-5. 允许 `ruff --fix` 在失败前自动修复问题
-
-**支持的生态系统：**
-
-| 生态系统 | 工具 |
-|---|---|
-| Python | ruff（lint + format）、pytest、mypy |
-| JavaScript / TypeScript | eslint、tsc、vitest、jest、turbo |
-| Go | go test、golangci-lint |
-
-若项目中无 `.github/workflows/` 目录，此阶段静默跳过。
-
-### 阶段二：Commit
-
-核心智能——分析所有待提交变更，生成整洁、分组良好的提交。
-
-**两阶段分组算法：**
-
-1. **按 type 硬分割** — 先按 Conventional Commit 类型（`feat`、`fix`、`refactor`、`docs`、`test`、`chore`、`perf`、`ci`）分类。不同 type **必定**是独立提交。
-2. **按目的语义分割** — 同一 type 内，若改动服务于不同目的，则进一步拆分。例如两个独立的 `feat` 新增功能会成为两次独立提交。
-
-`scope` 字段描述的是"在哪里改"，不影响分组。分组逻辑完全由 type + purpose 驱动。
-
-**Commit message 生成优先级：**
-
-1. 项目 `AGENTS.md` / `CLAUDE.md` — 若指定了 commit 格式，优先使用
-2. `git log` 风格 — 若已有提交遵循一致风格，自动匹配
-3. 默认 — Conventional Commits：`<type>(<scope>): <description>`
-
-**执行方式：**
-- 单组 → `git add -A` + 提交
-- 多组 → 逐组 `git add <具体文件>` + HEREDOC 提交
-- 循环执行直到工作区干净（处理 hook 或 formatter 在提交过程中修改文件的情况）
-
-### 阶段三：Version
-
-分析 commit 历史，自动 bump 语义化版本号。
-
-**Semver 规则：**
-
-| Commit 模式 | Bump 类型 | 示例 |
-|---|---|---|
-| `feat` | minor | 0.1.0 → 0.2.0 |
-| `fix`、`refactor`、`perf`、`docs` 等 | patch | 0.1.0 → 0.1.1 |
-| `BREAKING CHANGE` 或 `!` 后缀 | major | 0.1.0 → 1.0.0 |
-
-**版本文件检测：**
-
-自动扫描项目根目录和 workspace 目录中的 `plugin.json`、`package.json`、`pyproject.toml`。
-
-**Monorepo 支持：**
-
-每个变更文件沿目录树向上查找最近的版本文件（"closest owner"策略），各 package 根据自己的 commit 独立 bump。
-
-**行为：**
-- 任意分支均可运行（main 与 feature 分支均支持）
-- 若上次 version bump 后无新提交，则跳过
-- 所有版本变更统一提交为一个 `chore(version): bump version to X.X.X`
-
-### 阶段四：Push
-
-推送提交到远端仓库。
-
-若未配置 `origin` remote：
-1. 通过 `gh repo create` 在 GitHub 创建**私有**仓库
-2. 设为 `origin`
-3. 执行 `git push -u origin HEAD`
-
-### 阶段五：PR
-
-生成并在 GitHub 上创建 Pull Request。
-
-**工作流程：**
-
-1. 检测当前分支和语言（继承 commit 阶段的语言决策，或从 `git log` 推断）
-2. 通过提示询问目标分支（默认 `main`）
-3. 检查是否已存在相同 head branch 的开放 PR——若有则显示 URL 并停止
-4. 收集 `BASE_BRANCH..HEAD` 之间的全部提交
-5. 生成 PR 标题：
-   - 单次提交 → 直接使用 commit message
-   - 多次提交 → 生成概要标题
-6. 生成 Markdown 格式 PR 正文：
-   - **Summary** — 变更描述要点
-   - **Commits** — 完整提交列表
-   - **Test Plan** — 根据 commit 类型自动生成 `- [ ]` 检查清单（如 `feat` → "验证新功能正常工作"，`fix` → "确认 bug 已修复"）
-7. 通过 `gh pr create` 创建 PR
-
-PR 标题、正文和测试计划的语言与 commit message 保持一致。
+单组使用 `git add -A`；多组暂存明确文件列表。技能输出 message、文件归属和最终状态，不运行检查、不改版本、不 push，也不创建 PR。
 
 ---
 
@@ -327,7 +202,7 @@ ln -s /path/to/plugin/rules/pydantic-v2.md .claude/rules/pydantic-v2.md
 
 - **Claude Code** 或 **Codex**（支持插件）—— 插件内置两套清单，在任一宿主都能原生运行
 - `git`
-- [`gh` CLI](https://cli.github.com) — 用于推送（自动创建 remote）和 PR 创建
+- [`glab` CLI](https://gitlab.com/gitlab-org/cli) — 仅供 `/smart:close-issue` 写操作使用
 - `jq` — 仅 HUD 状态栏需要（其他功能无需）
 
 ---
