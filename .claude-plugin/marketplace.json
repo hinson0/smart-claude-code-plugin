@@ -6,13 +6,13 @@
     "github": "https://github.com/hinson0"
   },
   "metadata": {
-    "description": "Automate your git workflow: smart commit splitting, CI checks, push, and PR creation in one command."
+    "description": "Create focused Git commits, close GitLab Issues safely, and add practical session utilities."
   },
   "plugins": [
     {
       "name": "smart",
       "source": "./plugins/smart",
-      "description": "Fail-fast git pipeline plugin with semantic multi-feature commit splitting, local CI auto-detection, and one-command push/PR creation."
+      "description": "Low-cost semantic Git commits, safe GitLab Issue closeout, session utilities, and engineering rules."
     }
   ]
 }

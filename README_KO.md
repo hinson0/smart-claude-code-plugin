@@ -6,17 +6,9 @@
 
 </div>
 
-> 코드 작성 끝? **"PR 만들어"**라고 말하면 검사, 커밋, 푸시, PR까지 전부 자동.
->
-> PR은 필요 없고 push만? **"푸시해"**.
->
-> commit만? **"커밋해"**.
->
-> 슬래시 명령어도 사용 가능: `/smart:pr`, `/smart:push`, `/smart:commit`.
+> 코딩이 끝나면 **“커밋”**이라고 말하세요. Smart가 관련 없는 변경을 분리하고 명확한 message를 만든 뒤 그룹별로 커밋합니다.
 
-**Claude Code**와 **Codex**를 모두 지원하는 플러그인입니다. 코드 작성이 끝나면 한마디만 하세요 — 자동으로 검사, 커밋, 푸시하고 `main` 브랜치에 Pull Request를 생성합니다. 추가 작업은 필요 없습니다. `push` 한마디면, 다중 feature 자동 분리, commit message 생성, 푸시까지 완료:
-
-![demo](./assets/imgs/to.png)
+**Claude Code**와 **Codex**를 모두 지원하며 저비용 의미 기반 커밋, 감사 가능한 GitLab Issue 마감, 세션 유틸리티와 엔지니어링 규칙을 제공하는 플러그인입니다.
 
 ---
 
@@ -55,20 +47,18 @@
 
 ## 주요 기능
 
-**핵심 파이프라인**
+**Smart Commit**
 
-- **Fail-Fast 파이프라인** — 어떤 단계든 실패하면 즉시 중단. 불완전한 푸시나 잘못된 PR이 발생하지 않습니다.
-- **CI 자동 감지** — `.github/workflows/*.yml`을 읽고 해당하는 로컬 검사를 실행 (ruff, pytest, mypy, eslint, tsc, vitest, jest, go test, turbo 등). lock 파일에서 패키지 매니저를 자동 감지합니다.
-- **2단계 스마트 커밋 그룹화** — 1단계에서 type별 강제 분리(feat vs fix vs refactor), 2단계에서 동일 type 내 목적별 의미 분리. 무관한 변경이 하나의 커밋에 섞이는 것을 방지.
-- **Conventional Commits** — 모든 commit message가 자동으로 `<type>(<scope>): <description>` 형식을 따릅니다. 프로젝트 `AGENTS.md` / `CLAUDE.md` 설정과 기존 `git log` 스타일을 우선 존중합니다.
-- **자동 버전 범프** — 버전 파일(`.codex-plugin/plugin.json`, `package.json`, `pyproject.toml`)을 자동 감지하고, 커밋 유형을 분석하여 푸시 전에 시맨틱 버전을 자동 범프합니다. 모노레포에서는 변경된 파일을 해당 패키지에 매핑하여 각각 독립적으로 범프합니다. 이중 호스트 플러그인 매니페스트에는 호스트별 빌드 메타데이터 없이 동일한 깨끗한 SemVer를 기록합니다.
-- **GitHub 저장소 자동 생성** — remote 미설정? 자동으로 GitHub에 비공개 저장소를 생성하고 origin으로 설정한 뒤 푸시합니다. 수동 작업이 전혀 필요 없습니다.
-- **언어 일관성** — PR 제목, 요약, 테스트 계획이 자동으로 commit message와 동일한 언어를 사용합니다. 기본값은 영어이며, 프로젝트 `AGENTS.md` / `CLAUDE.md`로 변경 가능.
+- **저비용 실행** — Claude Code는 Haiku를 사용합니다. Codex는 전체 커밋 워크플로를 low reasoning GPT-5.6 Luna worker 하나에 맡기며 기본 서브 에이전트 폴백은 한 번만 허용합니다.
+- **의미 기반 그룹화** — type은 하드 경계, purpose는 소프트 경계이며 독립 변경은 독립 커밋이 됩니다.
+- **저장소 인식 message** — 프로젝트 규칙, 최근 Git 기록, Conventional Commits 순서로 따릅니다.
+- **커밋 전용** — CI 검사, 버전 변경, push, PR 생성을 실행하지 않습니다.
 
 **보호 및 자동화**
 
 - **세션 Hook** — 세션 시작 시 인사 (macOS `say` TTS를 통한 음성 출력).
 - **세션 로그** — 모든 도구 호출의 전체 입력 데이터가 `.smart/session-logs/`에 기록되어 사후 디버깅 및 감사에 활용할 수 있습니다.
+- **감사 가능한 GitLab Issue 마감** — `/smart:close-issue`는 기본적으로 단일 Issue를 읽기 전용으로 확인합니다. 명시적인 종료 승인이 있으면 깨끗한 작업 트리, 구현 commit, 로컬 및 갱신된 원격 대상 브랜치를 검증하고 개발 자산 note를 게시한 뒤 Issue를 닫습니다. `glab`만 사용하며 push, merge, MR/PR 생성, checklist 또는 label 변경 권한을 포함하지 않습니다.
 
 **유틸리티**
 
@@ -95,17 +85,14 @@
 | 말하는 내용 | 실행 결과 |
 |---|---|
 | "commit" / "커밋해" / "완료" | 스마트 커밋만 (스테이징 + 그룹화 + 커밋) |
-| "push" / "푸시해" | commit → version → push |
-| "PR 만들어" / "create PR" / "open a pull request" | check → commit → version → push → PR |
+| "이 Issue를 닫아도 돼?" / "GitLab Issue 42 닫아줘" | 읽기 전용 준비 상태 확인, 또는 명시적 승인 후 note → close |
 
 **⌨️ 슬래시 명령어** — 정확한 제어:
 
 | 명령어 | 기능 |
 |---|---|
 | `/smart:commit` | 커밋만 수행 (스마트 그룹화, 자동 메시지 생성) |
-| `/smart:version [베이스 브랜치]` | 커밋을 분석하고 버전 범프 (버전 파일 자동 감지; 베이스 브랜치에서만 실행) |
-| `/smart:push` | commit → version → push (PR 생성 안 함) |
-| `/smart:pr [대상 브랜치]` | 전체 파이프라인: check → commit → version → push → PR (기본: `main`) |
+| `/smart:close-issue <IID-or-URL>` | 단일 GitLab Issue를 읽기 전용으로 확인하고, 명시적 종료 승인 후 감사 가능한 개발 자산 note를 게시한 다음 닫기 |
 | `/smart:hud [0\|1\|2\|reset\|normal\|all]` | 상태 표시줄 설치 (`1`/`normal`=최소, `2`/`all`=전체) 또는 백업 복원 (`0`/`reset`), user 스코프 |
 | `/smart:help [skill\|hook\|agent]` | 모든 플러그인 컴포넌트 개요 표시 (또는 카테고리별 필터) |
 | `/smart:distill [디렉터리]` | 현재 세션을 주제별 지식 파일로 증류 (기본값 `.smart/knowledges/`) |
@@ -119,124 +106,13 @@
 
 ---
 
-## 파이프라인
+## Smart Commit
 
-### 개요
+`/smart:commit`은 상태, staged/unstaged diff와 최근 기록을 읽고, 모든 변경 파일의 purpose와 type을 출력하고, type과 독립 purpose 순서로 분리해 각각 커밋합니다.
 
-```
-/smart:pr
-    │
-    ├── 1. check   — CI 자동 감지 및 로컬 실행
-    │
-    ├── 2. commit  — 2단계 의미 분석 및 스마트 그룹화
-    │
-    ├── 3. version — 시맨틱 버전 범프 (모노레포 지원)
-    │
-    ├── 4. push    — origin에 푸시 (필요시 GitHub 저장소 자동 생성)
-    │
-    └── 5. pr      — Pull Request 생성
-```
+Claude Code는 전체 turn을 `haiku`로 실행합니다. Codex는 전체 워크플로를 low reasoning `gpt-5.6-luna` worker 하나에 맡기며, Luna를 사용할 수 없으면 사용자 기본 서브 에이전트로 한 번 재시도합니다. 기본 agent는 직접 그룹화하거나 커밋하지 않습니다.
 
-각 단계는 독립적인 skill이며 `@../path/SKILL.md` 참조로 연결됩니다. 어떤 단계든 실패하면 전체 파이프라인이 즉시 중단됩니다.
-
-### 1단계: Check
-
-프로젝트의 CI 설정을 자동 감지하고 해당 검사를 로컬에서 실행합니다.
-
-**작동 방식:**
-
-1. `.github/workflows/*.yml`을 스캔하여 도구 키워드 식별
-2. 매칭 도구: `ruff`, `pytest`, `mypy`, `eslint`, `tsc`, `vitest`, `jest`, `go test`, `golangci-lint`, `turbo` 등
-3. lock 파일에서 패키지 매니저 감지 (`uv.lock` → `uv run`, `pnpm-lock.yaml` → `pnpm`, `package-lock.json` → `npm run`, `go.mod` → 직접 실행)
-4. 감지된 모든 검사를 순차 실행 — 하나라도 실패하면 파이프라인 중단
-5. `ruff --fix`가 실패 전에 문제를 자동 수정하도록 허용
-
-**지원 생태계:**
-
-| 생태계 | 도구 |
-|---|---|
-| Python | ruff (lint + format), pytest, mypy |
-| JavaScript / TypeScript | eslint, tsc, vitest, jest, turbo |
-| Go | go test, golangci-lint |
-
-프로젝트에 `.github/workflows/` 디렉토리가 없으면 이 단계는 자동으로 건너뜁니다.
-
-### 2단계: Commit
-
-핵심 인텔리전스 — 모든 대기 중인 변경사항을 분석하고 깔끔하게 그룹화된 커밋을 생성합니다.
-
-**2단계 그룹화 알고리즘:**
-
-1. **type별 강제 분리** — Conventional Commit 유형(`feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`)으로 먼저 분류합니다. 다른 type은 **반드시** 별도 커밋이 됩니다.
-2. **목적별 의미 분리** — 동일 type 내에서 다른 목적의 변경사항은 추가로 분리됩니다. 예를 들어, 두 개의 독립적인 `feat` 추가는 두 개의 별도 커밋이 됩니다.
-
-`scope` 필드는 "어디를 변경했는지"를 설명하며, 그룹화에는 영향을 주지 않습니다. 그룹화 로직은 순수하게 type + purpose로 결정됩니다.
-
-**Commit message 생성 우선순위:**
-
-1. 프로젝트 `AGENTS.md` / `CLAUDE.md` — commit 형식이 지정되어 있으면 우선 사용
-2. `git log` 스타일 — 기존 커밋이 일관된 스타일을 따르면 자동 매칭
-3. 기본값 — Conventional Commits: `<type>(<scope>): <description>`
-
-**실행 방식:**
-- 단일 그룹 → `git add -A` + 커밋
-- 다중 그룹 → 그룹별 `git add <특정 파일>` + HEREDOC 커밋
-- 작업 트리가 깨끗해질 때까지 반복 (hook이나 formatter가 커밋 중 파일을 수정하는 경우 처리)
-
-### 3단계: Version
-
-커밋 이력을 분석하고 시맨틱 버전 번호를 자동 범프합니다.
-
-**Semver 규칙:**
-
-| 커밋 패턴 | 범프 유형 | 예시 |
-|---|---|---|
-| `feat` | minor | 0.1.0 → 0.2.0 |
-| `fix`, `refactor`, `perf`, `docs` 등 | patch | 0.1.0 → 0.1.1 |
-| `BREAKING CHANGE` 또는 `!` 접미사 | major | 0.1.0 → 1.0.0 |
-
-**버전 파일 감지:**
-
-프로젝트 루트와 workspace 디렉토리에서 `plugin.json`, `package.json`, `pyproject.toml`을 자동 스캔합니다.
-
-**모노레포 지원:**
-
-각 변경 파일은 디렉토리 트리를 따라 올라가며 가장 가까운 버전 파일을 찾습니다 ("closest owner" 전략). 각 패키지는 자체 커밋에 기반하여 독립적으로 범프됩니다.
-
-**동작:**
-- 베이스 브랜치에서만 실행 (feature 브랜치에서는 자동 건너뜀)
-- 마지막 버전 범프 이후 새 커밋이 없으면 건너뜀
-- 모든 버전 변경은 단일 `chore(version): bump version to X.X.X`로 커밋
-
-### 4단계: Push
-
-원격 저장소에 커밋을 푸시합니다.
-
-`origin` remote가 설정되지 않은 경우:
-1. `gh repo create`를 통해 GitHub에 **비공개** 저장소 생성
-2. `origin`으로 설정
-3. `git push -u origin HEAD` 실행
-
-### 5단계: PR
-
-GitHub에서 Pull Request를 생성합니다.
-
-**작동 방식:**
-
-1. 현재 브랜치와 언어를 감지 (commit 단계의 언어 결정을 계승하거나 `git log`에서 추론)
-2. 프롬프트를 통해 대상 브랜치 확인 (기본값 `main`)
-3. 동일한 head branch의 오픈 PR이 있는지 확인 — 있으면 URL을 표시하고 중단
-4. `BASE_BRANCH..HEAD` 사이의 모든 커밋 수집
-5. PR 제목 생성:
-   - 단일 커밋 → commit message를 직접 사용
-   - 다중 커밋 → 요약 제목 생성
-6. Markdown 형식의 PR 본문 생성:
-   - **Summary** — 변경사항 설명 요점
-   - **Commits** — 전체 커밋 목록
-   - **Test Plan** — 커밋 유형에 따라 `- [ ]` 체크리스트 자동 생성 (예: `feat` → "verify new feature works", `fix` → "confirm bug is resolved")
-7. `gh pr create`를 통해 PR 생성
-
-PR 제목, 본문, 테스트 계획의 언어는 commit message와 일치합니다.
+단일 그룹은 `git add -A`, 여러 그룹은 명시적 파일 목록을 stage합니다. message, 파일 소속과 최종 상태를 출력하며 검사, 버전 변경, push, PR 생성을 실행하지 않습니다.
 
 ---
 
@@ -327,7 +203,7 @@ ln -s /path/to/plugin/rules/pydantic-v2.md .claude/rules/pydantic-v2.md
 
 - **Claude Code** 또는 **Codex**(플러그인 지원) — 플러그인이 두 매니페스트를 모두 내장하여 어느 호스트에서도 네이티브로 동작
 - `git`
-- [`gh` CLI](https://cli.github.com) — 푸시 (원격 자동 생성) 및 PR 생성에 사용
+- [`glab` CLI](https://gitlab.com/gitlab-org/cli) — `/smart:close-issue` 쓰기 작업에만 사용
 - `jq` — HUD 상태 표시줄에만 필요 (다른 기능은 불필요)
 
 ---

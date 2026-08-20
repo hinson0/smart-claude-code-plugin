@@ -6,17 +6,9 @@
 
 </div>
 
-> Done coding? Just say **"create PR"** — it handles check, commit, push, and PR for you.
->
-> Don't want a PR, just a push? Say **"push"**.
->
-> Just commit? Say **"commit"**.
->
-> Or use slash commands: `/smart:pr`, `/smart:push`, `/smart:commit`.
+> Finished coding? Say **"commit"** — Smart groups unrelated changes, writes focused messages, and commits them.
 
-A plugin for **Claude Code** and **Codex** that takes over the moment you finish writing code. Just say what you want — it runs checks, commits, pushes, and opens a PR to `main`. Zero extra steps. Just say `push` — it auto-splits multiple features, generates commit messages, and pushes:
-
-![demo](./assets/imgs/en.png)
+A dual-host plugin for **Claude Code** and **Codex** with low-cost semantic commits, auditable GitLab Issue closeout, session utilities, and engineering rules.
 
 ---
 
@@ -55,24 +47,21 @@ The friendliest way is right inside a Codex session — no clone needed:
 
 ## Features
 
-**Core Pipeline**
+**Smart Commit**
 
-- **Fail-Fast Pipeline** — Any step fails, everything stops immediately. No partial pushes or broken PRs.
-- **Auto CI Detection** — Reads `.github/workflows/*.yml` and runs matching checks locally (ruff, pytest, mypy, eslint, tsc, vitest, jest, go test, turbo, and more). Auto-detects package manager from lock files.
-- **Two-Phase Smart Commit Grouping** — Phase 1 hard-splits by type (feat vs fix vs refactor), Phase 2 semantically splits within the same type by purpose. No unrelated changes sneak into a single commit.
-- **Conventional Commits** — All commit messages automatically follow `<type>(<scope>): <description>` format. Respects project `AGENTS.md` / `CLAUDE.md` overrides and existing `git log` style.
-- **Auto Version Bump** — Detects version files (`.codex-plugin/plugin.json`, `package.json`, `pyproject.toml`), analyzes commit types, and bumps semantic version before push. In monorepos, maps changed files to their owning package and bumps each independently. Dual-host plugin manifests receive the same clean SemVer without host-specific build metadata.
-- **Auto GitHub Repo Creation** — No remote configured? It creates a private repo on GitHub, sets it as origin, and pushes — all automatically.
-- **Consistent Language** — PR title, summary, and test plan automatically use the same language as commit messages. Defaults to English; overridable via project `AGENTS.md` / `CLAUDE.md`.
+- **Low-Cost Execution** — Claude Code uses Haiku; Codex delegates the complete commit workflow to one low-reasoning GPT-5.6 Luna worker, with one default-subagent fallback.
+- **Semantic Grouping** — Type is a hard boundary and purpose is a soft boundary, so independent changes become independent commits.
+- **Repository-Aware Messages** — Respects project rules, recent Git history, then Conventional Commits.
+- **Commit Only** — No CI checks, version changes, push, or pull request creation.
 
 **Protection & Automation**
 
 - **Session Hooks** — Greet on session start (via macOS `say` TTS).
 - **Session Logs** — Every tool call is logged to `.smart/session-logs/` with full input data for post-session debugging and audit.
+- **Auditable GitLab Issue Closeout** — `/smart:close-issue` checks one Issue read-only by default. With explicit close authorization, it verifies the clean worktree, implementation commit, and local and refreshed remote target branches, then publishes a development asset note before closing. It uses `glab` and never implies push, merge, MR/PR creation, checklist edits, or label changes.
 
 **Utilities**
 
-- **Visual Progress Tracking** — Pipeline phases display as a live task list with pending/active/completed status, timing, and token usage.
 - **HUD / Statusline Installer** — One command to install a feature-rich statusline showing model, git branch, context usage, rate limits, system stats, and tool call counts. Two install levels (minimal / full) plus restore from backup, user scope.
 - **Help Overview** — `/smart:help` dynamically scans and lists all skills, hooks, and agents with descriptions.
 - **Joke Teller Agent** — Tells a programmer joke to lighten the mood during work.
@@ -95,17 +84,14 @@ The friendliest way is right inside a Codex session — no clone needed:
 | What you say | What happens |
 |---|---|
 | "commit" / "save my work" / "done" | Smart commit only (stage + group + commit) |
-| "push" / "push to origin" | commit → version → push |
-| "create PR" / "open a pull request" | check → commit → version → push → PR |
+| "can this Issue close?" / "close GitLab Issue 42" | Read-only readiness gate, or note → close after explicit authorization |
 
 **⌨️ Slash commands** — for precise control:
 
 | Command | What it does |
 |---|---|
 | `/smart:commit` | Stage & commit only (smart grouping, auto message) |
-| `/smart:version [base]` | Analyze commits and bump version (auto-detects version files; only runs on the base branch) |
-| `/smart:push` | commit → version → push (no PR) |
-| `/smart:pr [base]` | Full pipeline: check → commit → version → push → PR (default base: `main`) |
+| `/smart:close-issue <IID-or-URL>` | Check one GitLab Issue read-only; with explicit close authorization, publish an auditable development asset note and then close it |
 | `/smart:hud [0\|1\|2\|reset\|normal\|all]` | Install statusline (`1`/`normal`=minimal, `2`/`all`=full) or restore backup (`0`/`reset`), user scope |
 | `/smart:help [skill\|hook\|agent]` | Show overview of all plugin components (or filter by category) |
 | `/smart:distill [dir]` | Distill the current session into topic-keyed knowledge files (default `.smart/knowledges/`) |
@@ -119,124 +105,13 @@ The friendliest way is right inside a Codex session — no clone needed:
 
 ---
 
-## Pipeline
+## Smart Commit
 
-### Overview
+`/smart:commit` reads status, staged and unstaged diffs, and recent history; prints a concrete purpose and type for every changed file; splits first by type and then by unrelated purpose; and commits each group separately.
 
-```
-/smart:pr
-    │
-    ├── 1. check   — Auto CI detection & local execution
-    │
-    ├── 2. commit  — Two-phase semantic analysis & smart grouping
-    │
-    ├── 3. version — Semantic version bump (monorepo-aware)
-    │
-    ├── 4. push    — Push to origin (auto-creates GitHub repo if needed)
-    │
-    └── 5. pr      — Generate & create Pull Request
-```
+Claude Code runs the turn on `haiku`. Codex delegates the complete workflow to one low-reasoning `gpt-5.6-luna` worker. If Luna is unavailable, it retries once with the user's configured default subagent. The primary agent never performs grouping or commit work itself.
 
-Each phase is a standalone skill linked via `@../path/SKILL.md` references. Any failure stops the entire pipeline immediately.
-
-### Phase 1: Check
-
-Automatically detects your project's CI configuration and runs the corresponding checks locally.
-
-**How it works:**
-
-1. Scans `.github/workflows/*.yml` for tool keywords
-2. Identifies matching tools: `ruff`, `pytest`, `mypy`, `eslint`, `tsc`, `vitest`, `jest`, `go test`, `golangci-lint`, `turbo`, and more
-3. Detects your package manager from lock files (`uv.lock` → `uv run`, `pnpm-lock.yaml` → `pnpm`, `package-lock.json` → `npm run`, `go.mod` → direct execution)
-4. Runs all detected checks sequentially — any failure halts the pipeline
-5. Allows `ruff --fix` to auto-fix issues before failing
-
-**Supported ecosystems:**
-
-| Ecosystem | Tools |
-|---|---|
-| Python | ruff (lint + format), pytest, mypy |
-| JavaScript / TypeScript | eslint, tsc, vitest, jest, turbo |
-| Go | go test, golangci-lint |
-
-If no `.github/workflows/` directory is found, this phase is skipped silently.
-
-### Phase 2: Commit
-
-The core intelligence — analyzes all pending changes and produces clean, well-grouped commits.
-
-**Two-phase grouping algorithm:**
-
-1. **Hard split by type** — Changes are categorized by Conventional Commit type (`feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`). Different types are **always** separate commits.
-2. **Semantic split by purpose** — Within the same type, changes serving different purposes are further split. For example, two independent `feat` additions become two separate commits.
-
-The `scope` field describes *where* the change happened — it does not affect grouping. Grouping is driven purely by type + purpose.
-
-**Commit message generation priority:**
-
-1. Project `AGENTS.md` / `CLAUDE.md` — if it specifies a commit format, that takes precedence
-2. `git log` style — if existing commits follow a consistent style, it's matched
-3. Default — Conventional Commits: `<type>(<scope>): <description>`
-
-**Execution:**
-- Single group → `git add -A` + commit
-- Multiple groups → each group gets `git add <specific files>` + HEREDOC commit
-- Loops until the working tree is clean (handles cases where hooks or formatters modify files during commit)
-
-### Phase 3: Version
-
-Analyzes commit history and automatically bumps the semantic version number.
-
-**Semver rules:**
-
-| Commit pattern | Bump | Example |
-|---|---|---|
-| `feat` | minor | 0.1.0 → 0.2.0 |
-| `fix`, `refactor`, `perf`, `docs`, etc. | patch | 0.1.0 → 0.1.1 |
-| `BREAKING CHANGE` or `!` suffix | major | 0.1.0 → 1.0.0 |
-
-**Version file detection:**
-
-Scans for `plugin.json`, `package.json`, and `pyproject.toml` in the project root and workspace directories.
-
-**Monorepo support:**
-
-Each changed file is traced up the directory tree to find the closest version file (the "closest owner" strategy). Each package is bumped independently based on its own commits.
-
-**Behavior:**
-- Runs on any branch (main and feature branches)
-- Skipped if no new commits since the last version bump
-- All version changes are committed as a single `chore(version): bump version to X.X.X`
-
-### Phase 4: Push
-
-Pushes commits to the remote repository.
-
-If no `origin` remote is configured:
-1. Creates a new **private** repository on GitHub via `gh repo create`
-2. Adds it as `origin`
-3. Pushes with `git push -u origin HEAD`
-
-### Phase 5: PR
-
-Generates and creates a Pull Request on GitHub.
-
-**How it works:**
-
-1. Detects the current branch and language (inherited from commit phase, or inferred from `git log`)
-2. Asks for the target branch via prompt (defaults to `main`)
-3. Checks for existing open PRs with the same head branch — if found, shows the URL and stops
-4. Collects all commits between `BASE_BRANCH..HEAD`
-5. Generates PR title:
-   - Single commit → uses the commit message directly
-   - Multiple commits → generates a summary title
-6. Generates PR body in Markdown:
-   - **Summary** — bullet points describing the changes
-   - **Commits** — full commit list
-   - **Test Plan** — auto-generated `- [ ]` checklist based on commit types (e.g., `feat` → "verify new feature works", `fix` → "confirm bug is resolved")
-7. Creates the PR via `gh pr create`
-
-The language of the PR title, body, and test plan follows the language used in commit messages.
+Single-group commits use `git add -A`; multiple groups stage explicit file lists. The skill reports messages, file membership, and final status. It never runs checks, changes versions, pushes, or creates pull requests.
 
 ---
 
@@ -327,7 +202,7 @@ The bundled hook config uses `${CLAUDE_PLUGIN_ROOT}` for path resolution in Clau
 
 - **Claude Code** or **Codex** (with plugin support) — the plugin ships both manifests and runs natively in either
 - `git`
-- [`gh` CLI](https://cli.github.com) — for push (auto-create remote) and PR creation
+- [`glab` CLI](https://gitlab.com/gitlab-org/cli) — only for `/smart:close-issue` writes
 - `jq` — for HUD statusline only (optional otherwise)
 
 ---

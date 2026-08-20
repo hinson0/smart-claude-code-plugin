@@ -1,7 +1,7 @@
 {
   "name": "smart",
-  "version": "3.34.0",
-  "description": "Fail-fast git workflow plugin with smart check, commit, version bump, push, PR, statusline, and session distillation skills.",
+  "version": "4.0.0",
+  "description": "Low-cost semantic Git commits, auditable GitLab Issue closeout, session utilities, and engineering rules.",
   "author": {
     "name": "Hinson",
     "email": "hinson0@qq.com",
@@ -10,19 +10,19 @@
   "homepage": "https://github.com/hinson0/smart-claude-code-plugins",
   "repository": "https://github.com/hinson0/smart-claude-code-plugins",
   "license": "MIT",
-  "keywords": ["git", "workflow", "commit", "pull-request", "automation"],
+  "keywords": ["git", "gitlab", "issues", "commit", "automation", "productivity"],
   "skills": "./skills/",
   "interface": {
     "displayName": "Smart",
-    "shortDescription": "Automate git checks, commits, pushes, and PRs.",
-    "longDescription": "Smart adds fail-fast git workflow skills for local checks, semantic commit splitting, version bumps, pushes, pull requests, statusline setup, and session knowledge distillation.",
+    "shortDescription": "Create focused commits and close GitLab Issues safely.",
+    "longDescription": "Smart adds low-cost semantic commit grouping, auditable GitLab Issue closeout, statusline setup, session knowledge distillation, and focused engineering utilities.",
     "developerName": "Hinson",
     "category": "Productivity",
     "capabilities": ["Automation", "Git", "Write"],
     "defaultPrompt": [
-      "Commit my current changes.",
-      "Push my work and create a PR.",
-      "Install the smart statusline."
+      "Group and commit my current changes.",
+      "Check whether this GitLab Issue is ready to close.",
+      "Install the Smart statusline."
     ],
     "brandColor": "#2563EB"
   }

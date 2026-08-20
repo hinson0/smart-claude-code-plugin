@@ -31,8 +31,8 @@ Display a formatted overview of the smart plugin's components by dynamically sca
 
 | Command | Description | Arguments |
 |---------|-------------|-----------|
-| /smart:check | Auto-detect CI and run checks | (none) |
 | /smart:commit | Commit with semantic grouping | (none) |
+| /smart:close-issue | Check or close one GitLab Issue safely | IID or URL |
 | ...     | ...         | ...       |
 ```
 
