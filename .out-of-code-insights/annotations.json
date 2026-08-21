@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "annotations": [
     {
-      "fileUri": "file:///Users/a114514/smart-claude-code-plugins/plugins/smart/skills/show/references/layouts.md",
+      "fileUri": "file:///Users/a114514/repos/smart-claude-code-plugins/plugins/smart/skills/show/references/layouts.md",
       "file": "plugins/smart/skills/show/references/layouts.md",
       "origin": {
         "kind": "manual"
