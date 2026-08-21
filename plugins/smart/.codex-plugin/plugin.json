@@ -1,6 +1,6 @@
 {
   "name": "smart",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Low-cost semantic Git commits, auditable GitLab Issue closeout, session utilities, and engineering rules.",
   "author": {
     "name": "Hinson",
