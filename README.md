@@ -58,7 +58,7 @@ The friendliest way is right inside a Codex session — no clone needed:
 
 - **Session Hooks** — Greet on session start (via macOS `say` TTS).
 - **Session Logs** — Every tool call is logged to `.smart/session-logs/` with full input data for post-session debugging and audit.
-- **Auditable GitLab Issue Closeout** — `/smart:close-issue` checks one Issue read-only by default. With explicit close authorization, it verifies the clean worktree, implementation commit, and local and refreshed remote target branches, then publishes a development asset note before closing. It uses `glab` and never implies push, merge, MR/PR creation, checklist edits, or label changes.
+- **Auditable GitLab Issue Closeout** — After `/implement` has committed and reviewed the work, `/smart:close-issue` verifies the implementation commit on the current branch, acceptance evidence, and review conclusion. With explicit close authorization, it publishes those development assets before closing; target-branch integration is disclosed but is not a close gate. It uses `glab` and never implies push, merge, MR/PR creation, checklist edits, or label changes.
 
 **Utilities**
 

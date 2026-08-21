@@ -58,7 +58,7 @@
 
 - **セッション Hook** — セッション開始時に挨拶（macOS `say` TTS による音声出力）。
 - **セッションログ** — すべてのツール呼び出しの完全な入力データが `.smart/session-logs/` に記録され、事後のデバッグと監査に活用できます。
-- **監査可能な GitLab Issue クローズ** — `/smart:close-issue` はデフォルトで単一 Issue を読み取り専用で確認します。明示的なクローズ承認がある場合、クリーンなワークツリー、実装 commit、ローカルおよび更新済みリモートの対象ブランチを検証し、開発資産 note を公開してから Issue を閉じます。`glab` のみを使用し、push、merge、MR/PR 作成、checklist や label の変更権限は含みません。
+- **監査可能な GitLab Issue クローズ** — `/implement` が実装を commit して Review を完了した後、`/smart:close-issue` は現在のブランチ上の実装 commit、受け入れ証拠、Review 結論を確認します。明示的な承認後、それらの開発資産を公開してから Issue を閉じます。対象ブランチへの統合は開示事項であり、クローズ条件ではありません。`glab` のみを使用し、push、merge、MR/PR 作成、checklist や label の変更権限は含みません。
 
 **ユーティリティ**
 

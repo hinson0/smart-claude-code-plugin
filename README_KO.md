@@ -58,7 +58,7 @@
 
 - **세션 Hook** — 세션 시작 시 인사 (macOS `say` TTS를 통한 음성 출력).
 - **세션 로그** — 모든 도구 호출의 전체 입력 데이터가 `.smart/session-logs/`에 기록되어 사후 디버깅 및 감사에 활용할 수 있습니다.
-- **감사 가능한 GitLab Issue 마감** — `/smart:close-issue`는 기본적으로 단일 Issue를 읽기 전용으로 확인합니다. 명시적인 종료 승인이 있으면 깨끗한 작업 트리, 구현 commit, 로컬 및 갱신된 원격 대상 브랜치를 검증하고 개발 자산 note를 게시한 뒤 Issue를 닫습니다. `glab`만 사용하며 push, merge, MR/PR 생성, checklist 또는 label 변경 권한을 포함하지 않습니다.
+- **감사 가능한 GitLab Issue 마감** — `/implement`가 구현을 commit하고 Review를 완료한 뒤 `/smart:close-issue`는 현재 브랜치의 구현 commit, 인수 증거, Review 결론을 확인합니다. 명시적인 종료 승인이 있으면 해당 개발 자산을 게시한 뒤 Issue를 닫습니다. 대상 브랜치 통합은 공개할 경계일 뿐 종료 조건이 아닙니다. `glab`만 사용하며 push, merge, MR/PR 생성, checklist 또는 label 변경 권한을 포함하지 않습니다.
 
 **유틸리티**
 
