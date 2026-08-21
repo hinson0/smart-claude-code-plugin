@@ -64,16 +64,11 @@ if (args[0] === "status") {
 } else if (args[0] === "rev-parse") {
   if (scenario.commitExists === false) process.exit(1);
   process.stdout.write(scenario.resolvedCommit ?? "${implementationCommit}\\n");
-} else if (args[0] === "show-ref") {
-  const ref = args.at(-1);
-  if (ref.startsWith("refs/heads/") && scenario.localExists === false) process.exit(1);
-  if (ref.startsWith("refs/remotes/") && scenario.remoteExists === false) process.exit(1);
-} else if (args[0] === "fetch") {
-  if (scenario.fetchSucceeds === false) process.exit(1);
+} else if (args[0] === "symbolic-ref") {
+  if (scenario.currentBranchExists === false) process.exit(1);
+  process.stdout.write(scenario.currentBranch ?? "feature/issue-42\\n");
 } else if (args[0] === "merge-base") {
-  const ref = args.at(-1);
-  if (ref.startsWith("refs/heads/") && scenario.localIncluded === false) process.exit(1);
-  if (ref.startsWith("refs/remotes/") && scenario.remoteIncluded === false) process.exit(1);
+  if (scenario.headContainsCommit === false) process.exit(1);
 }
 `,
   );
@@ -129,10 +124,6 @@ const checkArgs = [
   "42",
   "--commit",
   implementationCommit,
-  "--target-branch",
-  "main",
-  "--remote",
-  "origin",
 ];
 const closeArgs = [
   "close",
@@ -140,10 +131,6 @@ const closeArgs = [
   "42",
   "--commit",
   implementationCommit,
-  "--target-branch",
-  "main",
-  "--remote",
-  "origin",
   "--note-file",
   "$NOTE",
 ];
@@ -155,10 +142,19 @@ function gitLabWrites(calls) {
   );
 }
 
-test("check reports ready without writing to GitLab when every gate passes", async () => {
+test("check reports ready after implementation assets are committed on the current branch", async () => {
   const result = await runCli(checkArgs);
   assert.equal(result.status, 0);
   assert.equal(result.json.status, "ready");
+  assert.equal(result.json.currentBranch, "feature/issue-42");
+  assert.equal(result.json.headContainsCommit, true);
+  assert.equal(
+    result.calls.some(
+      ([command, action]) =>
+        command === "git" && ["fetch", "show-ref"].includes(action),
+    ),
+    false,
+  );
   assert.deepEqual(gitLabWrites(result.calls), []);
 });
 
@@ -180,11 +176,8 @@ for (const [name, scenario, blocker] of [
   ["the Issue is closed", { issueState: "closed" }, "Issue is closed"],
   ["the worktree is dirty", { dirty: true }, "uncommitted changes"],
   ["the implementation commit is missing", { commitExists: false }, "Implementation commit check"],
-  ["the local target is missing", { localExists: false }, "Local target branch"],
-  ["the local target excludes the commit", { localIncluded: false }, "does not contain"],
-  ["the remote refresh fails", { fetchSucceeds: false }, "Remote target branch refresh"],
-  ["the remote target is missing", { remoteExists: false }, "Remote-tracking branch"],
-  ["the remote target excludes the commit", { remoteIncluded: false }, "Remote target branch"],
+  ["the current branch cannot be confirmed", { currentBranchExists: false }, "current implementation branch"],
+  ["the current branch excludes the commit", { headContainsCommit: false }, "does not contain"],
 ]) {
   test(`check reports not_ready and performs no GitLab write when ${name}`, async () => {
     const result = await runCli(checkArgs, scenario);
@@ -194,26 +187,6 @@ for (const [name, scenario, blocker] of [
     assert.deepEqual(gitLabWrites(result.calls), []);
   });
 }
-
-test("allow-local-only permits only a remote integration blocker", async () => {
-  const result = await runCli(
-    [...closeArgs, "--allow-local-only"],
-    { remoteIncluded: false },
-  );
-  assert.equal(result.status, 0);
-  assert.equal(result.json.status, "closed");
-  assert.equal(result.json.warnings.length, 1);
-});
-
-test("allow-local-only does not bypass any additional blocker", async () => {
-  const result = await runCli(
-    [...closeArgs, "--allow-local-only"],
-    { remoteIncluded: false, dirty: true },
-  );
-  assert.equal(result.status, 2);
-  assert.equal(result.json.status, "not_ready");
-  assert.deepEqual(gitLabWrites(result.calls), []);
-});
 
 for (const [name, note] of [
   ["required headings are missing", "## Implementation assets\n\nOnly one section."],
@@ -257,9 +230,9 @@ test("a successful close returns durable note and Issue URLs", async () => {
 
 for (const [name, args] of [
   ["multiple Issue candidates", checkArgs.with(2, "42,43")],
-  ["an unsafe target ref", checkArgs.with(6, "main..evil")],
   ["a non-SHA commit", checkArgs.with(4, "not-a-sha")],
-  ["a write flag on check", [...checkArgs, "--allow-local-only"]],
+  ["a write option on check", [...checkArgs, "--note-file", "$NOTE"]],
+  ["the removed integration exception", [...closeArgs, "--allow-local-only"]],
   ["an unsafe GitLab project path", [...checkArgs, "--repo", "../project"]],
 ]) {
   test(`argument validation fails closed for ${name}`, async () => {
