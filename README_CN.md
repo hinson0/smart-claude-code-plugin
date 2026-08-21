@@ -58,7 +58,7 @@
 
 - **会话 Hook** — 会话开始时问候（通过 macOS `say` TTS 语音播报）。
 - **会话日志** — 每次工具调用的完整输入数据均记录到 `.smart/session-logs/`，便于事后调试和审计。
-- **可审计的 GitLab Issue 收口** — `/smart:close-issue` 默认只读核对单个 Issue。明确授权关闭后，它会检查工作区 clean、实现 commit、本地目标分支与刷新后的远端目标分支，再先发布开发资产记录、后关闭 Issue。仅使用 `glab`，不会推导出 push、merge、创建 MR/PR、修改 checklist 或标签的权限。
+- **可审计的 GitLab Issue 收口** — `/implement` 完成提交与 Review 后，`/smart:close-issue` 会核对当前分支上的实现 commit、验收证据和 Review 结论。明确授权关闭后，它先发布这些开发资产、再关闭 Issue；目标分支是否集成只披露，不作为关闭门禁。仅使用 `glab`，不会推导出 push、merge、创建 MR/PR、修改 checklist 或标签的权限。
 
 **实用工具**
 

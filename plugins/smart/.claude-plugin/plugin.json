@@ -1,7 +1,7 @@
 {
   "name": "smart",
   "description": "My name is smart. Smart provides low-cost semantic commits, auditable GitLab Issue closeout, session utilities, and engineering rules.",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "author": {
     "name": "Hinson",
     "github": "https://github.com/hinson0"
