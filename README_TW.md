@@ -66,13 +66,7 @@
 - **說明概覽** — `/smart:help` 動態掃描並列出所有技能、hook 和 agent 及其描述。
 - **Joke Teller Agent** — 在合適的時機講個程式設計師笑話，緩解工作壓力。
 - **內建編碼規則** — 預置規則檔案（如 Pydantic V2 標準）存於 `rules/` 目錄，按需軟連結至專案的 `.claude/rules/` 即可啟用。
-- **會話知識蒸餾** — `/smart:distill` 從當前會話擷取有價值的問答對，按主題聚類成 markdown 檔案，落盤到知識庫。目標目錄讀自本地 `.smart/settings.json`；若本地缺失，則用 `AskUserQuestion` 詢問是複用全域 `~/.smart/settings.json` 還是新建本地設定——兩者都沒有時再問落盤目錄——隨後把選擇保存到本地，之後靜默。目錄詢問留在主工作階段；繁重的**分析**隨後在後台 **fork** 中以 `sonnet` 進行（擷取、聚類、三態比對），再把完全格式化好的落盤計畫交給一個 `haiku` 子 agent 做機械寫盤——昂貴的判斷跑 sonnet、便宜的謄寫跑 haiku，主上下文只收到一份精簡總結。預設 `.smart/knowledges/`；`{date}` 佔位符支援按日期嵌套的目錄（如 `~/knowledges/md/{date}`）。重複/新增/差分三態比對讓重複蒸餾只追加不重複，已 review 檔案（`.printed.md` 或有同名 PDF）絕不觸碰。
-- **Workflow 模型分層** — `/smart:wfb` 讓 Workflow 腳本更省 token：按難度給每個 `agent()` 分層（機械活用 haiku、軀幹用 sonnet、收口與重要/硬實作用 opus），在 fan-out 前剪枝，並用 schema 壓縮輸出。編寫任何 Workflow 腳本時自動套用。
-- **剪貼簿截圖上傳** — `/smart:sendshot` 安裝一個跨平台的 `sendshot` shell 函數：擷取剪貼簿圖片，透過 `scp` 上傳到遠端主機（如 EC2），隨後印出並把遠端路徑回寫剪貼簿。支援 WSL（PowerShell 讀 Windows 剪貼簿）和 macOS（`pngpaste`/`osascript`）。zsh 下還會把 **`Ctrl+G`** 綁定為在任意提示符處觸發 sendshot。設定——主機、金鑰、遠端目錄——位於 `~/.smart/settings.json`，執行時讀取，所以換主機無需重裝；遠端目錄用 `mkdir -p` 自動建立。
 - **學習模式** — `/smart:learning 1` 開啟一種簡單的協作編碼模式：由*你*親手編寫程式碼。它是一個純粹的開/關開關——沒有占比、沒有設定。開啟時，凡是 Claude 本會寫的程式碼都改為印到主控台——每段標明 新增檔案 / 新增程式碼 / 修改 / 刪除，並附檔案與位置——由你敲入，然後 Claude 審查你落盤的程式碼再繼續，每次只處理一個任務。開啟時把規則注入 `.claude/CLAUDE.local.md`（Claude Code 每次工作階段載入的、已 git-ignore 的專案級記憶）使其持續生效；該塊是否存在就是全部狀態，`/smart:learning 0` 移除它。`.smart/settings.json` 裡不存任何東西。
-- **單 Cycle TDD 教學閘門** — `/smart:advance-one-step` 每次只推進一個已展示的完整 Red → Green cycle。說 `next` 由 agent 落盤目前 cycle；你自行落盤後說 `review`，由 agent 唯讀審查。通過後只展示下一個 cycle 並停止，人工複製時必須提供可搜尋的準確程式碼錨點。
-- **對話待辦錨點** — `/smart:todo` 把 Claude 在工作階段中發散出的決策收進持久的 `.smart/todo-list.md`，釘住唯一的**主線**（分支再多也衝不掉），並把發散的決策停成對帳後的**分支**——重複呼叫會合併進既有條目，而非堆疊出一堆重複。每次執行都重新把主線擺到最前面，在對話跑偏時把你拉回來。`main <目標>` 設定錨點，`done <id>` 結掉某項。已 git-ignore，個人的專案級草稿。
-- **開放線索記錄本** — `/smart:notebook` 維護一份 Claude 在對話中途拋出的*開放線索*滾動清單——它在追別的問題時順帶拋出的 `★ Insight`、建議的下一步、反問，這些會隨對話發散被掩埋。一個 `Stop` **hook** 在*每次*回覆後自動擷取帶標記的塊（確定性——不會被跳過或遺忘），skill 則補上 hook 解析不了的自由形式線索、去重，並讓你用 `done <id>` 閉合一條。落盤到 `.smart/notebook.md`（已 git-ignore）。區別於 `todo`（二選一決策）和 `distill`（知識歸檔）——它追蹤的是尚未跟進的東西。
 - **HTML 審閱頁** — `/smart:show` 把冗長交付物——當前對話的方案/分析/評審，或一個 Markdown 檔案——渲染成單檔案、零 JavaScript 的自包含 HTML 審閱頁並在瀏覽器開啟。灰底白卡視覺系統：黏性目錄、編號章節、風險徽章、方案對比卡（選定項高亮）、內聯 SVG 架構圖與 `<details>` 摺疊。三種固定版式配方（plan-review / explainer / report）保證每次生成的頁面結構一致。每頁強制攜帶出處頁腳（時間、commit SHA、來源），且僅是衍生視圖——Markdown 仍是事實來源。每次執行都在 `.smart/pages/`（已 git-ignore）寫入帶時間戳的新檔案，保留舊頁面作為不可變審閱資產，不再覆蓋。示例見 `assets/demos/`。
 
 ---
@@ -94,13 +88,7 @@
 | `/smart:close-issue <IID或URL>` | 唯讀核對單一 GitLab Issue；明確授權關閉後，先發布可稽核的開發資產記錄，再關閉 Issue |
 | `/smart:hud [0\|1\|2\|reset\|normal\|all]` | 安裝狀態列（`1`/`normal`=簡化版，`2`/`all`=完整版）或還原備份（`0`/`reset`），user 作用域 |
 | `/smart:help [skill\|hook\|agent]` | 顯示所有外掛元件概覽（或按類別篩選） |
-| `/smart:distill [目錄]` | 把當前會話蒸餾成按主題命名的知識檔案（預設 `.smart/knowledges/`） |
-| `/smart:wfb` | 編寫 Workflow 腳本時的省 token、模型分層指導（按難度選 haiku/sonnet/opus） |
-| `/smart:sendshot [install\|config\|uninstall]` | 安裝跨平台 `sendshot` 函數（剪貼簿圖片 → `scp` 到遠端 → 複製遠端路徑）；設定在 `~/.smart/settings.json` |
 | `/smart:learning [0\|1]` | 切換學習模式——由*你*親手寫程式碼；Claude 把每段印到主控台並標明 新增檔案 / 新增程式碼 / 修改 / 刪除 供你敲入，再審查你落盤的程式碼。`1`=開，`0`=關，留空=狀態。狀態就是注入到 `.claude/CLAUDE.local.md` 的塊——無設定、無占比 |
-| `/smart:advance-one-step` | 推進一個完整 Red → Green 教學 cycle。說 `next` 由 agent 落盤，說 `review` 審查你已落盤的內容；通過後只展示下一個 cycle 並停止 |
-| `/smart:todo [main <目標>\|done <id>]` | 把工作階段中發散的決策錨定在 `.smart/todo-list.md`——釘住的主線 + 對帳後的分支；每次執行都重述主線把你拉回來。`main`=設定主線，`done`=結掉某項，留空=擷取並對帳 |
-| `/smart:notebook [done <id>]` | 把 Claude 拋出的開放線索（★ Insight、建議的下一步、反問）追蹤進 `.smart/notebook.md`，防止被掩埋。`Stop` hook 每次回覆自動擷取帶標記的塊；skill 補自由形式線索並管理狀態。`done`=閉合一條，留空=挖掘並列出 |
 | `/smart:show [<path>.md]` | 把當前對話交付物（或指定 Markdown 檔案）渲染成帶時間戳的全新自包含零 JS HTML 審閱頁，寫入 `.smart/pages/`，保留舊頁面並在瀏覽器開啟。三種版式配方：plan-review / explainer / report |
 
 ---
