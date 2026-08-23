@@ -13,6 +13,12 @@
       "name": "smart",
       "source": "./plugins/smart",
       "description": "Low-cost semantic Git commits, safe GitLab Issue closeout, session utilities, and engineering rules."
+    },
+    {
+      "name": "fuzz",
+      "source": "./plugins/fuzz",
+      "description": "On-demand guidance, cycle-based TDD, ticket delivery, safe closeout, and content generation.",
+      "category": "Developer Tools"
     }
   ]
 }

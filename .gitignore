@@ -11,3 +11,17 @@
 docs/
 .env
 .remember/
+node_modules/
+dist/
+build/
+*.log
+.env*
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+Thumbs.db
+*.tmp
+.vscode/
+.idea/
