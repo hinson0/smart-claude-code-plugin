@@ -1,0 +1,4 @@
+interface:
+  display_name: "Generate Wiki"
+  short_description: "Turn source material into a concise Wiki and publish it safely"
+  default_prompt: "Use $generate-wiki to organize these materials into a concise Wiki page and publish it safely."

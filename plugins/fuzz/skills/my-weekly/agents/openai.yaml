@@ -1,0 +1,4 @@
+interface:
+  display_name: "My Weekly Report"
+  short_description: "Read personal Git commits and summarize the week by outcome"
+  default_prompt: "Use $my-weekly to summarize my commits in this repository for the current natural week."
