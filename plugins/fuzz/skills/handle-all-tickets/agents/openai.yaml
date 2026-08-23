@@ -1,0 +1,5 @@
+interface:
+  display_name: "Parent Ticket Delivery"
+  short_description: "Deliver all child Tickets with auditable per-Ticket assets"
+  default_prompt: "Use $handle-all-tickets #123 to deliver every child Ticket in serial mode by default; add the explicit parallel argument only when requested."
+  allow_implicit_invocation: false

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Parent Ticket Campaign Verification"
+  short_description: "Independently validate all child Tickets and the parent outcome"
+  default_prompt: "Use $verify-all-tickets #123 in a fresh task to perform a read-only acceptance review of the full campaign."
+  allow_implicit_invocation: false

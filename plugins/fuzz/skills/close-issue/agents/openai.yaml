@@ -1,0 +1,4 @@
+interface:
+  display_name: "Issue Closeout"
+  short_description: "Verify integration facts and safely close one Issue after publishing auditable assets"
+  default_prompt: "Use $close-issue to verify Issue 79, publish its development-asset record, and safely close it."

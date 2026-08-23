@@ -1,0 +1,9 @@
+{
+  "name": "fuzz",
+  "version": "2.0.0",
+  "description": "On-demand guidance, cycle-based TDD, ticket delivery and verification, safe Issue closeout, and content generation tools.",
+  "author": {
+    "name": "CE"
+  }
+}
+
