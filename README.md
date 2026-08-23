@@ -45,6 +45,57 @@ The friendliest way is right inside a Codex session — no clone needed:
 
 ---
 
+## Plugins in This Marketplace
+
+This repository publishes two independent dual-host plugins:
+
+| Plugin | Install | Purpose |
+|--------|---------|---------|
+| Smart | `smart@smart` | Semantic commits, safe GitLab Issue closeout, and session utilities |
+| Fuzz | `fuzz@smart` | Read-only guidance, cycle TDD, ticket campaigns, HTML/PDF/Wiki, weekly reports, and optional imperial mode |
+
+Install either plugin independently, or install both. Claude Code uses `/smart:*` and `/fuzz:*`;
+Codex exposes the same plugin-scoped skills. When both plugins provide related actions, use the full
+namespace to select the intended contract.
+
+```bash
+# Claude Code, after adding the marketplace
+/plugin install smart@smart
+/plugin install fuzz@smart
+
+# Codex, after adding the marketplace
+codex plugin add smart@smart
+codex plugin add fuzz@smart
+```
+
+Fuzz includes ten skills: `ask`, `close-issue`, `generate-wiki`, `github-skills-pdf`,
+`handle-all-tickets`, `html`, `i-am-the-king`, `my-weekly`, `one-by-one`, and
+`verify-all-tickets`. Some workflows require Git, `glab`, Python/PDF tooling, or host-provided Goal,
+review, browser, and document capabilities; each skill checks its own prerequisites before writing.
+
+### Move Fuzz from the old marketplace
+
+Do not install both `fuzz@ce-workflow` and `fuzz@smart`. Validate the new marketplace separately,
+then switch sources in this order and start a new session:
+
+```bash
+# Claude Code
+claude plugin uninstall fuzz@ce-workflow
+claude plugin marketplace add hinson0/smart-claude-code-plugins
+claude plugin install fuzz@smart
+
+# Codex
+codex plugin remove fuzz@ce-workflow
+codex plugin marketplace add hinson0/smart-claude-code-plugins --ref main
+codex plugin add fuzz@smart
+```
+
+Keep the `ce-workflow` marketplace if you use its other plugin. Fuzz continues to use `.fuzz/`,
+`$CODEX_HOME/fuzz/`, and `fuzz-*` agent files, so existing imperial-mode state carries over. To
+roll back, uninstall `fuzz@smart`, reinstall `fuzz@ce-workflow`, and start another new session.
+
+---
+
 ## Features
 
 **Smart Commit**

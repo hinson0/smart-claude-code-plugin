@@ -45,6 +45,59 @@
 
 ---
 
+## この Marketplace のプラグイン
+
+このリポジトリは、Claude Code と Codex の両方をサポートする独立した 2 つのプラグインを配布します。
+
+| プラグイン | インストール名 | 用途 |
+|------------|----------------|------|
+| Smart | `smart@smart` | 意味ベースのコミット、安全な GitLab Issue クローズ、セッションユーティリティ |
+| Fuzz | `fuzz@smart` | 読み取り専用ガイド、Cycle TDD、チケット campaign、HTML/PDF/Wiki、週報、任意の宮廷モード |
+
+各プラグインは個別にも同時にもインストールできます。Claude Code は `/smart:*` と
+`/fuzz:*` を使用し、Codex も対応するプラグイン名前空間の skill を提供します。類似機能が
+ある場合は、完全な名前空間で意図する契約を明示してください。
+
+```bash
+# Claude Code：marketplace 追加後に実行
+/plugin install smart@smart
+/plugin install fuzz@smart
+
+# Codex：marketplace 追加後に実行
+codex plugin add smart@smart
+codex plugin add fuzz@smart
+```
+
+Fuzz には `ask`、`close-issue`、`generate-wiki`、`github-skills-pdf`、
+`handle-all-tickets`、`html`、`i-am-the-king`、`my-weekly`、`one-by-one`、
+`verify-all-tickets` の 10 個の skill が含まれます。一部のフローは Git、`glab`、
+Python/PDF ツール、またはホスト提供の Goal、Review、ブラウザ、文書機能を必要とし、
+各 skill は書き込み前に自身の前提条件を確認します。
+
+### 旧 Marketplace から Fuzz を移行
+
+`fuzz@ce-workflow` と `fuzz@smart` を同時にインストールしないでください。新しい配布元を
+隔離環境で先に検証し、次の順序で切り替えて新しいセッションを開始します。
+
+```bash
+# Claude Code
+claude plugin uninstall fuzz@ce-workflow
+claude plugin marketplace add hinson0/smart-claude-code-plugins
+claude plugin install fuzz@smart
+
+# Codex
+codex plugin remove fuzz@ce-workflow
+codex plugin marketplace add hinson0/smart-claude-code-plugins --ref main
+codex plugin add fuzz@smart
+```
+
+`ce-workflow` の他のプラグインを使う場合、その marketplace は残してください。Fuzz は
+引き続き `.fuzz/`、`$CODEX_HOME/fuzz/`、`fuzz-*` Agent ファイルを使用するため、既存の
+宮廷モード状態は引き継がれます。ロールバック時は `fuzz@smart` を削除し、
+`fuzz@ce-workflow` をインストールして新しいセッションを開始します。
+
+---
+
 ## 特徴
 
 **Smart Commit**
