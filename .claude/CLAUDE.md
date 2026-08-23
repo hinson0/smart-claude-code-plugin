@@ -24,7 +24,7 @@ Smart 同时支持 Claude Code 与 Codex，提供低成本语义分组提交、G
     └── skills/
         ├── <name>/SKILL.md          # 宿主加载的英文原件
         ├── <name>/CN.md             # 同目录中文翻译
-        └── …（advance-one-step / close-issue / commit / distill / help / hud / learning / local / notebook / optimize-tokens / sendshot / show / todo / wfb）
+        └── …（close-issue / commit / help / hud / learning / local / show）
 ```
 
 带 `references/` 的 skill，其英文参考文件必须配同目录 `CN[<名字>].md`。除 `CN.md` 与 `CN[...].md` 外，`plugins/` 下所有宿主加载文件、脚本消息和注释均使用英文。
@@ -36,8 +36,6 @@ Smart 同时支持 Claude Code 与 Codex，提供低成本语义分组提交、G
 - **低成本 Commit**：Claude Code 通过 `model: haiku` 直接执行；Codex 主 agent 只路由，完整 commit 工作优先交给 `gpt-5.6-luna`、`low` reasoning 的单个 worker。Luna 不可用时只允许一次无模型覆盖的默认子 agent 重试；worker 不得递归委派，主 agent 不得接管分组或提交。
 - **独立边界**：commit 只分组、生成 message 和提交，不运行 CI、本地检查、版本升级或远端操作。
 - **安全收口**：close-issue 默认只读；`/implement` 完成提交与 Review 后，以当前实现分支上的 commit、验收证据和 Review 作为关闭资产，不要求先集成目标分支；写 note 与关闭 GitLab Issue 必须有明确授权，且不扩展为 push、merge、MR/PR、checklist 或标签权限。
-- **distill 跨阶段模型分层**：分析仍由 `sonnet` 完成，格式化成品才交给 `haiku` 子 agent 机械落盘。
-- **notebook 双层捕获**：Stop hook 与 notebook skill 共享 `.smart/notebook.md`，保留并去重彼此条目。
 
 ## 维护约束
 

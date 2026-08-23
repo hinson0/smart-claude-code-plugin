@@ -1,6 +1,6 @@
 ---
 name: show
-description: 当用户希望把冗长交付物渲染成可视化 HTML 审阅页时使用本 skill。通过 `/smart:show`、"show"、"用 HTML 展示"、"做成页面"、"渲染成网页"、"生成审阅页"、"render as html"、"html page" 触发，或当用户对着方案、分析、评审、报告、Markdown 文件抱怨"太长了看不下去"、"头晕"、"too long to read"时使用。无参数 = 渲染当前对话的主交付物；`.md` 路径参数 = 渲染该文件。每次运行都生成一个带时间戳、单文件、零 JavaScript 的新自包含 HTML 页面，写入 `.smart/pages/`，保留此前所有页面，并在浏览器打开新页面。仅为展示层——页面是派生视图，绝不是事实来源。
+description: 当用户希望把冗长交付物渲染成可视化 HTML 审阅页时使用本 skill。通过 `/smart:show`、"show"、"render as html"、"html page"，或任何语言中表达把内容做成 HTML 审阅页、方案、分析、评审、报告或 Markdown 文件太长难读的等价意图触发。无参数 = 渲染当前对话的主交付物；`.md` 路径参数 = 渲染该文件。每次运行都生成一个带时间戳、单文件、零 JavaScript 的新自包含 HTML 页面，写入 `.smart/pages/`，保留此前所有页面，并在浏览器打开新页面。仅为展示层——页面是派生视图，绝不是事实来源。
 argument-hint: "无参数 = 渲染当前对话交付物；<path>.md = 渲染该文件；尾随词语可缩小主题"
 model: sonnet
 ---
