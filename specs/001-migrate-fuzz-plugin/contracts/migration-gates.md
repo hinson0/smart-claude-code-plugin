@@ -17,7 +17,7 @@
 - `plugins/fuzz` 含 59 个目标文件，Fuzz 两份 manifest 均为 `2.0.0`。
 - 两个根 marketplace 的插件集合均为 `{smart, fuzz}`，source path 一致。
 - 11 组迁入测试、配对、英文边界、插件验证和五份 README 检查全部通过。
-- Smart tree 仍为 `9353b504196c8de79d009c3612b891850e65ec2b`，版本仍为 `4.0.1`。
+- Smart tree 仍为 `ad9d3639e31805814e736afda21f43e59eb86302`，版本仍为 `5.0.0`。
 - Smart+Fuzz 双装冒烟证明两个插件独立发现、hook 和状态互不覆盖。
 
 失败时只修复目标，不删除源 Fuzz。

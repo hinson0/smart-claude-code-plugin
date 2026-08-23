@@ -5,7 +5,7 @@
 - 源仓库：`/Users/a114514/ce_repos/ce-workflow-codex-plugins`
 - 源 commit：`949d05e585a551fce1d677d95a57c4db84cd1c4b`
 - 源 `plugins/fuzz` tree：`e8f45ca255623202cb8989dbb23a7e631825b37c`
-- 目标 `plugins/smart` tree：`9353b504196c8de79d009c3612b891850e65ec2b`
+- 目标 `plugins/smart` tree：`ad9d3639e31805814e736afda21f43e59eb86302`
 - 核验日期：`2026-08-23`
 - 核验结果：源工作区干净，三项 Git 标识均与计划一致
 

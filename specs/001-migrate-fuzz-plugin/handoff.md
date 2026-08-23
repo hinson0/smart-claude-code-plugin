@@ -7,8 +7,8 @@
 - 仓库：`hinson0/smart-claude-code-plugins`
 - 分支：`yzb/migrate-fuzz-plugin`
 - 已验证远端检查点：`7118cf3cd9045ad0faa6cf0115363677fb2bea1c`
-- 插件：Fuzz 2.0.0、Smart 4.0.1
-- Fuzz 文件：59；Smart tree：`9353b504196c8de79d009c3612b891850e65ec2b`
+- 插件：Fuzz 2.0.0、Smart 5.0.0
+- Fuzz 文件：59；Smart tree：`ad9d3639e31805814e736afda21f43e59eb86302`
 - 本地最终测试：64 passed，0 failed
 - 远端归档测试：61 passed，0 failed
 - Claude Code/Codex 远端安装、来源切换和 Smart+Fuzz 双装：通过

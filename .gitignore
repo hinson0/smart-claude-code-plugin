@@ -1,5 +1,14 @@
 *.swp
+*.tmp
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
 .claude/*local*
 .claude/hook-logs/
 .claude/worktrees/

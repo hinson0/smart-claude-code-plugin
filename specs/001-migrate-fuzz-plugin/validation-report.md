@@ -8,7 +8,7 @@
 - Fuzz skills：10；每项具有英文 `SKILL.md` 与中文 `CN.md`。
 - References：4 组英文/中文配对。
 - Fuzz 双 manifest：2.0.0。
-- Smart 双 manifest：4.0.1；tree 保持 `9353b504196c8de79d009c3612b891850e65ec2b`。
+- Smart 双 manifest：5.0.0；tree 保持 `ad9d3639e31805814e736afda21f43e59eb86302`。
 - 根 marketplace：Codex/Claude Code 均发布 `{smart, fuzz}`。
 - `claude plugin validate plugins/fuzz`：通过。
 - `claude plugin validate .`：通过。
@@ -29,7 +29,7 @@
 - `fuzz@ce-workflow` → `fuzz@smart`：Claude Code、Codex 均通过。
 - 切换耗时：5 秒。
 - `.fuzz`、`$CODEX_HOME/fuzz`、`fuzz-*` 状态延续：通过。
-- Smart 4.0.1 与 Fuzz 2.0.0 同时安装：两个宿主均通过。
+- Smart 5.0.0 与 Fuzz 2.0.0 同时安装：两个宿主均通过。
 - Smart/Fuzz hooks、payload、命名空间和状态隔离：通过。
 
 ## 源仓退役

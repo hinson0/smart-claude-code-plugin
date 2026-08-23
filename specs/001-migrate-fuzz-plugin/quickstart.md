@@ -56,7 +56,7 @@ claude plugin validate plugins/fuzz
 claude plugin validate .
 ```
 
-预期：Fuzz 为 `2.0.0`，Smart 为 `4.0.1`；两个根 marketplace 均发现 `{smart, fuzz}`；
+预期：Fuzz 为 `2.0.0`，Smart 为 `5.0.0`；两个根 marketplace 均发现 `{smart, fuzz}`；
 插件验证全部通过。
 
 ## 5. 运行契约与不变性检查

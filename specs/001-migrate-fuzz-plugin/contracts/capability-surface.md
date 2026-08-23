@@ -21,10 +21,10 @@
 
 两者分别保留自己的集成门禁和测试。双装时必须显式使用完整命名空间，文档不得声称等价。
 
-### `fuzz:one-by-one` 与 `smart:advance-one-step`
+### `fuzz:one-by-one`
 
-Fuzz 入口从无 Cycle 状态建立 Red 并让用户手写 Green；Smart 入口推进已经展示的教学 Cycle，
-`next` 和 `review` 具有不同授权。两者不共享状态或自动跳转。
+Fuzz 入口从无 Cycle 状态建立 Red 并让用户手写 Green。Smart 5.0 不再提供旧的逐 Cycle
+入口；Fuzz 不得依赖被移除的 Smart skill 或共享其历史状态。
 
 ### `fuzz:html` 与 `smart:show`
 
@@ -35,4 +35,3 @@ Fuzz 入口是忠实、可脚本化的文件转换；Smart 入口是模型驱动
 
 每个 Fuzz skill 必须在 Codex 与 Claude Code 中以 Fuzz 命名空间可发现。完整调用语法由各
 宿主 README 给出；任何 skill 不得依赖 Smart 已安装才能被发现。
-

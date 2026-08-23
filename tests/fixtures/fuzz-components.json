@@ -51,8 +51,8 @@
     ]
   },
   "smart": {
-    "tree": "9353b504196c8de79d009c3612b891850e65ec2b",
-    "version": "4.0.1"
+    "tree": "ad9d3639e31805814e736afda21f43e59eb86302",
+    "version": "5.0.0"
   },
   "fuzz": {
     "version": "2.0.0",

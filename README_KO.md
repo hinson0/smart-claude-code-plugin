@@ -119,13 +119,7 @@ codex plugin add fuzz@smart
 - **도움말 개요** — `/smart:help`로 모든 스킬, 훅, 에이전트를 동적으로 스캔하여 설명과 함께 나열합니다.
 - **Joke Teller Agent** — 적절한 타이밍에 프로그래머 농담을 들려주어 업무 스트레스를 해소합니다.
 - **내장 코딩 규칙** — 사전 작성된 규칙 파일(예: Pydantic V2 표준)이 `rules/`에 저장됩니다. 프로젝트의 `.claude/rules/`에 심볼릭 링크를 생성하면 활성화됩니다.
-- **세션 지식 증류** — `/smart:distill`은 현재 세션에서 가치 있는 Q&A를 추출하고 주제별 markdown 파일로 클러스터링하여 지식 베이스에 기록합니다. 대상 디렉터리는 로컬 `.smart/settings.json`에서 읽으며, 없으면 `AskUserQuestion`으로 전역 `~/.smart/settings.json`을 재사용할지 로컬 설정을 새로 만들지 묻고 — 둘 다 없으면 디렉터리를 묻습니다 — 선택을 로컬에 저장하므로 이후 실행은 조용합니다. 디렉터리 질문은 메인 세션에 남고, 무거운 **분석**은 백그라운드 **fork**에서 `sonnet`으로 실행되며(추출·클러스터링·3상태 차분 비교), 완전히 포맷된 write-plan을 `haiku` 서브 에이전트에 넘겨 기계적인 파일 쓰기를 맡깁니다 — 비싼 판단은 sonnet, 값싼 필사는 haiku가 담당하고, 메인 컨텍스트는 짧은 요약만 받습니다. 기본값 `.smart/knowledges/`; `{date}` 토큰으로 `~/knowledges/md/{date}` 같은 날짜 중첩 디렉터리를 지원합니다. 중복/신규/차분 비교로 재증류 시 중복 없이 추가되며, 검토 완료 파일(`.printed.md` 또는 동일 이름 PDF 동반)은 절대 건드리지 않습니다.
-- **Workflow 모델 계층화** — `/smart:wfb`는 Workflow 스크립트를 토큰 절약형으로 만듭니다: 각 `agent()`를 난이도별로 계층화하고(기계적 작업은 haiku, 본체는 sonnet, 수렴 및 중요/어려운 구현은 opus), fan-out 전에 호출을 가지치기하며, schema로 출력을 제약합니다. Workflow 스크립트를 작성할 때마다 자동 적용됩니다.
-- **클립보드 스크린샷 업로더** — `/smart:sendshot`은 크로스플랫폼 `sendshot` shell 함수를 설치합니다: 클립보드 이미지를 캡처해 `scp`로 원격 호스트(예: EC2)에 업로드한 뒤 원격 경로를 출력하고 클립보드에 다시 복사합니다. WSL(PowerShell로 Windows 클립보드 읽기)과 macOS(`pngpaste`/`osascript`)를 지원합니다. zsh에서는 **`Ctrl+G`**를 바인딩해 어느 프롬프트에서나 sendshot을 실행할 수 있습니다. 설정 — 호스트, 키, 원격 디렉터리 — 은 `~/.smart/settings.json`에 있으며 런타임에 읽으므로 호스트를 바꿔도 재설치가 필요 없습니다. 원격 디렉터리는 `mkdir -p`로 자동 생성됩니다.
 - **학습 모드** — `/smart:learning 1`은 *당신이* 코드를 직접 손으로 작성하는 간단한 협업 코딩 모드를 켭니다. 비율도 설정도 없는 단순한 켜기/끄기 스위치입니다. 켜져 있는 동안 Claude가 작성할 코드는 대신 콘솔로 출력됩니다 — 각 조각은 새 파일 / 새 코드 / 수정 / 삭제로 파일과 위치와 함께 표시되어 — 당신이 입력하고, Claude는 당신이 저장한 코드를 검토한 뒤 다음으로 넘어갑니다(한 번에 한 작업). 켜면 규칙이 `.claude/CLAUDE.local.md`(Claude Code가 매 세션 로드하는 git-ignore된 프로젝트별 메모리)에 주입되어 지속되며, 그 블록의 존재 자체가 전체 상태이고, `/smart:learning 0`이 그것을 제거합니다. `.smart/settings.json`에는 아무것도 저장되지 않습니다.
-- **단일 Cycle TDD 교육 게이트** — `/smart:advance-one-step`은 이미 제시된 Red → Green cycle을 한 번에 정확히 하나만 진행합니다. `next`라고 하면 agent가 현재 cycle을 저장하고, 직접 저장한 뒤 `review`라고 하면 agent가 읽기 전용으로 검토합니다. 통과 후에는 다음 cycle만 제시하고 멈추며, 수동 복사를 위해 검색 가능한 정확한 코드 앵커를 제공합니다.
-- **대화 할 일 앵커** — `/smart:todo`는 세션 중 Claude가 꺼내 놓는 결정들을 지속적인 `.smart/todo-list.md`에 담아, 분기가 아무리 늘어도 묻히지 않는 하나의 **메인라인**을 고정하고, 갈라져 나온 결정들을 대조·정리된 **브랜치**로 세워 둡니다 — 재실행 시 중복을 쌓지 않고 기존 항목에 병합합니다. 매 실행마다 메인라인을 다시 앞으로 꺼내, 대화가 곁길로 샜을 때 당신을 되돌려 놓습니다. `main <목표>`로 앵커를 설정하고, `done <id>`로 항목을 마무리합니다. git-ignore되는 프로젝트별 개인 스크래치.
-- **열린 루프 노트북** — `/smart:notebook`은 Claude가 대화 도중 꺼내 놓는 *열린 루프*(open loop)의 실시간 목록을 유지합니다 — 다른 것을 좇다가 꺼낸 `★ Insight`, 제안된 다음 단계, 후속 질문들로, 대화가 갈라지면서 묻혀 버립니다. `Stop` **hook**이 *매* 응답 후 표시된 블록을 자동으로 포착하고(결정적 — 건너뛰거나 잊을 수 없음), skill은 hook이 파싱할 수 없는 자유 형식 단서를 추가하고 중복을 제거하며 `done <id>`로 루프를 닫게 해 줍니다. `.smart/notebook.md`에 저장(git-ignore). `todo`(양자택일 결정), `distill`(지식 아카이브)과 구별 — 이것은 아직 후속 처리되지 않은 것을 추적합니다.
 - **HTML 리뷰 페이지** — `/smart:show`는 긴 산출물 — 현재 대화의 계획/분석/리뷰 또는 Markdown 파일 — 을 단일 파일, 제로 JavaScript의 자체 완결형 HTML 리뷰 페이지로 렌더링해 브라우저로 엽니다. 회색 배경 + 흰 카드 비주얼 시스템: 고정 목차, 번호 섹션, 리스크 배지, 대안 비교 카드(선택안 강조), 인라인 SVG 다이어그램, `<details>` 접기. 세 가지 고정 레이아웃 레시피(plan-review / explainer / report)가 페이지 구조의 일관성을 보장합니다. 모든 페이지는 출처 푸터(시간, commit SHA, 소스)를 필수로 포함하며 파생 뷰일 뿐 — Markdown이 여전히 사실의 원천입니다. 실행할 때마다 `.smart/pages/`(git-ignore)에 타임스탬프가 붙은 새 파일을 쓰며, 이전 페이지를 덮어쓰지 않고 불변 리뷰 자산으로 보존합니다. 데모는 `assets/demos/` 참고.
 
 ---
@@ -147,13 +141,7 @@ codex plugin add fuzz@smart
 | `/smart:close-issue <IID-or-URL>` | 단일 GitLab Issue를 읽기 전용으로 확인하고, 명시적 종료 승인 후 감사 가능한 개발 자산 note를 게시한 다음 닫기 |
 | `/smart:hud [0\|1\|2\|reset\|normal\|all]` | 상태 표시줄 설치 (`1`/`normal`=최소, `2`/`all`=전체) 또는 백업 복원 (`0`/`reset`), user 스코프 |
 | `/smart:help [skill\|hook\|agent]` | 모든 플러그인 컴포넌트 개요 표시 (또는 카테고리별 필터) |
-| `/smart:distill [디렉터리]` | 현재 세션을 주제별 지식 파일로 증류 (기본값 `.smart/knowledges/`) |
-| `/smart:wfb` | Workflow 스크립트 작성을 위한 토큰 절약·모델 계층화 가이드(난이도별 haiku/sonnet/opus) |
-| `/smart:sendshot [install\|config\|uninstall]` | 크로스플랫폼 `sendshot` 함수 설치(클립보드 이미지 → `scp`로 원격 전송 → 원격 경로 복사); 설정은 `~/.smart/settings.json` |
 | `/smart:learning [0\|1]` | 학습 모드 토글 — *당신이* 코드를 직접 작성; Claude가 각 조각을 새 파일 / 새 코드 / 수정 / 삭제로 표시해 콘솔에 출력하면 당신이 입력하고, 저장한 코드를 검토. `1`=켜기, `0`=끄기, 비어 있음=상태. 상태는 `.claude/CLAUDE.local.md`에 주입된 블록 — 설정도 비율도 없음 |
-| `/smart:advance-one-step` | 하나의 완전한 Red → Green 교육 cycle을 진행합니다. `next`는 agent가 저장하고, `review`는 사용자가 저장한 내용을 검토합니다. 통과 후 다음 cycle만 제시하고 멈춥니다 |
-| `/smart:todo [main <목표>\|done <id>]` | 세션에서 갈라져 나온 결정을 `.smart/todo-list.md`에 앵커 — 고정된 메인라인 + 대조·정리된 브랜치; 매 실행마다 메인라인을 다시 꺼내 되돌려 놓음. `main`=메인라인 설정, `done`=항목 마무리, 비어 있음=수집 및 대조 |
-| `/smart:notebook [done <id>]` | Claude가 꺼내는 열린 루프(★ Insight, 제안된 다음 단계, 후속 질문)를 `.smart/notebook.md`에 추적해 묻히지 않게 함. `Stop` hook이 매 응답마다 표시된 블록을 자동 포착; skill은 자유 형식 단서를 추가하고 상태를 관리. `done`=루프 닫기, 비어 있음=수집 및 목록 |
 | `/smart:show [<path>.md]` | 현재 대화 산출물(또는 Markdown 파일)을 타임스탬프가 붙은 새로운 자체 완결형 제로 JS HTML 리뷰 페이지로 렌더링해 `.smart/pages/`에 쓰고, 이전 페이지를 보존한 채 브라우저로 열기. 레이아웃 레시피 3종: plan-review / explainer / report |
 
 ---

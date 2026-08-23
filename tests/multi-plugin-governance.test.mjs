@@ -21,7 +21,7 @@ test("smart and fuzz are independent dual-host releases", async () => {
     ]);
 
   assert.equal(smartCodex.version, smartClaude.version);
-  assert.equal(smartCodex.version, "4.0.1");
+  assert.equal(smartCodex.version, "5.0.0");
   assert.equal(fuzzCodex.version, fuzzClaude.version);
   assert.equal(fuzzCodex.version, "2.0.0");
   assert.notEqual(smartCodex.version, fuzzCodex.version);
@@ -32,7 +32,7 @@ test("smart and fuzz are independent dual-host releases", async () => {
     cwd: ROOT,
     encoding: "utf8",
   }).trim();
-  assert.equal(smartTree, "9353b504196c8de79d009c3612b891850e65ec2b");
+  assert.equal(smartTree, "ad9d3639e31805814e736afda21f43e59eb86302");
 });
 
 test("plugin payloads do not proxy each other", async () => {

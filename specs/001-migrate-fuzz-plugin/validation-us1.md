@@ -8,13 +8,13 @@
 
 - 源 commit：`949d05e585a551fce1d677d95a57c4db84cd1c4b`
 - 源 Fuzz tree：`e8f45ca255623202cb8989dbb23a7e631825b37c`
-- Smart tree：`9353b504196c8de79d009c3612b891850e65ec2b`
+- Smart tree：`ad9d3639e31805814e736afda21f43e59eb86302`
 - 目标 Fuzz 文件：59
 - 目标 Fuzz skills：10，全部具有 `SKILL.md` 与 `CN.md`
 - 英文 references：4，全部具有 `CN[名称].md`
 - 两个 marketplace 插件集合：`{smart, fuzz}`
 - Fuzz 双 manifest：`2.0.0`
-- Smart 双 manifest：`4.0.1`
+- Smart 双 manifest：`5.0.0`
 
 ## 自动测试
 

@@ -115,7 +115,7 @@ Smart payload 和版本保持不变。
 **目标**：Smart 与 Fuzz 在目标仓独立版本、测试和运行；目标远端验收后安全退役源仓 Fuzz，
 不影响 `ce-workflow`。
 
-**独立测试**：只修改 Fuzz 时，Smart tree/4.0.1 不变；源退役后目标可重装 Fuzz，源两个
+**独立测试**：只修改 Fuzz 时，Smart tree/5.0.0 不变；源退役后目标可重装 Fuzz，源两个
 marketplace、CI、测试和版本规则只保留 `ce-workflow` 且全部通过。
 
 ### US3 测试（必须先失败）
@@ -142,7 +142,7 @@ marketplace、CI、测试和版本规则只保留 `ce-workflow` 且全部通过�
 
 - [X] T043 [P] 对照 FR-001 至 FR-015、SC-001 至 SC-008 和四份 contracts 建立需求到测试/证据追踪矩阵到 `specs/001-migrate-fuzz-plugin/traceability.md`
 - [X] T044 按 `specs/001-migrate-fuzz-plugin/quickstart.md` 顺序复跑目标本地、远端、双装、切换和源退役检查，并汇总到 `specs/001-migrate-fuzz-plugin/validation-report.md`
-- [X] T045 审计目标与源仓最终 Git diff/status、Fuzz 2.0.0、Smart 4.0.1、59 文件、历史 tag 和所有未执行检查，把未验证项明确记录到 `specs/001-migrate-fuzz-plugin/handoff.md`
+- [X] T045 审计目标与源仓最终 Git diff/status、Fuzz 2.0.0、Smart 5.0.0、59 文件、历史 tag 和所有未执行检查，把未验证项明确记录到 `specs/001-migrate-fuzz-plugin/handoff.md`
 
 ---
 

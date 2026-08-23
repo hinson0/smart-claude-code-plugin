@@ -15,7 +15,7 @@
 | FR-009 | T005–T014 | 目标全量 64 项测试 |
 | FR-010 | T026、T030、T036 | 五份 README 文档合同 |
 | FR-011 | T025、T035 | marketplace 集合与 Smart entry 合同 |
-| FR-012 | T015、T035 | Fuzz 2.0.0 / Smart 4.0.1 独立版本合同 |
+| FR-012 | T015、T035 | Fuzz 2.0.0 / Smart 5.0.0 独立版本合同 |
 | FR-013 | T028–T034 | `validation-switch.md` |
 | FR-014 | T031–T034、T041 | 远端双宿主验收、历史 tag 检查 |
 | FR-015 | T037–T041 | 源剩余 109 项测试与 release contract |
@@ -27,7 +27,7 @@
 | SC-001 | 通过 | 两个 marketplace 均为 `{smart, fuzz}` |
 | SC-002 | 通过 | 44→59 迁移清单，无遗漏 |
 | SC-003 | 通过 | Claude/Codex 远端安装、61 项远端合同、各 10 个 Agent |
-| SC-004 | 通过 | Smart tree `9353b504...`、版本 4.0.1 |
+| SC-004 | 通过 | Smart tree `9353b504...`、版本 5.0.0 |
 | SC-005 | 通过 | 10 个 skill、4 个 reference 和 hook 中文配对 |
 | SC-006 | 通过 | 五语言文档合同 |
 | SC-007 | 通过 | 来源切换 5 秒，状态和 Agent 延续 |

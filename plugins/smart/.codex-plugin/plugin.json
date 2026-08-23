@@ -1,6 +1,6 @@
 {
   "name": "smart",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "description": "Low-cost semantic Git commits, auditable GitLab Issue closeout, session utilities, and engineering rules.",
   "author": {
     "name": "Hinson",
@@ -15,7 +15,7 @@
   "interface": {
     "displayName": "Smart",
     "shortDescription": "Create focused commits and close GitLab Issues safely.",
-    "longDescription": "Smart adds low-cost semantic commit grouping, auditable GitLab Issue closeout, statusline setup, session knowledge distillation, and focused engineering utilities.",
+    "longDescription": "Smart adds low-cost semantic commit grouping, auditable GitLab Issue closeout, statusline setup, HTML review pages, and focused engineering utilities.",
     "developerName": "Hinson",
     "category": "Productivity",
     "capabilities": ["Automation", "Git", "Write"],

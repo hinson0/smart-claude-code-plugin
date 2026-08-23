@@ -17,7 +17,7 @@ Smart entry 的名称、source 和安装策略不得因新增 Fuzz 改变。Fuzz
 - `plugins/smart` 与 `plugins/fuzz` 各自拥有两份 manifest、skills、hooks、状态和测试合同。
 - Fuzz 迁移不得写入或调用 Smart payload；Smart 不安装、清理或开关 Fuzz Agent 和状态。
 - Fuzz 两份 manifest 名称均为 `fuzz`、版本均为 `2.0.0`。
-- Smart 两份 manifest 和 payload 保持 `4.0.1` 与计划记录的 tree 基线。
+- Smart 两份 manifest 和 payload 保持 `5.0.0` 与计划记录的 tree 基线。
 - 两插件可以同时安装；它们的版本不要求相同，也不联动升级。
 
 ## Hook 合同
@@ -40,6 +40,6 @@ Smart 与 Fuzz 都可以提供 `close-issue`，但必须用完整插件命名空
 ## 不变性门禁
 
 迁移完成时必须重新计算 `plugins/smart` tree，并与
-`9353b504196c8de79d009c3612b891850e65ec2b` 比较。若不同，必须解释为另一个独立变更或
+`ad9d3639e31805814e736afda21f43e59eb86302` 比较。若不同，必须解释为另一个独立变更或
 回退意外修改；不得把它混入 Fuzz 迁移。
 

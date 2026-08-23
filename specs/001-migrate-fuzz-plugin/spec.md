@@ -77,8 +77,8 @@ manifest、skill 和 hook 保持不变。
 - 源 checkout 不存在、不干净或 HEAD 偏离冻结基线时，必须停止写入并重新盘点。
 - 同时安装旧来源和新来源的 Fuzz 会产生两个同名插件及重复 hook，迁移说明必须禁止该状态。
 - Smart 与 Fuzz 都提供 `close-issue` 时，必须用完整命名空间区分；不得把两者描述为等价。
-- Fuzz `html` 与 Smart `show`、Fuzz `one-by-one` 与 Smart `advance-one-step` 可以并存，文档
-  必须说明各自用途，不得因主题相近而合并。
+- Fuzz `html` 与 Smart `show` 可以并存，文档必须说明各自用途，不得因主题相近而合并。
+  Fuzz `one-by-one` 保持独立入口，不依赖 Smart 提供对应能力。
 - Fuzz 的精确中文官职和称谓属于运行协议值；其他宿主加载内容仍须遵守目标仓语言规则。
 - 目标远端安装或任一宿主验收失败时，源 Fuzz 不得退役。
 - 用户卸载 Fuzz 前若希望清理全机受管 Agent，必须先通过 Fuzz 的用户级关闭流程处理；
@@ -155,4 +155,3 @@ manifest、skill 和 hook 保持不变。
 - Smart 与 Fuzz 可以同时安装；旧来源 Fuzz 与新来源 Fuzz 不支持同时安装。
 - 目标仓的语言、翻译、双宿主和验证治理适用于仓库内每个独立插件。
 - 当前源基线为 `949d05e585a551fce1d677d95a57c4db84cd1c4b`；实施前必须再次确认。
-

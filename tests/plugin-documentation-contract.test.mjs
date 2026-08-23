@@ -14,7 +14,6 @@ const REQUIRED = [
   "codex plugin remove fuzz@ce-workflow",
   "close-issue",
   "one-by-one",
-  "advance-one-step",
   "html",
   "show",
 ];
@@ -27,4 +26,3 @@ test("all five README variants describe the same independent plugin surface", as
     }
   }
 });
-

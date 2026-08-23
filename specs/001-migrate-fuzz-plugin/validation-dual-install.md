@@ -9,14 +9,14 @@
 
 隔离配置同时安装：
 
-- `smart@smart` 4.0.1，enabled=true
+- `smart@smart` 5.0.0，enabled=true
 - `fuzz@smart` 2.0.0，enabled=true
 
 两个插件分别位于自己的 cache 路径，没有 payload 合并。
 
 ## Codex
 
-隔离配置的 installed 列表同时包含 Smart 4.0.1 与 Fuzz 2.0.0；两者 source 分别指向
+隔离配置的 installed 列表同时包含 Smart 5.0.0 与 Fuzz 2.0.0；两者 source 分别指向
 `plugins/smart` 和 `plugins/fuzz`，available 列表为空。
 
 ## Hook 与状态边界

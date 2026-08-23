@@ -10,7 +10,7 @@
 迁到本仓库的 `plugins/fuzz`，让两个根级 marketplace 同时发布 `smart` 与 `fuzz`。
 Fuzz 保留自己的名称、命名空间、状态、hook、Agent 和行为合同；因宿主运行源由中文改为
 英文并新增中文配对，Fuzz 目标版本定为 `2.0.0`。Smart payload 保持 tree
-`9353b504196c8de79d009c3612b891850e65ec2b` 和版本 `4.0.1` 不变。目标远端双宿主验收通过后，
+`ad9d3639e31805814e736afda21f43e59eb86302` 和版本 `5.0.0` 不变。目标远端双宿主验收通过后，
 再单独退役源仓的 Fuzz 分发入口。
 
 ## 技术背景
@@ -58,7 +58,7 @@ marketplace 和五份 README 同步更新
 - **IV. 自动化范围与安全：通过。** Fuzz 各 skill 的授权与失败边界原样保留；Smart 不调用、
   清理或开关 Fuzz 的状态和 Agent。
 - **V. 独立版本化且经过验证的交付：通过。** Fuzz 因不兼容语言合同变化升至 `2.0.0`；
-  Smart payload 无变化，版本保持 `4.0.1`。
+  Smart payload 无变化，版本保持 `5.0.0`。
 - **仓库约束与质量门禁：通过。** Fuzz 位于独立目录，测试和文档明确适用范围；源退役
   保留历史版本和回退证据。
 
@@ -104,7 +104,7 @@ README_TW.md
 README_KO.md
 README_JA.md
 plugins/
-├── smart/                      # payload 与 4.0.1 保持不变
+├── smart/                      # payload 与 5.0.0 保持不变
 └── fuzz/
     ├── .codex-plugin/plugin.json
     ├── .claude-plugin/plugin.json

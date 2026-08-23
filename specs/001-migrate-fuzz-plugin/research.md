@@ -4,7 +4,7 @@
 
 **决策**：源基线固定为 commit `949d05e585a551fce1d677d95a57c4db84cd1c4b`，其中
 `plugins/fuzz` tree 为 `e8f45ca255623202cb8989dbb23a7e631825b37c`。目标 Smart payload
-基线为 tree `9353b504196c8de79d009c3612b891850e65ec2b`。实施开始前重新核对源工作区干净、
+基线为 tree `ad9d3639e31805814e736afda21f43e59eb86302`。实施开始前重新核对源工作区干净、
 HEAD 未漂移；目标完成后重新核对 Smart tree 未变。
 
 **理由**：不可变 tree 能区分“迁移 Fuzz”与“意外修改 Smart”，也避免缓存或旧 worktree
@@ -27,7 +27,7 @@ Agent 和测试；不写入 `plugins/smart`。
 
 ## 3. Fuzz 目标版本定为 2.0.0
 
-**决策**：目标 Fuzz 两份 manifest 都使用 `2.0.0`；Smart 两份 manifest 继续使用 `4.0.1`。
+**决策**：目标 Fuzz 两份 manifest 都使用 `2.0.0`；Smart 两份 manifest 继续使用 `5.0.0`。
 
 **理由**：源 Fuzz `1.0.0` 的宿主指令、脚本消息和注释以中文为默认运行合同；目标宪法要求
 英文运行源并把中文转为配对文档。这会改变默认交互和确定性错误消息，属于不兼容变更，
@@ -51,10 +51,10 @@ reference；为每个脚本另建中文副本没有治理价值，均拒绝。
 
 ## 5. Smart 与 Fuzz 共存但不融合
 
-**决策**：Smart+Fuzz 可以同时安装。两套 `close-issue`、Fuzz `one-by-one` 与 Smart
-`advance-one-step`、Fuzz `html` 与 Smart `show` 均保留各自完整命名空间和合同；两插件
-hooks 分别加载，无需跨插件去重。Smart 不管理 `$CODEX_HOME/fuzz`、`.fuzz/` 或
-`fuzz-*.toml`。
+**决策**：Smart+Fuzz 可以同时安装。两套 `close-issue`、Fuzz `html` 与 Smart `show` 均
+保留各自完整命名空间和合同；Fuzz `one-by-one` 保持独立，不依赖 Smart 5.0 已移除的旧
+逐 Cycle 入口。两插件 hooks 分别加载，无需跨插件去重。Smart 不管理
+`$CODEX_HOME/fuzz`、`.fuzz/` 或 `fuzz-*.toml`。
 
 **理由**：完整命名空间已隔离同名能力，相关入口的门禁、写权限主体和用户结果并不相同。
 Smart greet 不输出宫廷提示，与 Fuzz SessionStart 也没有重复副作用。
@@ -100,4 +100,3 @@ Fuzz marketplace entry、目录、专属测试和发布成员，同时保留历�
 
 **考虑过的替代方案**：先删源、跨仓一次性切换、删除历史 tag，都会制造分发空窗或破坏
 审计，因此拒绝。
-
