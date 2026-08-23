@@ -101,10 +101,10 @@ Smart payload 和版本保持不变。
 ### US2 实现与远端门禁
 
 - [X] T030 [US2] 在五种语言中补充 `fuzz@ce-workflow` 到 `fuzz@smart` 的卸载、安装、新会话、回退及禁止双装步骤，更新 `README.md`、`README_CN.md`、`README_TW.md`、`README_KO.md` 和 `README_JA.md`
-- [ ] T031 [US2] 在获得远端写入授权后创建可重新安装的目标 commit 或 `fuzz-v2.0.0` 检查点，并把 SHA、版本和来源记录到 `specs/001-migrate-fuzz-plugin/target-remote-checkpoint.md`
-- [ ] T032 [P] [US2] 从 T031 记录的远端检查点在干净 Claude Code 配置中仅安装 `fuzz@smart`，执行 10 类主场景并记录到 `specs/001-migrate-fuzz-plugin/validation-claude.md`
-- [ ] T033 [P] [US2] 从 T031 记录的远端检查点在干净 Codex 配置中仅安装 `fuzz@smart`，执行 10 类主场景并记录到 `specs/001-migrate-fuzz-plugin/validation-codex.md`
-- [ ] T034 [US2] 在隔离环境执行旧来源卸载、新来源安装和新会话状态延续流程，并把耗时、状态、Agent 和禁止双装证据记录到 `specs/001-migrate-fuzz-plugin/validation-switch.md`
+- [X] T031 [US2] 在获得远端写入授权后创建可重新安装的目标 commit 或 `fuzz-v2.0.0` 检查点，并把 SHA、版本和来源记录到 `specs/001-migrate-fuzz-plugin/target-remote-checkpoint.md`
+- [X] T032 [P] [US2] 从 T031 记录的远端检查点在干净 Claude Code 配置中仅安装 `fuzz@smart`，执行 10 类主场景并记录到 `specs/001-migrate-fuzz-plugin/validation-claude.md`
+- [X] T033 [P] [US2] 从 T031 记录的远端检查点在干净 Codex 配置中仅安装 `fuzz@smart`，执行 10 类主场景并记录到 `specs/001-migrate-fuzz-plugin/validation-codex.md`
+- [X] T034 [US2] 在隔离环境执行旧来源卸载、新来源安装和新会话状态延续流程，并把耗时、状态、Agent 和禁止双装证据记录到 `specs/001-migrate-fuzz-plugin/validation-switch.md`
 
 **检查点**：目标远端 Fuzz 可替代旧来源，且源退役硬门禁已有双宿主证据。
 
@@ -120,17 +120,17 @@ marketplace、CI、测试和版本规则只保留 `ce-workflow` 且全部通过�
 
 ### US3 测试（必须先失败）
 
-- [ ] T035 [P] [US3] 编写每插件双 manifest 自洽、不同插件版本独立、两个 marketplace 集合一致和 Smart tree 不变合同到 `tests/multi-plugin-governance.test.mjs`
-- [ ] T036 [P] [US3] 编写五份 README 的插件集合、完整命名空间、相邻能力差异、双装与切换说明一致性合同到 `tests/plugin-documentation-contract.test.mjs`
-- [ ] T037 [P] [US3] 为源仓退役后的 Fuzz entry、目录、专属测试、PDF CI 命令和 release loop 消失条件补充断言到 `/Users/a114514/ce_repos/ce-workflow-codex-plugins/tests/release-ci-contract.test.mjs`
+- [X] T035 [P] [US3] 编写每插件双 manifest 自洽、不同插件版本独立、两个 marketplace 集合一致和 Smart tree 不变合同到 `tests/multi-plugin-governance.test.mjs`
+- [X] T036 [P] [US3] 编写五份 README 的插件集合、完整命名空间、相邻能力差异、双装与切换说明一致性合同到 `tests/plugin-documentation-contract.test.mjs`
+- [X] T037 [P] [US3] 为源仓退役后的 Fuzz entry、目录、专属测试、PDF CI 命令和 release loop 消失条件补充断言到 `/Users/a114514/ce_repos/ce-workflow-codex-plugins/tests/release-ci-contract.test.mjs`
 
 ### US3 实现与源退役
 
-- [ ] T038 [US3] 在 T032、T033、T034 全部通过且获得源仓退役授权后，删除源 Fuzz entries 并加入迁址说明、移除 Fuzz 版本规则，更新 `/Users/a114514/ce_repos/ce-workflow-codex-plugins/.agents/plugins/marketplace.json`、`/Users/a114514/ce_repos/ce-workflow-codex-plugins/.claude-plugin/marketplace.json`、`/Users/a114514/ce_repos/ce-workflow-codex-plugins/README.md` 和 `/Users/a114514/ce_repos/ce-workflow-codex-plugins/AGENTS.md`
-- [ ] T039 [P] [US3] 在 T032、T033、T034 全部通过且获得源仓退役授权后，按 `specs/001-migrate-fuzz-plugin/migration-inventory.md` 删除 `/Users/a114514/ce_repos/ce-workflow-codex-plugins/plugins/fuzz/` 及 `/Users/a114514/ce_repos/ce-workflow-codex-plugins/tests/` 中已迁出的 11 组 Fuzz 专属测试
-- [ ] T040 [P] [US3] 在 T032、T033、T034 全部通过且获得源仓退役授权后，移除 PDF 专项测试并把发布循环改为仅 `ce-workflow`，更新 `/Users/a114514/ce_repos/ce-workflow-codex-plugins/.gitlab-ci.yml` 和 `/Users/a114514/ce_repos/ce-workflow-codex-plugins/tests/release-ci-contract.test.mjs`
-- [ ] T041 [US3] 运行源仓剩余测试、两个 marketplace 和更新后发布契约，确认历史 `fuzz-v*` tag/Release 未移动，并把结果记录到 `specs/001-migrate-fuzz-plugin/validation-source-retirement.md`
-- [ ] T042 [US3] 在目标隔离配置同时安装 `smart@smart` 与 `fuzz@smart`，验证各自命名空间、相邻能力、hook、状态和 Agent 独立，并记录到 `specs/001-migrate-fuzz-plugin/validation-dual-install.md`
+- [X] T038 [US3] 在 T032、T033、T034 全部通过且获得源仓退役授权后，删除源 Fuzz entries 并加入迁址说明、移除 Fuzz 版本规则，更新 `/Users/a114514/ce_repos/ce-workflow-codex-plugins/.agents/plugins/marketplace.json`、`/Users/a114514/ce_repos/ce-workflow-codex-plugins/.claude-plugin/marketplace.json`、`/Users/a114514/ce_repos/ce-workflow-codex-plugins/README.md` 和 `/Users/a114514/ce_repos/ce-workflow-codex-plugins/AGENTS.md`
+- [X] T039 [P] [US3] 在 T032、T033、T034 全部通过且获得源仓退役授权后，按 `specs/001-migrate-fuzz-plugin/migration-inventory.md` 删除 `/Users/a114514/ce_repos/ce-workflow-codex-plugins/plugins/fuzz/` 及 `/Users/a114514/ce_repos/ce-workflow-codex-plugins/tests/` 中已迁出的 11 组 Fuzz 专属测试
+- [X] T040 [P] [US3] 在 T032、T033、T034 全部通过且获得源仓退役授权后，移除 PDF 专项测试并把发布循环改为仅 `ce-workflow`，更新 `/Users/a114514/ce_repos/ce-workflow-codex-plugins/.gitlab-ci.yml` 和 `/Users/a114514/ce_repos/ce-workflow-codex-plugins/tests/release-ci-contract.test.mjs`
+- [X] T041 [US3] 运行源仓剩余测试、两个 marketplace 和更新后发布契约，确认历史 `fuzz-v*` tag/Release 未移动，并把结果记录到 `specs/001-migrate-fuzz-plugin/validation-source-retirement.md`
+- [X] T042 [US3] 在目标隔离配置同时安装 `smart@smart` 与 `fuzz@smart`，验证各自命名空间、相邻能力、hook、状态和 Agent 独立，并记录到 `specs/001-migrate-fuzz-plugin/validation-dual-install.md`
 
 **检查点**：目标 marketplace 可长期独立维护两个插件，源仓 Fuzz 已安全退役且可回退。
 
@@ -140,9 +140,9 @@ marketplace、CI、测试和版本规则只保留 `ce-workflow` 且全部通过�
 
 **目的**：汇总宪法合规、需求追踪和完整端到端证据。
 
-- [ ] T043 [P] 对照 FR-001 至 FR-015、SC-001 至 SC-008 和四份 contracts 建立需求到测试/证据追踪矩阵到 `specs/001-migrate-fuzz-plugin/traceability.md`
-- [ ] T044 按 `specs/001-migrate-fuzz-plugin/quickstart.md` 顺序复跑目标本地、远端、双装、切换和源退役检查，并汇总到 `specs/001-migrate-fuzz-plugin/validation-report.md`
-- [ ] T045 审计目标与源仓最终 Git diff/status、Fuzz 2.0.0、Smart 4.0.1、59 文件、历史 tag 和所有未执行检查，把未验证项明确记录到 `specs/001-migrate-fuzz-plugin/handoff.md`
+- [X] T043 [P] 对照 FR-001 至 FR-015、SC-001 至 SC-008 和四份 contracts 建立需求到测试/证据追踪矩阵到 `specs/001-migrate-fuzz-plugin/traceability.md`
+- [X] T044 按 `specs/001-migrate-fuzz-plugin/quickstart.md` 顺序复跑目标本地、远端、双装、切换和源退役检查，并汇总到 `specs/001-migrate-fuzz-plugin/validation-report.md`
+- [X] T045 审计目标与源仓最终 Git diff/status、Fuzz 2.0.0、Smart 4.0.1、59 文件、历史 tag 和所有未执行检查，把未验证项明确记录到 `specs/001-migrate-fuzz-plugin/handoff.md`
 
 ---
 
