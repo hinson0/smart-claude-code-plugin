@@ -64,8 +64,9 @@ codex plugin add smart@smart
 ```
 
 Smart는 `ask`, `close-issue`, `commit`, `generate-wiki`, `github-skills-pdf`,
-`help`, `html`, `hud`, `learning`, `local`, `my-weekly`, `one-by-one`, `pair-write`,
-`show`의 열네 개 skill을 포함합니다. 일부 흐름은 Git, `glab`, Node.js, Python/PDF 도구,
+`help`, `html`, `hud`, `learning`, `local`, `matt-implement-all-tickets`,
+`my-weekly`, `one-by-one`, `pair-write`, `show`의 열다섯 개 skill을 포함합니다.
+일부 흐름은 Git, `gh`, `glab`, Node.js, Python/PDF 도구,
 브라우저 또는 문서 기능이 필요하며 각 skill은 자체 전제 조건을 확인합니다.
 모든 skill은 사용자가 직접 호출해야 합니다. 모델의 자동 호출에 의존하지 말고
 해당 `/smart:*` 또는 `$smart:*` 이름을 명시적으로 사용하세요.
@@ -85,6 +86,7 @@ Smart는 `ask`, `close-issue`, `commit`, `generate-wiki`, `github-skills-pdf`,
 
 - **세션 Hook** — 세션 시작 시 인사 (macOS `say` TTS를 통한 음성 출력).
 - **세션 로그** — 모든 도구 호출의 전체 입력 데이터가 `.smart/session-logs/`에 기록되어 사후 디버깅 및 감사에 활용할 수 있습니다.
+- **직렬 Ticket 전달** — `/smart:matt-implement-all-tickets`를 Matt `/implement`와 함께 명시적으로 로드하면 하나의 오케스트레이터 세션이 새 worker를 차례로 실행해 현재 `/to-tickets` 출력의 각 Ticket을 구현, 검증, 기록하고 닫습니다. 구성된 GitHub, GitLab, 로컬 Markdown tracker를 지원하며 첫 미완료 마감에서 중단합니다.
 - **감사 가능한 GitLab Issue 마감** — `/implement`가 구현을 commit하고 Review를 완료한 뒤 `/smart:close-issue`는 현재 브랜치의 구현 commit, 인수 증거, Review 결론을 확인합니다. 명시적인 종료 승인이 있으면 해당 개발 자산을 게시한 뒤 Issue를 닫습니다. 대상 브랜치 통합은 공개할 경계일 뿐 종료 조건이 아닙니다. `glab`만 사용하며 push, merge, MR/PR 생성, checklist 또는 label 변경 권한을 포함하지 않습니다.
 
 **유틸리티**
@@ -117,6 +119,7 @@ Claude Code에서는 `/smart:*`, Codex에서는 `$smart:*`를 사용하세요.
 | `/smart:commit` | 커밋만 수행 (스마트 그룹화, 자동 메시지 생성) |
 | `/smart:ask` | 실행이나 변경 없이 간결한 읽기 전용 안내 반환 |
 | `/smart:close-issue <IID-or-URL>` | 단일 GitLab Issue를 읽기 전용으로 확인하고, 명시적 종료 승인 후 감사 가능한 개발 자산 note를 게시한 다음 닫기 |
+| `/smart:matt-implement-all-tickets` | Matt `/implement`를 명시적으로 로드한 뒤 현재 `/to-tickets` 출력을 직렬로 구현하고 닫기 |
 | `/smart:generate-wiki` | 자료를 보호된 GitLab, GitHub 또는 로컬 Wiki로 정리 |
 | `/smart:github-skills-pdf [--notes 2\|4]` | GitHub skills 저장소에서 검증된 영중 A4 핸드북 생성 |
 | `/smart:html <input.md> [output.html]` | Markdown을 안전한 자체 완결형 HTML로 변환 |
@@ -211,7 +214,9 @@ ln -s /path/to/plugin/rules/pydantic-v2.md .claude/rules/pydantic-v2.md
 
 - **Claude Code** 또는 **Codex**(플러그인 지원) — 플러그인이 두 매니페스트를 모두 내장하여 어느 호스트에서도 네이티브로 동작
 - `git`
-- [`glab` CLI](https://gitlab.com/gitlab-org/cli) — `/smart:close-issue` 쓰기 작업에만 사용
+- Matt Pocock Skills의 `/implement` — `/smart:matt-implement-all-tickets`에 필요
+- [`gh` CLI](https://cli.github.com/) — `/smart:matt-implement-all-tickets`에서 GitHub Issues 사용 시 필요
+- [`glab` CLI](https://gitlab.com/gitlab-org/cli) — `/smart:close-issue`와 `/smart:matt-implement-all-tickets`에서 GitLab Issues 사용 시 필요
 - Node.js — `/smart:html` 및 마감 스크립트에 사용
 - Python 3, `reportlab`, 임베드 가능한 CJK 글꼴 — `/smart:github-skills-pdf`에 사용
 - `jq` — HUD 상태 표시줄에만 필요 (다른 기능은 불필요)

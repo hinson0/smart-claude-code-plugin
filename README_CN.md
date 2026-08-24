@@ -63,9 +63,10 @@ Claude Code 使用 `/smart:*`；Codex 提供对应的 `$smart:*` skills。
 codex plugin add smart@smart
 ```
 
-Smart 包含十四个 skills：`ask`、`close-issue`、`commit`、`generate-wiki`、
-`github-skills-pdf`、`help`、`html`、`hud`、`learning`、`local`、`my-weekly`、
-`one-by-one`、`pair-write` 和 `show`。部分流程依赖 Git、`glab`、Node.js、Python/PDF 工具、
+Smart 包含十五个 skills：`ask`、`close-issue`、`commit`、`generate-wiki`、
+`github-skills-pdf`、`help`、`html`、`hud`、`learning`、`local`、
+`matt-implement-all-tickets`、`my-weekly`、`one-by-one`、`pair-write` 和 `show`。
+部分流程依赖 Git、`gh`、`glab`、Node.js、Python/PDF 工具、
 浏览器或文档能力；每个 skill 都会检查自己的前置条件。
 所有 skill 都只由用户主动调用：请明确使用对应的 `/smart:*` 或
 `$smart:*` 名称，不依赖模型自动调用。
@@ -85,6 +86,7 @@ Smart 包含十四个 skills：`ask`、`close-issue`、`commit`、`generate-wiki
 
 - **会话 Hook** — 会话开始时问候（通过 macOS `say` TTS 语音播报）。
 - **会话日志** — 每次工具调用的完整输入数据均记录到 `.smart/session-logs/`，便于事后调试和审计。
+- **串行 Ticket 交付** — `/smart:matt-implement-all-tickets` 与 Matt `/implement` 一起显式加载后，用一个编排 session 驱动全新 workers，逐张实现、验证、记录并关闭当前 `/to-tickets` 输出。支持已配置的 GitHub、GitLab 和本地 Markdown tracker，并在首个未完成收口处停止。
 - **可审计的 GitLab Issue 收口** — `/implement` 完成提交与 Review 后，`/smart:close-issue` 会核对当前分支上的实现 commit、验收证据和 Review 结论。明确授权关闭后，它先发布这些开发资产、再关闭 Issue；目标分支是否集成只披露，不作为关闭门禁。仅使用 `glab`，不会推导出 push、merge、创建 MR/PR、修改 checklist 或标签的权限。
 
 **实用工具**
@@ -116,6 +118,7 @@ Claude Code 使用 `/smart:*`，Codex 使用 `$smart:*`。
 | `/smart:commit` | 仅提交（智能分组，自动生成 message） |
 | `/smart:ask` | 返回简洁只读指导，不执行命令或修改内容 |
 | `/smart:close-issue <IID或URL>` | 只读核对单个 GitLab Issue；明确授权关闭后，先发布可审计的开发资产记录，再关闭 Issue |
+| `/smart:matt-implement-all-tickets` | 显式加载 Matt `/implement` 后，串行实现并关闭当前 `/to-tickets` 输出 |
 | `/smart:generate-wiki` | 把资料整理为受保护的 GitLab、GitHub 或本地 Wiki |
 | `/smart:github-skills-pdf [--notes 2\|4]` | 从 GitHub skills 仓库生成经验证的英中 A4 手册 |
 | `/smart:html <input.md> [output.html]` | 把 Markdown 转为安全自包含 HTML，不自动打开浏览器 |
@@ -210,7 +213,9 @@ ln -s /path/to/plugin/rules/pydantic-v2.md .claude/rules/pydantic-v2.md
 
 - **Claude Code** 或 **Codex**（支持插件）—— 插件内置两套清单，在任一宿主都能原生运行
 - `git`
-- [`glab` CLI](https://gitlab.com/gitlab-org/cli) — 仅供 `/smart:close-issue` 写操作使用
+- Matt Pocock Skills 的 `/implement` — `/smart:matt-implement-all-tickets` 必需
+- [`gh` CLI](https://cli.github.com/) — `/smart:matt-implement-all-tickets` 使用 GitHub Issues 时需要
+- [`glab` CLI](https://gitlab.com/gitlab-org/cli) — `/smart:close-issue` 以及 `/smart:matt-implement-all-tickets` 使用 GitLab Issues 时需要
 - Node.js — 供 `/smart:html` 和收口脚本使用
 - Python 3、`reportlab` 与可嵌入 CJK 字体 — 供 `/smart:github-skills-pdf` 使用
 - `jq` — 仅 HUD 状态栏需要（其他功能无需）

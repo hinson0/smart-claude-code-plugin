@@ -65,8 +65,9 @@ codex plugin add smart@smart
 
 Smart には `ask`、`close-issue`、`commit`、`generate-wiki`、
 `github-skills-pdf`、`help`、`html`、`hud`、`learning`、`local`、
-`my-weekly`、`one-by-one`、`pair-write`、`show` の 14 個の skill が含まれます。
-一部のフローは Git、`glab`、Node.js、Python/PDF ツール、ブラウザ、文書機能を必要とし、
+`matt-implement-all-tickets`、`my-weekly`、`one-by-one`、`pair-write`、`show` の
+15 個の skill が含まれます。一部のフローは Git、`gh`、`glab`、Node.js、
+Python/PDF ツール、ブラウザ、文書機能を必要とし、
 各 skill は自身の前提条件を確認します。
 すべての skill はユーザーが明示的に呼び出します。モデルの自動呼び出しに頼らず、
 対応する `/smart:*` または `$smart:*` 名を指定してください。
@@ -86,6 +87,7 @@ Smart には `ask`、`close-issue`、`commit`、`generate-wiki`、
 
 - **セッション Hook** — セッション開始時に挨拶（macOS `say` TTS による音声出力）。
 - **セッションログ** — すべてのツール呼び出しの完全な入力データが `.smart/session-logs/` に記録され、事後のデバッグと監査に活用できます。
+- **直列 Ticket デリバリー** — `/smart:matt-implement-all-tickets` を Matt `/implement` と同時に明示的に読み込むと、1 つのオーケストレーター session が新しい workers を順番に動かし、現在の `/to-tickets` 出力を Ticket ごとに実装、検証、記録、クローズします。設定済みの GitHub、GitLab、ローカル Markdown tracker をサポートし、最初の未完了クローズで停止します。
 - **監査可能な GitLab Issue クローズ** — `/implement` が実装を commit して Review を完了した後、`/smart:close-issue` は現在のブランチ上の実装 commit、受け入れ証拠、Review 結論を確認します。明示的な承認後、それらの開発資産を公開してから Issue を閉じます。対象ブランチへの統合は開示事項であり、クローズ条件ではありません。`glab` のみを使用し、push、merge、MR/PR 作成、checklist や label の変更権限は含みません。
 
 **ユーティリティ**
@@ -117,6 +119,7 @@ Claude Code では `/smart:*`、Codex では `$smart:*` を使用してくださ
 | `/smart:commit` | コミットのみ（スマートグルーピング、メッセージ自動生成） |
 | `/smart:ask` | 実行や変更をせず簡潔な読み取り専用ガイドを返す |
 | `/smart:close-issue <IID-or-URL>` | 単一 GitLab Issue を読み取り専用で確認し、明示的なクローズ承認後に監査可能な開発資産 note を公開してから閉じる |
+| `/smart:matt-implement-all-tickets` | Matt `/implement` を明示的に読み込んだ上で、現在の `/to-tickets` 出力を直列に実装してクローズ |
 | `/smart:generate-wiki` | 資料を保護された GitLab、GitHub、ローカル Wiki に整理 |
 | `/smart:github-skills-pdf [--notes 2\|4]` | GitHub skills リポジトリから検証済み英中 A4 ハンドブックを生成 |
 | `/smart:html <input.md> [output.html]` | Markdown を安全な自己完結型 HTML に変換 |
@@ -211,7 +214,9 @@ ln -s /path/to/plugin/rules/pydantic-v2.md .claude/rules/pydantic-v2.md
 
 - **Claude Code** または **Codex**（プラグイン対応）—— プラグインは両方のマニフェストを同梱し、どちらのホストでもネイティブに動作
 - `git`
-- [`glab` CLI](https://gitlab.com/gitlab-org/cli) — `/smart:close-issue` の書き込み操作にのみ使用
+- Matt Pocock Skills の `/implement` — `/smart:matt-implement-all-tickets` に必要
+- [`gh` CLI](https://cli.github.com/) — `/smart:matt-implement-all-tickets` で GitHub Issues を使う場合に必要
+- [`glab` CLI](https://gitlab.com/gitlab-org/cli) — `/smart:close-issue` と `/smart:matt-implement-all-tickets` で GitLab Issues を使う場合に必要
 - Node.js — `/smart:html` とクローズスクリプトに使用
 - Python 3、`reportlab`、埋め込み可能な CJK フォント — `/smart:github-skills-pdf` に使用
 - `jq` — HUD ステータスラインのみ必要（その他の機能には不要）

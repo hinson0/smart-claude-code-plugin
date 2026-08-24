@@ -9,6 +9,7 @@ const REQUIRED = [
   "/smart:*",
   "ask",
   "close-issue",
+  "matt-implement-all-tickets",
   "generate-wiki",
   "github-skills-pdf",
   "my-weekly",
