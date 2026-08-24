@@ -1,6 +1,7 @@
 ---
 name: help
-description: 当用户说"help"、"帮助"、"有什么功能"、"列出技能"、"列出hook"、"列出agent"、"怎么用"，或想了解 smart 插件的功能概览时使用此技能。
+description: 列出 Smart 的 skills、hooks 和 agents，可按类别筛选。
+disable-model-invocation: true
 argument-hint: "[skill|hook|agent]（空=显示全部）"
 ---
 

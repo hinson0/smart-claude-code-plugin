@@ -1,6 +1,7 @@
 ---
 name: my-weekly
-description: 读取本地或远程 Git 仓库中当前用户在指定自然周的提交，按成果主题汇总为个人 Markdown 周报。用于用户要根据自己的 Git 提交生成本周、上周或其他自然周的个人周报时。
+description: 将当前用户在指定自然周的 Git 提交汇总为个人 Markdown 周报。
+disable-model-invocation: true
 ---
 
 # 我的周报
@@ -12,8 +13,6 @@ description: 读取本地或远程 Git 仓库中当前用户在指定自然周�
 
 - Codex：`$smart:my-weekly <repo> [-N]`
 - Claude Code：`/smart:my-weekly <repo> [-N]`
-
-用户也可以直接说明要根据指定仓库和自然周生成个人周报。
 
 ## 解析请求
 

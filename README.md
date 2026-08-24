@@ -6,7 +6,7 @@
 
 </div>
 
-> Finished coding? Say **"commit"** — Smart groups unrelated changes, writes focused messages, and commits them.
+> Finished coding? Run **`/smart:commit`** in Claude Code or **`$smart:commit`** in Codex.
 
 A dual-host plugin for **Claude Code** and **Codex** with focused developer workflows, content tools, session utilities, and engineering rules.
 
@@ -67,6 +67,8 @@ Smart includes thirteen skills: `ask`, `close-issue`, `commit`, `generate-wiki`,
 `github-skills-pdf`, `help`, `html`, `hud`, `learning`, `local`, `my-weekly`,
 `one-by-one`, and `show`. Some workflows require Git, `glab`, Node.js, Python/PDF
 tooling, browser access, or document capabilities; each skill checks its own prerequisites.
+Every skill is user-invoked only: start it explicitly with its `/smart:*` or
+`$smart:*` name instead of relying on model invocation.
 
 ---
 
@@ -103,14 +105,10 @@ tooling, browser access, or document capabilities; each skill checks its own pre
 
 ## Usage
 
-**💬 Natural language** — just describe what you want:
+**💬 Explicit invocation** — every skill starts only when you name it:
+`/smart:*` in Claude Code or `$smart:*` in Codex.
 
-| What you say | What happens |
-|---|---|
-| "commit" / "save my work" / "done" | Smart commit only (stage + group + commit) |
-| "can this Issue close?" / "close GitLab Issue 42" | Read-only readiness gate, or note → close after explicit authorization |
-
-**⌨️ Slash commands** — for precise control:
+**⌨️ Skill commands** — replace `/smart:` with `$smart:` in Codex:
 
 | Command | What it does |
 |---|---|

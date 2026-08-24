@@ -43,7 +43,7 @@ test("both marketplaces publish only Smart", async () => {
   assert.deepEqual(pluginNames(claude), ["smart"]);
 });
 
-test("Smart is one dual-host version 6.0.0 release", async () => {
+test("Smart is one dual-host version 6.0.1 release", async () => {
   const [codex, claude] = await Promise.all([
     readJson("plugins/smart/.codex-plugin/plugin.json"),
     readJson("plugins/smart/.claude-plugin/plugin.json"),
@@ -51,8 +51,8 @@ test("Smart is one dual-host version 6.0.0 release", async () => {
 
   assert.equal(codex.name, "smart");
   assert.equal(claude.name, "smart");
-  assert.equal(codex.version, "6.0.0");
-  assert.equal(claude.version, "6.0.0");
+  assert.equal(codex.version, "6.0.1");
+  assert.equal(claude.version, "6.0.1");
   assert.equal(codex.skills, "./skills/");
 });
 
@@ -74,6 +74,21 @@ test("every Smart skill and reference has its Chinese companion", async () => {
     const files = await readdir(new URL(`plugins/smart/skills/${skill}/`, ROOT));
     assert.ok(files.includes("SKILL.md"), `${skill} is missing SKILL.md`);
     assert.ok(files.includes("CN.md"), `${skill} is missing CN.md`);
+
+    const [source, translation] = await Promise.all([
+      readFile(new URL(`plugins/smart/skills/${skill}/SKILL.md`, ROOT), "utf8"),
+      readFile(new URL(`plugins/smart/skills/${skill}/CN.md`, ROOT), "utf8"),
+    ]);
+    assert.match(
+      source,
+      /^disable-model-invocation: true$/m,
+      `${skill} allows model invocation`,
+    );
+    assert.match(
+      translation,
+      /^disable-model-invocation: true$/m,
+      `${skill} Chinese companion allows model invocation`,
+    );
   }
 
   for (const reference of REFERENCES) {

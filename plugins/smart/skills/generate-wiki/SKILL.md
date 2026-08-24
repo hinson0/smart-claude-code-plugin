@@ -1,6 +1,7 @@
 ---
 name: generate-wiki
-description: Distill text, links, PDFs, images, or repository material into a concise Markdown Wiki and publish it to GitLab Wiki or GitHub Wiki, falling back to a local Wiki when no remote integration is available. Use when the user wants source material, screenshots, documents, announcements, or tutorials organized into a Wiki or knowledge-base page.
+description: Distill source material into a concise Markdown Wiki and publish it to GitLab, GitHub, or a local Wiki.
+disable-model-invocation: true
 ---
 
 # Generate a Wiki
@@ -12,9 +13,6 @@ appropriate target.
 
 - Codex: `$smart:generate-wiki`
 - Claude Code: `/smart:generate-wiki`
-
-The user may also ask directly to turn material into a Wiki. Invocation syntax
-does not change target selection or safety boundaries.
 
 ## Read sources
 

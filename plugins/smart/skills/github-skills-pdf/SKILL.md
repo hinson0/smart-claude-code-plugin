@@ -1,6 +1,7 @@
 ---
 name: github-skills-pdf
-description: Pin a GitHub repository that publishes skills/*/SKILL.md to an exact commit, discover every official skill, and produce an A4 handbook with English source above Simplified Chinese translation. Includes a table of contents, bookmarks, page numbers, immutable source links, and page-by-page rendering review. Use when users want a GitHub skills repository, Agent skills collection, or plugin skills translated, typeset, and exported as a bilingual PDF.
+description: Build a verified A4 English-Chinese handbook from every official skill in a pinned GitHub skills repository.
+disable-model-invocation: true
 argument-hint: "<repository-or-url> [--notes 2|4] -- decide before building; 2 or 4 inserts one or two sheets of blank note pages after each chapter"
 ---
 
@@ -13,9 +14,6 @@ study handbook.
 
 - Codex: `$smart:github-skills-pdf`
 - Claude Code: `/smart:github-skills-pdf`
-
-Users may also directly ask to turn a GitHub skills repository into a bilingual
-PDF.
 
 ## Pin the scope
 

@@ -1,6 +1,7 @@
 ---
 name: commit
-description: This skill should be used when the user wants to commit staged or unstaged changes (e.g. "commit", "save my work", "done", "make a commit"). Performs only the commit operation — no CI checks, no version bump, no push.
+description: Group and commit staged or unstaged changes without CI checks, version bumps, or pushes.
+disable-model-invocation: true
 argument-hint: No arguments needed. Automatically identifies single or multiple features based on files and performs grouped commits.
 model: haiku
 ---

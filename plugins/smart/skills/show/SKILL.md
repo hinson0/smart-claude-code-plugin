@@ -1,6 +1,7 @@
 ---
 name: show
-description: This skill should be used when the user wants a long deliverable rendered as a visual HTML review page. Trigger on `/smart:show`, "show", "render as html", "html page", equivalent requests in any language to turn content into an HTML review page, or complaints in any language that a plan, analysis, review, report, or Markdown file is too long to read. No args = render the current conversation's main deliverable; a `.md` path argument = render that file. Each run writes a new timestamped, self-contained, zero-JavaScript HTML page to `.smart/pages/`, preserves all earlier pages, and opens the new page in the browser. Presentation layer only — the page is a derived view, never a source of truth.
+description: Render a long deliverable or Markdown file as a timestamped, self-contained HTML review page.
+disable-model-invocation: true
 argument-hint: "no args = render current conversation's deliverable; <path>.md = render that file; trailing words narrow the topic"
 model: sonnet
 ---

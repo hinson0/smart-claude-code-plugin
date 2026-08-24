@@ -1,6 +1,6 @@
 ---
 name: ask
-description: Provide concise, non-persistent, read-only guidance. Use when the user explicitly wants a judgment, command, code snippet, or checklist without file changes, command execution, or deliverable creation.
+description: Provide concise, non-persistent guidance without modifying files or running tools.
 disable-model-invocation: true
 ---
 

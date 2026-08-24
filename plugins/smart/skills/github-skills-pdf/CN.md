@@ -1,6 +1,7 @@
 ---
 name: github-skills-pdf
-description: 将 GitHub 上以 skills/*/SKILL.md 发布的技能仓库固定到明确 commit，完整发现正式 skills，并制作成英文原文在上、简体中文翻译在下的 A4 PDF；包含目录、书签、页码、固定源码链接和逐页渲染验收。用于用户要将 GitHub skills 仓库、Agent skills 集合或插件 skills 翻译、编排并导出为双语 PDF，特别是要求截图式英中标题、原文译文上下对应时。
+description: 将固定版本的 GitHub skills 仓库中所有正式 skill 制作为经验证的 A4 英中双语手册。
+disable-model-invocation: true
 argument-hint: "<仓库或 URL> [--notes 2|4] —— --notes 在每章后插入 1 张或 2 张笔记纸对应的空白页，留空不插入；须在构建前决定"
 ---
 
@@ -12,8 +13,6 @@ argument-hint: "<仓库或 URL> [--notes 2|4] —— --notes 在每章后插入 
 
 - Codex：`$smart:github-skills-pdf`
 - Claude Code：`/smart:github-skills-pdf`
-
-用户也可以直接说明要把 GitHub skills 仓库制作成双语 PDF。
 
 ## 固定范围
 

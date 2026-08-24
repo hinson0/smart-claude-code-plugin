@@ -1,6 +1,7 @@
 ---
 name: commit
-description: 当用户想要提交已暂存或未暂存的改动（如"commit"、"提交"、"保存改动"、"完成了"、"make a commit"）时使用。仅执行提交操作——不做 CI 检测、不做 version bump、不做 push。
+description: 分组并提交已暂存或未暂存的改动，不运行 CI、不升级版本、不推送。
+disable-model-invocation: true
 argument-hint: 无需参数。自动识别单个或多个 feature，按 feature 分组提交。
 model: haiku
 ---

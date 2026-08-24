@@ -6,7 +6,7 @@
 
 </div>
 
-> 写完代码？直接说 **“提交”**——Smart 会拆开不相关改动、生成聚焦的 message，并按组提交。
+> 写完代码？在 Claude Code 运行 **`/smart:commit`**，或在 Codex 运行 **`$smart:commit`**。
 
 这是一个同时支持 **Claude Code** 与 **Codex** 的插件，提供聚焦的开发工作流、内容工具、会话工具和工程规则。
 
@@ -67,6 +67,8 @@ Smart 包含十三个 skills：`ask`、`close-issue`、`commit`、`generate-wiki
 `github-skills-pdf`、`help`、`html`、`hud`、`learning`、`local`、`my-weekly`、
 `one-by-one` 和 `show`。部分流程依赖 Git、`glab`、Node.js、Python/PDF 工具、
 浏览器或文档能力；每个 skill 都会检查自己的前置条件。
+所有 skill 都只由用户主动调用：请明确使用对应的 `/smart:*` 或
+`$smart:*` 名称，不依赖模型自动调用。
 
 ---
 
@@ -103,14 +105,10 @@ Smart 包含十三个 skills：`ask`、`close-issue`、`commit`、`generate-wiki
 
 ## 使用方式
 
-**💬 自然语言** — 在对话中直接描述你的意图：
+**💬 明确调用** — 每个 skill 只在用户指定名称时启动：
+Claude Code 使用 `/smart:*`，Codex 使用 `$smart:*`。
 
-| 你说的话 | 执行效果 |
-|---|---|
-| "commit" / "提交" / "完成了" | 仅智能提交（暂存 + 分组 + 提交） |
-| "这个 Issue 能关吗" / "关闭 GitLab Issue 42" | 只读收口门禁，或在明确授权后 note → close |
-
-**⌨️ 斜杠命令** — 精确控制：
+**⌨️ Skill 命令** — 在 Codex 中把 `/smart:` 替换为 `$smart:`：
 
 | 命令 | 作用 |
 |---|---|

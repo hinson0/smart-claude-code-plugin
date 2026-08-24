@@ -6,7 +6,7 @@
 
 </div>
 
-> 코딩이 끝나면 **“커밋”**이라고 말하세요. Smart가 관련 없는 변경을 분리하고 명확한 message를 만든 뒤 그룹별로 커밋합니다.
+> 코딩이 끝나면 Claude Code에서 **`/smart:commit`**을, Codex에서 **`$smart:commit`**을 실행하세요.
 
 **Claude Code**와 **Codex**를 모두 지원하며 개발 워크플로, 콘텐츠 도구, 세션 유틸리티와 엔지니어링 규칙을 제공하는 플러그인입니다.
 
@@ -67,6 +67,8 @@ Smart는 `ask`, `close-issue`, `commit`, `generate-wiki`, `github-skills-pdf`,
 `help`, `html`, `hud`, `learning`, `local`, `my-weekly`, `one-by-one`, `show`의
 열세 개 skill을 포함합니다. 일부 흐름은 Git, `glab`, Node.js, Python/PDF 도구,
 브라우저 또는 문서 기능이 필요하며 각 skill은 자체 전제 조건을 확인합니다.
+모든 skill은 사용자가 직접 호출해야 합니다. 모델의 자동 호출에 의존하지 말고
+해당 `/smart:*` 또는 `$smart:*` 이름을 명시적으로 사용하세요.
 
 ---
 
@@ -104,14 +106,10 @@ Smart는 `ask`, `close-issue`, `commit`, `generate-wiki`, `github-skills-pdf`,
 
 ## 사용 방법
 
-**💬 자연어** — 채팅에서 원하는 것을 직접 설명:
+**💬 명시적 호출** — 각 skill은 사용자가 이름을 지정할 때만 시작합니다.
+Claude Code에서는 `/smart:*`, Codex에서는 `$smart:*`를 사용하세요.
 
-| 말하는 내용 | 실행 결과 |
-|---|---|
-| "commit" / "커밋해" / "완료" | 스마트 커밋만 (스테이징 + 그룹화 + 커밋) |
-| "이 Issue를 닫아도 돼?" / "GitLab Issue 42 닫아줘" | 읽기 전용 준비 상태 확인, 또는 명시적 승인 후 note → close |
-
-**⌨️ 슬래시 명령어** — 정확한 제어:
+**⌨️ Skill 명령어** — Codex에서는 `/smart:`를 `$smart:`로 바꾸세요:
 
 | 명령어 | 기능 |
 |---|---|

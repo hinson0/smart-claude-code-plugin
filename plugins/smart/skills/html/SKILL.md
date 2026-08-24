@@ -1,6 +1,7 @@
 ---
 name: html
-description: Convert a Markdown document into a safe, self-contained HTML file. Use when the user wants a Markdown file rendered as a standalone HTML page.
+description: Convert a Markdown document into a safe, self-contained HTML file.
+disable-model-invocation: true
 ---
 
 # Smart HTML
