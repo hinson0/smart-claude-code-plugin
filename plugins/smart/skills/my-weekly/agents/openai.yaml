@@ -1,4 +1,4 @@
 interface:
-  display_name: "My Weekly Report"
+  display_name: "smart:my-weekly"
   short_description: "Read personal Git commits and summarize the week by outcome"
   default_prompt: "Use $smart:my-weekly to summarize my commits in this repository for the current natural week."

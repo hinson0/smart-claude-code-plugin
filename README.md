@@ -70,6 +70,8 @@ Some workflows require Git, `gh`, `glab`, Node.js, Python/PDF
 tooling, browser access, or document capabilities; each skill checks its own prerequisites.
 Every skill is user-invoked only: start it explicitly with its `/smart:*` or
 `$smart:*` name instead of relying on model invocation.
+Codex displays each skill as `smart:<name>`, preserving its Claude Code
+invocation name without the leading slash or a separate title.
 
 ---
 

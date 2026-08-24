@@ -1,0 +1,3 @@
+interface:
+  display_name: "smart:local"
+  short_description: "Create a git-ignored file for personal project preferences"

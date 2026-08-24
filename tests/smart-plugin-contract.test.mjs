@@ -45,7 +45,7 @@ test("both marketplaces publish only Smart", async () => {
   assert.deepEqual(pluginNames(claude), ["smart"]);
 });
 
-test("Smart is one dual-host version 6.2.0 release", async () => {
+test("Smart is one dual-host version 6.2.1 release", async () => {
   const [codex, claude] = await Promise.all([
     readJson("plugins/smart/.codex-plugin/plugin.json"),
     readJson("plugins/smart/.claude-plugin/plugin.json"),
@@ -53,8 +53,8 @@ test("Smart is one dual-host version 6.2.0 release", async () => {
 
   assert.equal(codex.name, "smart");
   assert.equal(claude.name, "smart");
-  assert.equal(codex.version, "6.2.0");
-  assert.equal(claude.version, "6.2.0");
+  assert.equal(codex.version, "6.2.1");
+  assert.equal(claude.version, "6.2.1");
   assert.equal(codex.skills, "./skills/");
 });
 
@@ -80,6 +80,7 @@ test("agent instructions have one root source of truth", async () => {
   assert.match(agents, /根目录 `CLAUDE\.md`/);
   assert.match(claude, /^# Smart Dual-Host Plugin$/m);
   assert.match(claude, /disable-model-invocation: true/);
+  assert.match(claude, /display_name.*smart:<SKILL\.md name>/);
   await assert.rejects(access(new URL(".claude/CLAUDE.md", ROOT)));
 });
 
@@ -89,9 +90,13 @@ test("every Smart skill and reference has its Chinese companion", async () => {
     assert.ok(files.includes("SKILL.md"), `${skill} is missing SKILL.md`);
     assert.ok(files.includes("CN.md"), `${skill} is missing CN.md`);
 
-    const [source, translation] = await Promise.all([
+    const [source, translation, openaiMetadata] = await Promise.all([
       readFile(new URL(`plugins/smart/skills/${skill}/SKILL.md`, ROOT), "utf8"),
       readFile(new URL(`plugins/smart/skills/${skill}/CN.md`, ROOT), "utf8"),
+      readFile(
+        new URL(`plugins/smart/skills/${skill}/agents/openai.yaml`, ROOT),
+        "utf8",
+      ),
     ]);
     assert.match(
       source,
@@ -106,6 +111,14 @@ test("every Smart skill and reference has its Chinese companion", async () => {
 
     const sourceDescription = source.match(/^description: (.+)$/m)?.[1];
     const translatedDescription = translation.match(/^description: (.+)$/m)?.[1];
+    const sourceName = source.match(/^name: (.+)$/m)?.[1];
+    const displayName = openaiMetadata.match(/^\s*display_name: "(.+)"$/m)?.[1];
+    assert.equal(sourceName, skill, `${skill} name differs from its directory`);
+    assert.equal(
+      displayName,
+      `smart:${sourceName}`,
+      `${skill} display_name differs from its Claude Code invocation`,
+    );
     assert.ok(sourceDescription, `${skill} is missing a one-line description`);
     assert.ok(
       translatedDescription,

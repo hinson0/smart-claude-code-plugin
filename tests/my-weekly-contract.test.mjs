@@ -91,7 +91,7 @@ test("Smart publishes the read-only my-weekly skill", async () => {
   }
   assert.match(chineseFormat, /## 本周完成/);
   assert.match(chineseFormat, /本周期没有匹配的非合并提交/);
-  assert.match(openaiMetadata, /display_name: "My Weekly Report"/);
+  assert.match(openaiMetadata, /display_name: "smart:my-weekly"/);
   assert.match(openaiMetadata, /default_prompt: ".*\$smart:my-weekly.*"/);
   assert.doesNotMatch(
     skill + openaiMetadata + reportFormat,

@@ -105,7 +105,7 @@ test("Smart publishes the GitHub Skills bilingual PDF contract", async () => {
   }
   assert.doesNotMatch(skill, /## Invocation/);
 
-  assert.match(openaiMetadata, /display_name: "GitHub Skills Bilingual PDF"/);
+  assert.match(openaiMetadata, /display_name: "smart:github-skills-pdf"/);
   assert.match(
     openaiMetadata,
     /default_prompt: ".*\$smart:github-skills-pdf.*"/,

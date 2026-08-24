@@ -70,6 +70,7 @@ Smart는 `ask`, `close-issue`, `commit`, `generate-wiki`, `github-skills-pdf`,
 브라우저 또는 문서 기능이 필요하며 각 skill은 자체 전제 조건을 확인합니다.
 모든 skill은 사용자가 직접 호출해야 합니다. 모델의 자동 호출에 의존하지 말고
 해당 `/smart:*` 또는 `$smart:*` 이름을 명시적으로 사용하세요.
+Codex UI는 Claude Code의 원래 호출 이름에서 `/`만 뺀 `smart:<name>`을 표시하며 별도 제목으로 바꾸지 않습니다.
 
 ---
 

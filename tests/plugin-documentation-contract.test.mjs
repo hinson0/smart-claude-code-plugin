@@ -7,6 +7,7 @@ const READMES = ["README.md", "README_CN.md", "README_TW.md", "README_KO.md", "R
 const REQUIRED = [
   "smart@smart",
   "/smart:*",
+  "smart:<name>",
   "ask",
   "close-issue",
   "matt-implement-all-tickets",

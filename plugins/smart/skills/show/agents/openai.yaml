@@ -1,0 +1,3 @@
+interface:
+  display_name: "smart:show"
+  short_description: "Render Markdown or conversation output as a local review page"

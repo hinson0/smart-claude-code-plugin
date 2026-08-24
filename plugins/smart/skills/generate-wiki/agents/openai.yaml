@@ -1,4 +1,4 @@
 interface:
-  display_name: "Generate Wiki"
+  display_name: "smart:generate-wiki"
   short_description: "Turn source material into a concise Wiki and publish it safely"
   default_prompt: "Use $smart:generate-wiki to organize these materials into a concise Wiki page and publish it safely."

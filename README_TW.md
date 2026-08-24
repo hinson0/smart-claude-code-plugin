@@ -70,6 +70,7 @@ Smart 包含十五個 skills：`ask`、`close-issue`、`commit`、`generate-wiki
 瀏覽器或文件能力；每個 skill 都會檢查自己的前置條件。
 所有 skill 都只由使用者主動調用：請明確使用對應的 `/smart:*` 或
 `$smart:*` 名稱，不依賴模型自動調用。
+Codex 介面統一顯示 `smart:<name>`，保留 Claude Code 原調用名稱但省略 `/`，不再使用另一套標題。
 
 ---
 

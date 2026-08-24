@@ -1,0 +1,3 @@
+interface:
+  display_name: "smart:close-issue"
+  short_description: "Check or close one GitLab Issue with auditable evidence"
