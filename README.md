@@ -63,9 +63,9 @@ Claude Code uses `/smart:*`; Codex exposes the corresponding `$smart:*` skills.
 codex plugin add smart@smart
 ```
 
-Smart includes thirteen skills: `ask`, `close-issue`, `commit`, `generate-wiki`,
+Smart includes fourteen skills: `ask`, `close-issue`, `commit`, `generate-wiki`,
 `github-skills-pdf`, `help`, `html`, `hud`, `learning`, `local`, `my-weekly`,
-`one-by-one`, and `show`. Some workflows require Git, `glab`, Node.js, Python/PDF
+`one-by-one`, `pair-write`, and `show`. Some workflows require Git, `glab`, Node.js, Python/PDF
 tooling, browser access, or document capabilities; each skill checks its own prerequisites.
 Every skill is user-invoked only: start it explicitly with its `/smart:*` or
 `$smart:*` name instead of relying on model invocation.
@@ -93,6 +93,7 @@ Every skill is user-invoked only: start it explicitly with its `/smart:*` or
 - **Help Overview** — `/smart:help` dynamically scans and lists all skills, hooks, and agents with descriptions.
 - **Read-Only Guidance** — `/smart:ask` returns a concise judgment, command, snippet, or checklist without modifying files or running tools.
 - **One-Cycle TDD** — `/smart:one-by-one` validates one minimal Red test, then guides the user through the matching Green implementation.
+- **Pair Writing** — `/smart:pair-write` gives one user-written coding step a comment skeleton and a directly expanded reference implementation, then reviews the real landed files before advancing.
 - **Markdown to HTML** — `/smart:html` deterministically converts one Markdown file into safe, self-contained HTML without opening a browser.
 - **Wiki Generation** — `/smart:generate-wiki` turns source material into a GitLab, GitHub, or local Markdown Wiki with guarded publishing.
 - **Bilingual Skills PDF** — `/smart:github-skills-pdf` pins a GitHub skills repository and builds a verified English-Chinese A4 handbook.
@@ -123,6 +124,7 @@ Every skill is user-invoked only: start it explicitly with its `/smart:*` or
 | `/smart:learning [0\|1]` | Toggle learning mode — *you* hand-write the code; Claude prints each piece to the console labeled New file / New code / Modify / Delete for you to type in, then reviews what you land. `1`=on, `0`=off, empty=status. State is the injected block in `.claude/CLAUDE.local.md` — no settings, no ratios |
 | `/smart:my-weekly <repo> [-N]` | Summarize the current user's commits for a selected natural week |
 | `/smart:one-by-one` | Run one minimal Red-to-Green cycle at a time |
+| `/smart:pair-write` | Guide one user-written coding step with a comment skeleton, complete reference implementation, and review of the landed files |
 | `/smart:show [<path>.md]` | Render the current conversation's deliverable (or a Markdown file) as a new timestamped, self-contained zero-JS HTML review page in `.smart/pages/`, preserve previous pages, and open it in the browser. Three layout recipes: plan-review / explainer / report |
 
 ---

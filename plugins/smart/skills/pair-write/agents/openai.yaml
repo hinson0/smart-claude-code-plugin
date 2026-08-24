@@ -1,0 +1,7 @@
+interface:
+  display_name: "Pair Write"
+  short_description: "Guide one user-written coding step and review the landed files"
+  default_prompt: "Use $smart:pair-write to guide one coding step while I write the business code."
+
+policy:
+  allow_implicit_invocation: false
