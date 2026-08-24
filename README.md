@@ -52,7 +52,7 @@ This repository publishes two independent dual-host plugins:
 | Plugin | Install | Purpose |
 |--------|---------|---------|
 | Smart | `smart@smart` | Semantic commits, safe GitLab Issue closeout, and session utilities |
-| Fuzz | `fuzz@smart` | Read-only guidance, cycle TDD, ticket campaigns, HTML/PDF/Wiki, weekly reports, and optional imperial mode |
+| Fuzz | `fuzz@smart` | Read-only guidance, cycle TDD, ticket campaigns, HTML/PDF/Wiki, and weekly reports |
 
 Install either plugin independently, or install both. Claude Code uses `/smart:*` and `/fuzz:*`;
 Codex exposes the same plugin-scoped skills. When both plugins provide related actions, use the full
@@ -68,8 +68,8 @@ codex plugin add smart@smart
 codex plugin add fuzz@smart
 ```
 
-Fuzz includes ten skills: `ask`, `close-issue`, `generate-wiki`, `github-skills-pdf`,
-`handle-all-tickets`, `html`, `i-am-the-king`, `my-weekly`, `one-by-one`, and
+Fuzz includes nine skills: `ask`, `close-issue`, `generate-wiki`, `github-skills-pdf`,
+`handle-all-tickets`, `html`, `my-weekly`, `one-by-one`, and
 `verify-all-tickets`. Some workflows require Git, `glab`, Python/PDF tooling, or host-provided Goal,
 review, browser, and document capabilities; each skill checks its own prerequisites before writing.
 
@@ -90,9 +90,8 @@ codex plugin marketplace add hinson0/smart-claude-code-plugins --ref main
 codex plugin add fuzz@smart
 ```
 
-Keep the `ce-workflow` marketplace if you use its other plugin. Fuzz continues to use `.fuzz/`,
-`$CODEX_HOME/fuzz/`, and `fuzz-*` agent files, so existing imperial-mode state carries over. To
-roll back, uninstall `fuzz@smart`, reinstall `fuzz@ce-workflow`, and start another new session.
+Keep the `ce-workflow` marketplace if you use its other plugin. To roll back, uninstall
+`fuzz@smart`, reinstall `fuzz@ce-workflow`, and start another new session.
 
 ---
 

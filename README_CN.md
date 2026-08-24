@@ -52,7 +52,7 @@
 | 插件 | 安装名 | 用途 |
 |------|--------|------|
 | Smart | `smart@smart` | 语义提交、安全 GitLab Issue 收口和会话工具 |
-| Fuzz | `fuzz@smart` | 只读指导、逐 Cycle TDD、票据 campaign、HTML/PDF/Wiki、周报和可选宫廷模式 |
+| Fuzz | `fuzz@smart` | 只读指导、逐 Cycle TDD、票据 campaign、HTML/PDF/Wiki 和周报 |
 
 两个插件可以分别安装，也可以同时安装。Claude Code 使用 `/smart:*` 和 `/fuzz:*`；Codex
 提供对应的插件命名空间 skill。两个插件存在相邻能力时，请使用完整命名空间明确选择。
@@ -67,8 +67,8 @@ codex plugin add smart@smart
 codex plugin add fuzz@smart
 ```
 
-Fuzz 包含十个 skills：`ask`、`close-issue`、`generate-wiki`、`github-skills-pdf`、
-`handle-all-tickets`、`html`、`i-am-the-king`、`my-weekly`、`one-by-one` 和
+Fuzz 包含九个 skills：`ask`、`close-issue`、`generate-wiki`、`github-skills-pdf`、
+`handle-all-tickets`、`html`、`my-weekly`、`one-by-one` 和
 `verify-all-tickets`。部分流程依赖 Git、`glab`、Python/PDF 工具或宿主提供的 Goal、Review、
 浏览器和文档能力；每个 skill 都会在写入前检查自己的前置条件。
 
@@ -89,9 +89,8 @@ codex plugin marketplace add hinson0/smart-claude-code-plugins --ref main
 codex plugin add fuzz@smart
 ```
 
-如果仍使用 `ce-workflow` 的其他插件，请保留该 marketplace。Fuzz 继续使用 `.fuzz/`、
-`$CODEX_HOME/fuzz/` 和 `fuzz-*` Agent 文件，因此既有宫廷模式状态会延续。回退时先卸载
-`fuzz@smart`，再安装 `fuzz@ce-workflow` 并新建会话。
+如果仍使用 `ce-workflow` 的其他插件，请保留该 marketplace。回退时先卸载 `fuzz@smart`，
+再安装 `fuzz@ce-workflow` 并新建会话。
 
 ---
 
