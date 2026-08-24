@@ -12,13 +12,13 @@ async function readJson(path) {
   return JSON.parse(await read(path));
 }
 
-test("fuzz publishes the cross-platform generate-wiki skill", async () => {
+test("Smart publishes the cross-platform generate-wiki skill", async () => {
   const [codexPlugin, claudePlugin, skill, chinese, openaiMetadata] = await Promise.all([
-    readJson("plugins/fuzz/.codex-plugin/plugin.json"),
-    readJson("plugins/fuzz/.claude-plugin/plugin.json"),
-    read("plugins/fuzz/skills/generate-wiki/SKILL.md"),
-    read("plugins/fuzz/skills/generate-wiki/CN.md"),
-    read("plugins/fuzz/skills/generate-wiki/agents/openai.yaml"),
+    readJson("plugins/smart/.codex-plugin/plugin.json"),
+    readJson("plugins/smart/.claude-plugin/plugin.json"),
+    read("plugins/smart/skills/generate-wiki/SKILL.md"),
+    read("plugins/smart/skills/generate-wiki/CN.md"),
+    read("plugins/smart/skills/generate-wiki/agents/openai.yaml"),
   ]);
 
   assert.equal(codexPlugin.version, claudePlugin.version);
@@ -33,8 +33,8 @@ test("fuzz publishes the cross-platform generate-wiki skill", async () => {
   );
   const normalizedSkill = skill.replace(/\s+/g, " ");
   for (const contract of [
-    "$generate-wiki",
-    "/fuzz:generate-wiki",
+    "$smart:generate-wiki",
+    "/smart:generate-wiki",
     "GitLab Wiki",
     "GitHub Wiki",
     "Local Wiki",
@@ -95,7 +95,7 @@ test("fuzz publishes the cross-platform generate-wiki skill", async () => {
   assert.match(openaiMetadata, /display_name: "Generate Wiki"/);
   assert.match(
     openaiMetadata,
-    /default_prompt: ".*\$generate-wiki.*"/,
+    /default_prompt: ".*\$smart:generate-wiki.*"/,
   );
   assert.doesNotMatch(skill + openaiMetadata, /\/Users\/|\[TODO:|[\p{Script=Han}]/u);
 });

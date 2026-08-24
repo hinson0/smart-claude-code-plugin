@@ -17,7 +17,11 @@ venv/
 .claude/token-logs/
 .claude/statusline.jsonc
 .claude/statusline.log
-docs/
+docs/*
+!docs/adr/
+!docs/adr/**
+!docs/agents/
+!docs/agents/**
 .env
 .remember/
 node_modules/

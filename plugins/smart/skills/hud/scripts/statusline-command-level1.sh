@@ -20,7 +20,7 @@ fi
 
 input=$(cat)
 
-# Save raw JSON for context capture (used by smart:token-log skill)
+# Save raw JSON for statusline context capture.
 echo "$input" > "$HOME/.claude/.statusline-latest.json" 2>/dev/null
 
 # ══════════════════════════════════════════════════════════

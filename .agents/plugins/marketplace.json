@@ -15,18 +15,6 @@
         "authentication": "ON_INSTALL"
       },
       "category": "Productivity"
-    },
-    {
-      "name": "fuzz",
-      "source": {
-        "source": "local",
-        "path": "./plugins/fuzz"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_INSTALL"
-      },
-      "category": "Developer Tools"
     }
   ]
 }

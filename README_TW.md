@@ -8,7 +8,7 @@
 
 > 寫完程式碼？直接說 **「提交」**——Smart 會拆開不相關改動、產生聚焦的 message，並按組提交。
 
-這是一個同時支援 **Claude Code** 與 **Codex** 的外掛，提供低成本語意提交、可稽核的 GitLab Issue 收口、會話工具和工程規則。
+這是一個同時支援 **Claude Code** 與 **Codex** 的外掛，提供聚焦的開發工作流、內容工具、會話工具和工程規則。
 
 ---
 
@@ -47,50 +47,26 @@
 
 ## 本 Marketplace 的外掛
 
-本倉庫發佈兩個彼此獨立、同時支援 Claude Code 與 Codex 的外掛：
+本倉庫發佈一個同時支援 Claude Code 與 Codex 的外掛：
 
 | 外掛 | 安裝名稱 | 用途 |
 |------|----------|------|
-| Smart | `smart@smart` | 語意提交、安全 GitLab Issue 收尾與會話工具 |
-| Fuzz | `fuzz@smart` | 唯讀指導、逐 Cycle TDD、票據 campaign、HTML/PDF/Wiki 與週報 |
+| Smart | `smart@smart` | 開發工作流、HTML/PDF/Wiki 工具、週報與會話工具 |
 
-兩個外掛可分別安裝，也可同時安裝。Claude Code 使用 `/smart:*` 與 `/fuzz:*`；Codex 提供
-對應的外掛命名空間 skill。兩個外掛有相近能力時，請使用完整命名空間明確選擇。
+Claude Code 使用 `/smart:*`；Codex 提供對應的 `$smart:*` skills。
 
 ```bash
 # Claude Code：加入 marketplace 後執行
 /plugin install smart@smart
-/plugin install fuzz@smart
 
 # Codex：加入 marketplace 後執行
 codex plugin add smart@smart
-codex plugin add fuzz@smart
 ```
 
-Fuzz 包含九個 skills：`ask`、`close-issue`、`generate-wiki`、`github-skills-pdf`、
-`handle-all-tickets`、`html`、`my-weekly`、`one-by-one` 與
-`verify-all-tickets`。部分流程依賴 Git、`glab`、Python/PDF 工具或宿主提供的 Goal、Review、
-瀏覽器與文件能力；每個 skill 都會在寫入前檢查自己的前置條件。
-
-### 從舊 Marketplace 遷移 Fuzz
-
-不得同時安裝 `fuzz@ce-workflow` 與 `fuzz@smart`。先在隔離環境驗證新來源，再依下列順序
-切換並建立新會話：
-
-```bash
-# Claude Code
-claude plugin uninstall fuzz@ce-workflow
-claude plugin marketplace add hinson0/smart-claude-code-plugins
-claude plugin install fuzz@smart
-
-# Codex
-codex plugin remove fuzz@ce-workflow
-codex plugin marketplace add hinson0/smart-claude-code-plugins --ref main
-codex plugin add fuzz@smart
-```
-
-若仍使用 `ce-workflow` 的其他外掛，請保留該 marketplace。回復時先解除安裝 `fuzz@smart`，
-再安裝 `fuzz@ce-workflow` 並建立新會話。
+Smart 包含十三個 skills：`ask`、`close-issue`、`commit`、`generate-wiki`、
+`github-skills-pdf`、`help`、`html`、`hud`、`learning`、`local`、`my-weekly`、
+`one-by-one` 與 `show`。部分流程依賴 Git、`glab`、Node.js、Python/PDF 工具、
+瀏覽器或文件能力；每個 skill 都會檢查自己的前置條件。
 
 ---
 
@@ -113,7 +89,12 @@ codex plugin add fuzz@smart
 
 - **HUD / Statusline 安裝器** — 一條指令安裝功能豐富的狀態列，顯示模型、Git 分支、上下文用量、速率限制、系統資源和工具呼叫統計。提供兩個安裝級別（簡化版 / 完整版）及從備份還原，僅 user 作用域。
 - **說明概覽** — `/smart:help` 動態掃描並列出所有技能、hook 和 agent 及其描述。
-- **Joke Teller Agent** — 在合適的時機講個程式設計師笑話，緩解工作壓力。
+- **唯讀指導** — `/smart:ask` 回傳簡潔判斷、指令、片段或清單，不修改檔案、不執行工具。
+- **單 Cycle TDD** — `/smart:one-by-one` 驗證一個最小 Red，再引導使用者完成對應 Green。
+- **Markdown 轉 HTML** — `/smart:html` 確定性地把 Markdown 轉為安全自包含 HTML，不自動開啟瀏覽器。
+- **Wiki 產生** — `/smart:generate-wiki` 把資料整理為 GitLab、GitHub 或本機 Markdown Wiki，並安全發佈。
+- **雙語 Skills PDF** — `/smart:github-skills-pdf` 固定 GitHub skills 倉庫版本並產生經驗證的英中 A4 手冊。
+- **個人週報** — `/smart:my-weekly` 依自然週彙總目前使用者的 Git 提交。
 - **內建編碼規則** — 預置規則檔案（如 Pydantic V2 標準）存於 `rules/` 目錄，按需軟連結至專案的 `.claude/rules/` 即可啟用。
 - **學習模式** — `/smart:learning 1` 開啟一種簡單的協作編碼模式：由*你*親手編寫程式碼。它是一個純粹的開/關開關——沒有占比、沒有設定。開啟時，凡是 Claude 本會寫的程式碼都改為印到主控台——每段標明 新增檔案 / 新增程式碼 / 修改 / 刪除，並附檔案與位置——由你敲入，然後 Claude 審查你落盤的程式碼再繼續，每次只處理一個任務。開啟時把規則注入 `.claude/CLAUDE.local.md`（Claude Code 每次工作階段載入的、已 git-ignore 的專案級記憶）使其持續生效；該塊是否存在就是全部狀態，`/smart:learning 0` 移除它。`.smart/settings.json` 裡不存任何東西。
 - **HTML 審閱頁** — `/smart:show` 把冗長交付物——當前對話的方案/分析/評審，或一個 Markdown 檔案——渲染成單檔案、零 JavaScript 的自包含 HTML 審閱頁並在瀏覽器開啟。灰底白卡視覺系統：黏性目錄、編號章節、風險徽章、方案對比卡（選定項高亮）、內聯 SVG 架構圖與 `<details>` 摺疊。三種固定版式配方（plan-review / explainer / report）保證每次生成的頁面結構一致。每頁強制攜帶出處頁腳（時間、commit SHA、來源），且僅是衍生視圖——Markdown 仍是事實來源。每次執行都在 `.smart/pages/`（已 git-ignore）寫入帶時間戳的新檔案，保留舊頁面作為不可變審閱資產，不再覆蓋。示例見 `assets/demos/`。
@@ -134,10 +115,16 @@ codex plugin add fuzz@smart
 | 指令 | 作用 |
 |---|---|
 | `/smart:commit` | 僅提交（智慧分組，自動產生 message） |
+| `/smart:ask` | 回傳簡潔唯讀指導，不執行指令或修改內容 |
 | `/smart:close-issue <IID或URL>` | 唯讀核對單一 GitLab Issue；明確授權關閉後，先發布可稽核的開發資產記錄，再關閉 Issue |
+| `/smart:generate-wiki` | 把資料整理為受保護的 GitLab、GitHub 或本機 Wiki |
+| `/smart:github-skills-pdf [--notes 2\|4]` | 從 GitHub skills 倉庫產生經驗證的英中 A4 手冊 |
+| `/smart:html <input.md> [output.html]` | 把 Markdown 轉為安全自包含 HTML，不自動開啟瀏覽器 |
 | `/smart:hud [0\|1\|2\|reset\|normal\|all]` | 安裝狀態列（`1`/`normal`=簡化版，`2`/`all`=完整版）或還原備份（`0`/`reset`），user 作用域 |
 | `/smart:help [skill\|hook\|agent]` | 顯示所有外掛元件概覽（或按類別篩選） |
 | `/smart:learning [0\|1]` | 切換學習模式——由*你*親手寫程式碼；Claude 把每段印到主控台並標明 新增檔案 / 新增程式碼 / 修改 / 刪除 供你敲入，再審查你落盤的程式碼。`1`=開，`0`=關，留空=狀態。狀態就是注入到 `.claude/CLAUDE.local.md` 的塊——無設定、無占比 |
+| `/smart:my-weekly <repo> [-N]` | 依指定自然週彙總目前使用者的 Git 提交 |
+| `/smart:one-by-one` | 每次執行一個最小 Red-to-Green Cycle |
 | `/smart:show [<path>.md]` | 把當前對話交付物（或指定 Markdown 檔案）渲染成帶時間戳的全新自包含零 JS HTML 審閱頁，寫入 `.smart/pages/`，保留舊頁面並在瀏覽器開啟。三種版式配方：plan-review / explainer / report |
 
 ---
@@ -206,22 +193,6 @@ ln -s /path/to/plugin/rules/pydantic-v2.md .claude/rules/pydantic-v2.md
 
 ---
 
-## Agents
-
-### 笑話講述器（Joke Teller）
-
-講個程式設計師笑話來緩解工作壓力。
-
-```
-"tell me a joke" / "講個笑話" / "I need a laugh"
-```
-
-- 自動偵測對話語言，用對應語言講笑話
-- 短格式（2–4 句，抖包袱風格，不用一問一答範本）
-- 附帶一句溫馨提醒（喝水、伸展、休息）
-
----
-
 ## 會話 Hooks
 
 外掛包含在會話邊界和工具呼叫時觸發的 hooks：
@@ -240,6 +211,8 @@ ln -s /path/to/plugin/rules/pydantic-v2.md .claude/rules/pydantic-v2.md
 - **Claude Code** 或 **Codex**（支援外掛）—— 外掛內建兩套清單，在任一宿主都能原生執行
 - `git`
 - [`glab` CLI](https://gitlab.com/gitlab-org/cli) — 僅供 `/smart:close-issue` 寫入操作使用
+- Node.js — 供 `/smart:html` 和收口腳本使用
+- Python 3、`reportlab` 與可嵌入 CJK 字型 — 供 `/smart:github-skills-pdf` 使用
 - `jq` — 僅 HUD 狀態列需要（其他功能無需）
 
 ---

@@ -1,0 +1,7 @@
+interface:
+  display_name: "One Red-to-Green cycle"
+  short_description: "Validate Red, then let the user land and validate Green"
+  default_prompt: "Use $smart:one-by-one to validate Red and guide me through the current Green."
+
+policy:
+  allow_implicit_invocation: false

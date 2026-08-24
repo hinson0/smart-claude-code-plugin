@@ -12,16 +12,16 @@ async function readJson(path) {
   return JSON.parse(await read(path));
 }
 
-test("fuzz publishes the read-only my-weekly skill", async () => {
+test("Smart publishes the read-only my-weekly skill", async () => {
   const [codexPlugin, claudePlugin, skill, chinese, openaiMetadata, reportFormat, chineseFormat] =
     await Promise.all([
-      readJson("plugins/fuzz/.codex-plugin/plugin.json"),
-      readJson("plugins/fuzz/.claude-plugin/plugin.json"),
-      read("plugins/fuzz/skills/my-weekly/SKILL.md"),
-      read("plugins/fuzz/skills/my-weekly/CN.md"),
-      read("plugins/fuzz/skills/my-weekly/agents/openai.yaml"),
-      read("plugins/fuzz/skills/my-weekly/references/report-format.md"),
-      read("plugins/fuzz/skills/my-weekly/references/CN[report-format].md"),
+      readJson("plugins/smart/.codex-plugin/plugin.json"),
+      readJson("plugins/smart/.claude-plugin/plugin.json"),
+      read("plugins/smart/skills/my-weekly/SKILL.md"),
+      read("plugins/smart/skills/my-weekly/CN.md"),
+      read("plugins/smart/skills/my-weekly/agents/openai.yaml"),
+      read("plugins/smart/skills/my-weekly/references/report-format.md"),
+      read("plugins/smart/skills/my-weekly/references/CN[report-format].md"),
     ]);
 
   assert.equal(codexPlugin.version, claudePlugin.version);
@@ -30,9 +30,9 @@ test("fuzz publishes the read-only my-weekly skill", async () => {
   assert.match(skill, /^---\nname: my-weekly\ndescription: .+\n---\n/);
   const normalizedSkill = skill.replace(/\s+/g, " ");
   for (const contract of [
-    "$my-weekly",
-    "/fuzz:my-weekly",
-    "$my-weekly <repo> [-N]",
+    "$smart:my-weekly",
+    "/smart:my-weekly",
+    "$smart:my-weekly <repo> [-N]",
     "`-1` means last week",
     "Monday 00:00",
     "committer timestamp",
@@ -90,7 +90,7 @@ test("fuzz publishes the read-only my-weekly skill", async () => {
   assert.match(chineseFormat, /## 本周完成/);
   assert.match(chineseFormat, /本周期没有匹配的非合并提交/);
   assert.match(openaiMetadata, /display_name: "My Weekly Report"/);
-  assert.match(openaiMetadata, /default_prompt: ".*\$my-weekly.*"/);
+  assert.match(openaiMetadata, /default_prompt: ".*\$smart:my-weekly.*"/);
   assert.doesNotMatch(
     skill + openaiMetadata + reportFormat,
     /\/Users\/|\[TODO:|[\p{Script=Han}]/u,

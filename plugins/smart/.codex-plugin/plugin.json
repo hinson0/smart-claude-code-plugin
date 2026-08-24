@@ -1,7 +1,7 @@
 {
   "name": "smart",
-  "version": "5.0.0",
-  "description": "Low-cost semantic Git commits, auditable GitLab Issue closeout, session utilities, and engineering rules.",
+  "version": "6.0.0",
+  "description": "Focused developer workflows, content tools, session utilities, and engineering rules.",
   "author": {
     "name": "Hinson",
     "email": "hinson0@qq.com",
@@ -10,18 +10,24 @@
   "homepage": "https://github.com/hinson0/smart-claude-code-plugins",
   "repository": "https://github.com/hinson0/smart-claude-code-plugins",
   "license": "MIT",
-  "keywords": ["git", "gitlab", "issues", "commit", "automation", "productivity"],
+  "keywords": ["git", "gitlab", "issues", "commit", "automation", "productivity", "wiki", "pdf", "html"],
   "skills": "./skills/",
   "interface": {
     "displayName": "Smart",
-    "shortDescription": "Create focused commits and close GitLab Issues safely.",
-    "longDescription": "Smart adds low-cost semantic commit grouping, auditable GitLab Issue closeout, statusline setup, HTML review pages, and focused engineering utilities.",
+    "shortDescription": "Run focused developer workflows and content tools.",
+    "longDescription": "Smart adds semantic commits, safe GitLab Issue closeout, read-only guidance, one-cycle TDD, Wiki and weekly report generation, bilingual skills PDFs, deterministic Markdown-to-HTML conversion, statusline setup, and focused engineering utilities.",
     "developerName": "Hinson",
     "category": "Productivity",
-    "capabilities": ["Automation", "Git", "Write"],
+    "capabilities": ["Automation", "Git", "Read", "Write"],
     "defaultPrompt": [
       "Group and commit my current changes.",
       "Check whether this GitLab Issue is ready to close.",
+      "Use $smart:ask for concise read-only guidance.",
+      "Use $smart:one-by-one for one Red-to-Green cycle.",
+      "Use $smart:html to convert Markdown to self-contained HTML.",
+      "Use $smart:generate-wiki to organize these materials into a Wiki.",
+      "Use $smart:github-skills-pdf to build a bilingual skills PDF.",
+      "Use $smart:my-weekly to summarize my commits for this natural week.",
       "Install the Smart statusline."
     ],
     "brandColor": "#2563EB"
