@@ -85,8 +85,6 @@ test("Smart publishes the GitHub Skills bilingual PDF contract", async () => {
   assert.match(argumentHint, /--notes/);
   for (const contract of [
     "GitHub",
-    "\\$smart:github-skills-pdf",
-    "/smart:github-skills-pdf",
     "full commit",
     "skills/\\*/SKILL.md",
     "English source",
@@ -105,6 +103,7 @@ test("Smart publishes the GitHub Skills bilingual PDF contract", async () => {
   ]) {
     assert.match(skill, new RegExp(contract));
   }
+  assert.doesNotMatch(skill, /## Invocation/);
 
   assert.match(openaiMetadata, /display_name: "GitHub Skills Bilingual PDF"/);
   assert.match(

@@ -116,8 +116,9 @@ test("Smart HTML exposes English runtime sources and a Chinese pair", async () =
     readFile(new URL("plugins/smart/skills/html/assets/document.html", ROOT), "utf8"),
   ]);
 
-  assert.match(skill, /`\$smart:html`/);
-  assert.match(skill, /`\/smart:html`/);
+  assert.match(skill, /^disable-model-invocation: true$/m);
+  assert.doesNotMatch(skill, /\$smart:html|\/smart:html/);
+  assert.match(metadata, /default_prompt: "Use \$smart:html/);
   assert.match(skill, /<this-skill-directory>\/scripts\/smart-html\.mjs/);
   assert.match(translation, /将一个 Markdown 文件转换/);
   for (const source of [skill, metadata, script, template]) {

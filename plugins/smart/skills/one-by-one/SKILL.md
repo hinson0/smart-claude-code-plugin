@@ -6,10 +6,8 @@ disable-model-invocation: true
 
 # Smart One by One
 
-## Invocation boundary
+## Cycle boundary
 
-- Start only when the user explicitly invokes `$smart:one-by-one` in Codex or
-  `/smart:one-by-one` in Claude Code.
 - Process exactly one minimal cycle at a time and keep only one current cycle.
 - Do not create a full cycle map, HTML artifact, or persistent log for later cycles.
 

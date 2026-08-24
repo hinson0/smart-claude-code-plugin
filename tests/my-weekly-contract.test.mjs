@@ -33,9 +33,7 @@ test("Smart publishes the read-only my-weekly skill", async () => {
   );
   const normalizedSkill = skill.replace(/\s+/g, " ");
   for (const contract of [
-    "$smart:my-weekly",
-    "/smart:my-weekly",
-    "$smart:my-weekly <repo> [-N]",
+    "<repo> [-N]",
     "`-1` means last week",
     "Monday 00:00",
     "committer timestamp",
@@ -68,6 +66,7 @@ test("Smart publishes the read-only my-weekly skill", async () => {
   ]) {
     assert.ok(normalizedSkill.includes(contract), `缺少契约：${contract}`);
   }
+  assert.doesNotMatch(skill, /## Invocation/);
 
   const normalizedFormat = reportFormat.replace(/\s+/g, " ");
   for (const contract of [

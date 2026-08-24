@@ -10,11 +10,6 @@ argument-hint: "<repository-or-url> [--notes 2|4] -- decide before building; 2 o
 Turn a GitHub skills repository into a reproducible, auditable English-Chinese
 study handbook.
 
-## Invocation
-
-- Codex: `$smart:github-skills-pdf`
-- Claude Code: `/smart:github-skills-pdf`
-
 ## Pin the scope
 
 1. Read the repository through the host's GitHub capability; clone only when a
@@ -80,10 +75,9 @@ python3 <this-skill-directory>/scripts/build_bilingual_skills_pdf.py <project-di
 python3 <this-skill-directory>/scripts/build_bilingual_skills_pdf.py <project-dir> --output <output.pdf> --notes 2
 ```
 
-Users may invoke `$smart:github-skills-pdf --notes 2` or
-`$smart:github-skills-pdf --notes 4`. Omitting `--notes` inserts no note pages. Resolve
-`<this-skill-directory>` from this `SKILL.md`; never guess the scripts path from
-the user's current directory.
+The optional `--notes` argument accepts `2` or `4`. Omitting it inserts no note
+pages. Resolve `<this-skill-directory>` from this `SKILL.md`; never guess the
+scripts path from the user's current directory.
 
 In bilingual mode, source and translation must have identical heading,
 paragraph, list, table, and fenced-code-block structures. Fix translation

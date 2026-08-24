@@ -8,11 +8,6 @@ disable-model-invocation: true
 
 把来源资料整理成可维护的单页 Wiki，并发布到最合适的目标。
 
-## 调用方式
-
-- Codex：`$smart:generate-wiki`
-- Claude Code：`/smart:generate-wiki`
-
 ## 读取来源
 
 1. 读取当前目录适用的仓库指令、Wiki 约定和用户指定的来源。PDF、文档、图片等格式

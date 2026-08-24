@@ -9,11 +9,6 @@ disable-model-invocation: true
 Turn source material into one maintainable Wiki page and publish it to the most
 appropriate target.
 
-## Invocation
-
-- Codex: `$smart:generate-wiki`
-- Claude Code: `/smart:generate-wiki`
-
 ## Read sources
 
 1. Read applicable repository instructions, Wiki conventions, and user-supplied

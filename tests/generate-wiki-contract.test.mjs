@@ -33,8 +33,6 @@ test("Smart publishes the cross-platform generate-wiki skill", async () => {
   );
   const normalizedSkill = skill.replace(/\s+/g, " ");
   for (const contract of [
-    "$smart:generate-wiki",
-    "/smart:generate-wiki",
     "GitLab Wiki",
     "GitHub Wiki",
     "Local Wiki",
@@ -81,6 +79,7 @@ test("Smart publishes the cross-platform generate-wiki skill", async () => {
   ]) {
     assert.match(normalizedSkill, new RegExp(contract.replaceAll("$", "\\$")));
   }
+  assert.doesNotMatch(skill, /## Invocation/);
 
   for (const contract of [
     "本地 Wiki",

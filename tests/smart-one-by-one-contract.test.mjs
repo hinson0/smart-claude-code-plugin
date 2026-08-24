@@ -14,8 +14,8 @@ test("Smart one-by-one preserves one complete Red-to-Green cycle", async () => {
 
   assert.match(skill, /^name: one-by-one$/m);
   assert.match(skill, /^disable-model-invocation: true$/m);
-  assert.match(skill, /`\$smart:one-by-one`/);
-  assert.match(skill, /`\/smart:one-by-one`/);
+  assert.match(skill, /## Cycle boundary/);
+  assert.doesNotMatch(skill, /Invocation boundary|explicitly invokes/);
   assert.match(skill, /exactly one minimal cycle/);
   assert.match(skill, /Land only the minimal Red test/);
   assert.match(skill, /target behavior is missing/);
