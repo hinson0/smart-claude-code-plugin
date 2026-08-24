@@ -5,17 +5,17 @@ import test from "node:test";
 const ROOT = new URL("../", import.meta.url);
 const read = (path) => readFile(new URL(path, ROOT), "utf8");
 
-test("Fuzz one-by-one preserves one complete Red-to-Green cycle", async () => {
+test("Smart one-by-one preserves one complete Red-to-Green cycle", async () => {
   const [skill, translation, metadata] = await Promise.all([
-    read("plugins/fuzz/skills/one-by-one/SKILL.md"),
-    read("plugins/fuzz/skills/one-by-one/CN.md"),
-    read("plugins/fuzz/skills/one-by-one/agents/openai.yaml"),
+    read("plugins/smart/skills/one-by-one/SKILL.md"),
+    read("plugins/smart/skills/one-by-one/CN.md"),
+    read("plugins/smart/skills/one-by-one/agents/openai.yaml"),
   ]);
 
   assert.match(skill, /^name: one-by-one$/m);
   assert.match(skill, /^disable-model-invocation: true$/m);
-  assert.match(skill, /`\$fuzz:one-by-one`/);
-  assert.match(skill, /`\/fuzz:one-by-one`/);
+  assert.match(skill, /`\$smart:one-by-one`/);
+  assert.match(skill, /`\/smart:one-by-one`/);
   assert.match(skill, /exactly one minimal cycle/);
   assert.match(skill, /Land only the minimal Red test/);
   assert.match(skill, /target behavior is missing/);
@@ -31,7 +31,7 @@ test("Fuzz one-by-one preserves one complete Red-to-Green cycle", async () => {
 
   assert.match(translation, /每轮只处理一个最小 Cycle/);
   assert.match(translation, /用户明确验收通过前/);
-  assert.match(metadata, /default_prompt: "Use \$fuzz:one-by-one/);
+  assert.match(metadata, /default_prompt: "Use \$smart:one-by-one/);
   assert.match(metadata, /allow_implicit_invocation: false/);
   assert.doesNotMatch(metadata, /[\p{Script=Han}]/u);
 });

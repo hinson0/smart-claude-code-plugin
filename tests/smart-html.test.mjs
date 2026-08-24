@@ -8,10 +8,10 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = new URL("../", import.meta.url);
 const SCRIPT = fileURLToPath(
-  new URL("plugins/fuzz/skills/html/scripts/ce-html.mjs", ROOT),
+  new URL("plugins/smart/skills/html/scripts/smart-html.mjs", ROOT),
 );
 
-test("Fuzz HTML preserves document structure and escapes raw HTML", async () => {
+test("Smart HTML preserves document structure and escapes raw HTML", async () => {
   const directory = await mkdtemp(join(tmpdir(), "fuzz-html-"));
   try {
     const input = join(directory, "review.md");
@@ -56,7 +56,7 @@ test("Fuzz HTML preserves document structure and escapes raw HTML", async () => 
   }
 });
 
-test("Fuzz HTML keeps safe relative links clickable", async () => {
+test("Smart HTML keeps safe relative links clickable", async () => {
   const directory = await mkdtemp(join(tmpdir(), "fuzz-html-"));
   try {
     const input = join(directory, "review.md");
@@ -69,7 +69,7 @@ test("Fuzz HTML keeps safe relative links clickable", async () => {
   }
 });
 
-test("Fuzz HTML reports deterministic input and output failures", async () => {
+test("Smart HTML reports deterministic input and output failures", async () => {
   const missing = spawnSync(process.execPath, [SCRIPT], { encoding: "utf8" });
   assert.equal(missing.status, 64);
   assert.equal(
@@ -104,21 +104,21 @@ test("Fuzz HTML reports deterministic input and output failures", async () => {
   }
 });
 
-test("Fuzz HTML exposes English runtime sources and a Chinese pair", async () => {
+test("Smart HTML exposes English runtime sources and a Chinese pair", async () => {
   const [skill, translation, metadata, script, template] = await Promise.all([
-    readFile(new URL("plugins/fuzz/skills/html/SKILL.md", ROOT), "utf8"),
-    readFile(new URL("plugins/fuzz/skills/html/CN.md", ROOT), "utf8"),
+    readFile(new URL("plugins/smart/skills/html/SKILL.md", ROOT), "utf8"),
+    readFile(new URL("plugins/smart/skills/html/CN.md", ROOT), "utf8"),
     readFile(
-      new URL("plugins/fuzz/skills/html/agents/openai.yaml", ROOT),
+      new URL("plugins/smart/skills/html/agents/openai.yaml", ROOT),
       "utf8",
     ),
-    readFile(new URL("plugins/fuzz/skills/html/scripts/ce-html.mjs", ROOT), "utf8"),
-    readFile(new URL("plugins/fuzz/skills/html/assets/document.html", ROOT), "utf8"),
+    readFile(new URL("plugins/smart/skills/html/scripts/smart-html.mjs", ROOT), "utf8"),
+    readFile(new URL("plugins/smart/skills/html/assets/document.html", ROOT), "utf8"),
   ]);
 
-  assert.match(skill, /`\$fuzz:html`/);
-  assert.match(skill, /`\/fuzz:html`/);
-  assert.match(skill, /<this-skill-directory>\/scripts\/ce-html\.mjs/);
+  assert.match(skill, /`\$smart:html`/);
+  assert.match(skill, /`\/smart:html`/);
+  assert.match(skill, /<this-skill-directory>\/scripts\/smart-html\.mjs/);
   assert.match(translation, /将一个 Markdown 文件转换/);
   for (const source of [skill, metadata, script, template]) {
     assert.doesNotMatch(source, /[\p{Script=Han}]/u);

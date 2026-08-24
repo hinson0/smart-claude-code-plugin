@@ -44,7 +44,7 @@ function consecutiveRuns(pages) {
   return runs;
 }
 
-test("fuzz publishes the GitHub Skills bilingual PDF contract", async () => {
+test("Smart publishes the GitHub Skills bilingual PDF contract", async () => {
   const [
     codexPlugin,
     claudePlugin,
@@ -54,26 +54,26 @@ test("fuzz publishes the GitHub Skills bilingual PDF contract", async () => {
     bookFormat,
     translationGuide,
   ] = await Promise.all([
-    readJson("plugins/fuzz/.codex-plugin/plugin.json"),
-    readJson("plugins/fuzz/.claude-plugin/plugin.json"),
-    read("plugins/fuzz/skills/github-skills-pdf/SKILL.md"),
-    read("plugins/fuzz/skills/github-skills-pdf/agents/openai.yaml"),
+    readJson("plugins/smart/.codex-plugin/plugin.json"),
+    readJson("plugins/smart/.claude-plugin/plugin.json"),
+    read("plugins/smart/skills/github-skills-pdf/SKILL.md"),
+    read("plugins/smart/skills/github-skills-pdf/agents/openai.yaml"),
     read(
-      "plugins/fuzz/skills/github-skills-pdf/scripts/build_bilingual_skills_pdf.py",
+      "plugins/smart/skills/github-skills-pdf/scripts/build_bilingual_skills_pdf.py",
     ),
-    read("plugins/fuzz/skills/github-skills-pdf/references/book-format.md"),
+    read("plugins/smart/skills/github-skills-pdf/references/book-format.md"),
     read(
-      "plugins/fuzz/skills/github-skills-pdf/references/translation-guide.md",
+      "plugins/smart/skills/github-skills-pdf/references/translation-guide.md",
     ),
   ]);
 
-  assert.equal(codexPlugin.name, "fuzz");
-  assert.equal(claudePlugin.name, "fuzz");
+  assert.equal(codexPlugin.name, "smart");
+  assert.equal(claudePlugin.name, "smart");
   assert.equal(codexPlugin.version, claudePlugin.version);
   assert.equal(codexPlugin.skills, "./skills/");
   assert.match(
     codexPlugin.interface.defaultPrompt.join("\n"),
-    /\$fuzz:github-skills-pdf/,
+    /\$smart:github-skills-pdf/,
   );
 
   assert.match(
@@ -85,8 +85,8 @@ test("fuzz publishes the GitHub Skills bilingual PDF contract", async () => {
   assert.match(argumentHint, /--notes/);
   for (const contract of [
     "GitHub",
-    "\\$github-skills-pdf",
-    "/fuzz:github-skills-pdf",
+    "\\$smart:github-skills-pdf",
+    "/smart:github-skills-pdf",
     "full commit",
     "skills/\\*/SKILL.md",
     "English source",
@@ -109,7 +109,7 @@ test("fuzz publishes the GitHub Skills bilingual PDF contract", async () => {
   assert.match(openaiMetadata, /display_name: "GitHub Skills Bilingual PDF"/);
   assert.match(
     openaiMetadata,
-    /default_prompt: ".*\$github-skills-pdf.*"/,
+    /default_prompt: ".*\$smart:github-skills-pdf.*"/,
   );
   assert.match(openaiMetadata, /--notes/);
 
@@ -153,7 +153,7 @@ test("fuzz publishes the GitHub Skills bilingual PDF contract", async () => {
 
 test("构建器在每个 skill 章节后插入双面笔记空白页", async () => {
   const skillDirectory = fileURLToPath(
-    new URL("../plugins/fuzz/skills/github-skills-pdf/", import.meta.url),
+    new URL("../plugins/smart/skills/github-skills-pdf/", import.meta.url),
   );
   const script = join(skillDirectory, "scripts/build_bilingual_skills_pdf.py");
   const project = await mkdtemp(join(tmpdir(), "github-skills-pdf-notes-"));
@@ -245,7 +245,7 @@ test("构建器在每个 skill 章节后插入双面笔记空白页", async () =
 
 test("构建器收录 skill 目录的参考文档并拒绝漏收", async () => {
   const skillDirectory = fileURLToPath(
-    new URL("../plugins/fuzz/skills/github-skills-pdf/", import.meta.url),
+    new URL("../plugins/smart/skills/github-skills-pdf/", import.meta.url),
   );
   const script = join(skillDirectory, "scripts/build_bilingual_skills_pdf.py");
   const project = await mkdtemp(join(tmpdir(), "github-skills-pdf-refs-"));
@@ -343,7 +343,7 @@ test("构建器收录 skill 目录的参考文档并拒绝漏收", async () => {
 
 test("构建器支持单语项目并照常插入笔记页", async () => {
   const skillDirectory = fileURLToPath(
-    new URL("../plugins/fuzz/skills/github-skills-pdf/", import.meta.url),
+    new URL("../plugins/smart/skills/github-skills-pdf/", import.meta.url),
   );
   const script = join(skillDirectory, "scripts/build_bilingual_skills_pdf.py");
   const project = await mkdtemp(join(tmpdir(), "github-skills-pdf-mono-"));
@@ -456,7 +456,7 @@ test("构建器支持单语项目并照常插入笔记页", async () => {
 
 test("builder runs from the skill directory and rejects a moving ref", async () => {
   const skillDirectory = fileURLToPath(
-    new URL("../plugins/fuzz/skills/github-skills-pdf/", import.meta.url),
+    new URL("../plugins/smart/skills/github-skills-pdf/", import.meta.url),
   );
   const script = join(
     skillDirectory,
