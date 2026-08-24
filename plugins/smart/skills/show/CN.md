@@ -1,6 +1,6 @@
 ---
 name: show
-description: 将冗长交付物或 Markdown 文件渲染为带时间戳的自包含 HTML 审阅页。
+description: 将冗长对话交付物或 Markdown 文件渲染为新的自包含 HTML 审阅页，并在浏览器打开。
 disable-model-invocation: true
 argument-hint: "无参数 = 渲染当前对话交付物；<path>.md = 渲染该文件；尾随词语可缩小主题"
 model: sonnet

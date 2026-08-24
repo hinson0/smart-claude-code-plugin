@@ -1,6 +1,6 @@
 ---
 name: html
-description: 将 Markdown 文档转换为安全的自包含 HTML 文件。
+description: 将一个 Markdown 文件转换为安全的自包含 HTML 页面，不打开浏览器。
 disable-model-invocation: true
 ---
 

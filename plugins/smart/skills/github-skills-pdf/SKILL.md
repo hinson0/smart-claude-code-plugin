@@ -1,6 +1,6 @@
 ---
 name: github-skills-pdf
-description: Build a verified A4 English-Chinese handbook from every official skill in a pinned GitHub skills repository.
+description: Build a verified A4 handbook from a pinned GitHub skills repository, with English source above Simplified Chinese translation.
 disable-model-invocation: true
 argument-hint: "<repository-or-url> [--notes 2|4] -- decide before building; 2 or 4 inserts one or two sheets of blank note pages after each chapter"
 ---

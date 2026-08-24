@@ -1,6 +1,6 @@
 ---
 name: html
-description: Convert a Markdown document into a safe, self-contained HTML file.
+description: Convert one Markdown file into a safe, self-contained HTML page without opening a browser.
 disable-model-invocation: true
 ---
 

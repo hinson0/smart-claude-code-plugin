@@ -1,6 +1,6 @@
 ---
 name: github-skills-pdf
-description: 将固定版本的 GitHub skills 仓库中所有正式 skill 制作为经验证的 A4 英中双语手册。
+description: 将固定版本的 GitHub skills 仓库制作为经验证的 A4 手册，英文原文在上、简体中文译文在下。
 disable-model-invocation: true
 argument-hint: "<仓库或 URL> [--notes 2|4] —— --notes 在每章后插入 1 张或 2 张笔记纸对应的空白页，留空不插入；须在构建前决定"
 ---

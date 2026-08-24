@@ -1,6 +1,6 @@
 ---
 name: ask
-description: 提供简洁、非落盘的指导，不修改文件或运行工具。
+description: 以只读方式返回简洁的判断、命令、片段或检查清单。
 disable-model-invocation: true
 ---
 

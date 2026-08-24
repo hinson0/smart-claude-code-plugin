@@ -1,6 +1,6 @@
 ---
 name: my-weekly
-description: Summarize the current user's commits for a selected natural week in a personal Markdown weekly report.
+description: Summarize the current user's commits for a selected natural week as an evidence-backed Markdown weekly report.
 disable-model-invocation: true
 ---
 

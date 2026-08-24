@@ -1,6 +1,6 @@
 ---
 name: local
-description: Bootstrap a git-ignored per-project CLAUDE.local.md with personal Claude Code preferences.
+description: Create a git-ignored .claude/CLAUDE.local.md for per-project personal preferences.
 disable-model-invocation: true
 argument-hint: "(no args — bootstraps a git-ignored .claude/CLAUDE.local.md)"
 ---

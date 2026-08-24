@@ -1,6 +1,6 @@
 ---
 name: close-issue
-description: Verify one GitLab Issue's implementation assets, or publish them and close the Issue after explicit authorization.
+description: Check one GitLab Issue for close readiness, or publish an auditable asset note and close it after explicit authorization.
 disable-model-invocation: true
 ---
 

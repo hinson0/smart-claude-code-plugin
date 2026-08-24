@@ -1,6 +1,6 @@
 ---
 name: generate-wiki
-description: 将来源资料提炼为简洁 Markdown Wiki，并发布到 GitLab、GitHub 或本地 Wiki。
+description: 将文字、链接、PDF、图片或仓库内容整理为可发布的 GitLab、GitHub 或本地 Markdown Wiki 页面。
 disable-model-invocation: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: hud
-description: 安装、配置或恢复 Smart 的用户级 statusline。
+description: 安装 Smart 的简化版或完整版用户级 statusline，或恢复备份。
 disable-model-invocation: true
 argument-hint: "[0|1|2|reset|normal|all]（0/reset=恢复备份，1/normal=简化版，2/all=完整版，默认=2）"
 ---

@@ -1,6 +1,6 @@
 ---
 name: one-by-one
-description: Run one minimal Red-to-Green cycle with the agent landing Red and the user landing Green.
+description: Run one Red-to-Green cycle — the agent lands and validates Red, then the user lands Green.
 disable-model-invocation: true
 ---
 
