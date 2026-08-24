@@ -1,6 +1,7 @@
 ---
 name: html
-description: 将 Markdown 文档转换为安全的自包含 HTML 文件。用于用户要把 Markdown 文件转换为 HTML 页面时。
+description: 将 Markdown 文档转换为安全的自包含 HTML 文件。
+disable-model-invocation: true
 ---
 
 # Smart HTML

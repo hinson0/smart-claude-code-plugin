@@ -1,6 +1,7 @@
 ---
 name: generate-wiki
-description: 将文字、链接、PDF、图片或仓库资料提炼为简洁 Markdown Wiki，并发布到 GitLab Wiki、GitHub Wiki；没有可用远端接入时保存为本地 Wiki。用于用户要把资料、截图、文档、公告或教程整理成 Wiki 或知识库页面时。
+description: 将来源资料提炼为简洁 Markdown Wiki，并发布到 GitLab、GitHub 或本地 Wiki。
+disable-model-invocation: true
 ---
 
 # 生成 Wiki
@@ -11,8 +12,6 @@ description: 将文字、链接、PDF、图片或仓库资料提炼为简洁 Mar
 
 - Codex：`$smart:generate-wiki`
 - Claude Code：`/smart:generate-wiki`
-
-用户也可以直接说明要把资料整理成 Wiki；调用语法不改变后续的目标选择与安全边界。
 
 ## 读取来源
 

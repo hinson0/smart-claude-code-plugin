@@ -29,7 +29,7 @@ test("Smart publishes the cross-platform generate-wiki skill", async () => {
 
   assert.match(
     skill,
-    /^---\nname: generate-wiki\ndescription: .+\n---\n/,
+    /^---\nname: generate-wiki\ndescription: .+\ndisable-model-invocation: true\n---\n/,
   );
   const normalizedSkill = skill.replace(/\s+/g, " ");
   for (const contract of [

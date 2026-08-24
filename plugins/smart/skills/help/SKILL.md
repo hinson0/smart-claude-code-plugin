@@ -1,6 +1,7 @@
 ---
 name: help
-description: This skill should be used when the user says "help", "what can you do", "list skills", "list hooks", "list agents", "show commands", "how to use", or wants an overview of the smart plugin's capabilities.
+description: List Smart skills, hooks, and agents with optional category filtering.
+disable-model-invocation: true
 argument-hint: "[skill|hook|agent] (empty=show all)"
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: one-by-one
-description: 每轮由 Agent 静默落盘并验证 Red，再一次性给出 Green 人工修改与验证命令。用于用户要逐轮实施、Review 或按明确授权修复当前 Cycle 时。
+description: 执行一个最小 Red-to-Green Cycle，由 Agent 落盘 Red，用户落盘 Green。
 disable-model-invocation: true
 ---
 

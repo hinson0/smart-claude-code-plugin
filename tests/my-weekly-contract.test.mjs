@@ -27,7 +27,10 @@ test("Smart publishes the read-only my-weekly skill", async () => {
   assert.equal(codexPlugin.version, claudePlugin.version);
   assert.match(codexPlugin.interface.defaultPrompt.join("\n"), /my-weekly/);
 
-  assert.match(skill, /^---\nname: my-weekly\ndescription: .+\n---\n/);
+  assert.match(
+    skill,
+    /^---\nname: my-weekly\ndescription: .+\ndisable-model-invocation: true\n---\n/,
+  );
   const normalizedSkill = skill.replace(/\s+/g, " ");
   for (const contract of [
     "$smart:my-weekly",

@@ -1,6 +1,7 @@
 ---
 name: close-issue
-description: Verify one GitLab Issue's completed implementation assets; report readiness, or publish those assets and close the Issue after explicit authorization. Use after implementation work such as /implement has been committed and reviewed.
+description: Verify one GitLab Issue's implementation assets, or publish them and close the Issue after explicit authorization.
+disable-model-invocation: true
 ---
 
 # Close One GitLab Issue

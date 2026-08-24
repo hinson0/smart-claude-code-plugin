@@ -1,6 +1,7 @@
 ---
 name: my-weekly
-description: Read the current user's commits from a local or remote Git repository for a selected natural week and summarize them by outcome in a personal Markdown weekly report. Use when the user wants a report for this week, last week, or another natural week based on their own Git commits.
+description: Summarize the current user's commits for a selected natural week in a personal Markdown weekly report.
+disable-model-invocation: true
 ---
 
 # My Weekly Report
@@ -13,8 +14,6 @@ cannot prove.
 
 - Codex: `$smart:my-weekly <repo> [-N]`
 - Claude Code: `/smart:my-weekly <repo> [-N]`
-
-The user may also directly request a report for a repository and natural week.
 
 ## Parse the request
 

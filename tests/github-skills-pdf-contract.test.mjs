@@ -78,7 +78,7 @@ test("Smart publishes the GitHub Skills bilingual PDF contract", async () => {
 
   assert.match(
     skill,
-    /^---\nname: github-skills-pdf\ndescription: .+\nargument-hint: .+\n---\n/,
+    /^---\nname: github-skills-pdf\ndescription: .+\ndisable-model-invocation: true\nargument-hint: .+\n---\n/,
   );
   const argumentHint = skill.match(/\nargument-hint: (.+)\n/)?.[1];
   assert.ok(argumentHint, "argument-hint must be present");

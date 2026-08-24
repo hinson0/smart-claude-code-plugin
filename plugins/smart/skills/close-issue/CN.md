@@ -1,6 +1,7 @@
 ---
 name: close-issue
-description: 核对单个 GitLab Issue 已完成的实现资产；报告是否可关闭，或在明确授权后发布这些资产并关闭 Issue。用于 /implement 等实现工作已经提交并 Review 后。
+description: 核对单个 GitLab Issue 的实现资产，或在明确授权后发布资产并关闭 Issue。
+disable-model-invocation: true
 ---
 
 # 收口单个 GitLab Issue

@@ -1,6 +1,6 @@
 ---
 name: one-by-one
-description: Run one minimal Red-to-Green cycle at a time, with the agent landing and validating Red before giving the user complete Green instructions. Use when the user explicitly wants cycle-by-cycle implementation, review, or an authorized fix for the current cycle.
+description: Run one minimal Red-to-Green cycle with the agent landing Red and the user landing Green.
 disable-model-invocation: true
 ---
 

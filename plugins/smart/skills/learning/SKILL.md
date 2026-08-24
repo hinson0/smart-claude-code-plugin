@@ -1,6 +1,7 @@
 ---
 name: learning
-description: 'Toggle "learning mode" — a co-coding mode where the user hand-writes the code themselves instead of you writing it. Trigger on /smart:learning, or on a request in any language to enable or disable hands-on participation in coding, including intentions equivalent to "learning mode", "let me write the code", "I want to participate in coding", "co-code with me", "hands-on mode", or "turn learning mode off". This is a plain on/off switch — no ratios, no config. When on, every piece of code you would write goes to the console instead, labeled New file / New code / Modify / Delete for the user to type in, and you review what they land, one task at a time. Enabling injects the rules into `.claude/CLAUDE.local.md` (which Claude Code auto-loads every session) so they persist; the presence of that block is the entire state — nothing is stored in `.smart/settings.json`. Use this skill for any request about turning the user''s own involvement in writing code on or off.'
+description: Toggle a persistent co-coding mode where the user hand-writes code and the agent reviews it.
+disable-model-invocation: true
 argument-hint: "[0|1] — 1=enable, 0=disable, empty=status"
 ---
 
