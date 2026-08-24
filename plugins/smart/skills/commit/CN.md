@@ -1,6 +1,6 @@
 ---
 name: commit
-description: 分组并提交已暂存或未暂存的改动，不运行 CI、不升级版本、不推送。
+description: 分析、分组并提交当前改动，不运行检查、不升级版本、不推送或创建 PR。
 disable-model-invocation: true
 argument-hint: 无需参数。自动识别单个或多个 feature，按 feature 分组提交。
 model: haiku

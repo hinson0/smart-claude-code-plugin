@@ -1,6 +1,6 @@
 ---
 name: hud
-description: Install, configure, or restore Smart's user-scope statusline.
+description: Install Smart's minimal or full user statusline, or restore its backup.
 disable-model-invocation: true
 argument-hint: "[0|1|2|reset|normal|all] (0/reset=restore backup, 1/normal=minimal, 2/all=full, default=2)"
 ---

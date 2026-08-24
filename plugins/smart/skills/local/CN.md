@@ -1,6 +1,6 @@
 ---
 name: local
-description: 创建一个被 git 忽略的项目级 CLAUDE.local.md，保存个人 Claude Code 偏好。
+description: 创建被 git 忽略的 `.claude/CLAUDE.local.md`，保存项目级个人偏好。
 disable-model-invocation: true
 argument-hint: "（无参数 —— 创建一个被 git 忽略的 .claude/CLAUDE.local.md）"
 ---

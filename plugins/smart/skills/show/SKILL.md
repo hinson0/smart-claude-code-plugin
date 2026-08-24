@@ -1,6 +1,6 @@
 ---
 name: show
-description: Render a long deliverable or Markdown file as a timestamped, self-contained HTML review page.
+description: Render a long conversation deliverable or Markdown file as a new self-contained HTML review page and open it in the browser.
 disable-model-invocation: true
 argument-hint: "no args = render current conversation's deliverable; <path>.md = render that file; trailing words narrow the topic"
 model: sonnet

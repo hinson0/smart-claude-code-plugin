@@ -1,6 +1,6 @@
 ---
 name: generate-wiki
-description: Distill source material into a concise Markdown Wiki and publish it to GitLab, GitHub, or a local Wiki.
+description: Turn text, links, PDFs, images, or repository content into one publishable GitLab, GitHub, or local Markdown Wiki page.
 disable-model-invocation: true
 ---
 

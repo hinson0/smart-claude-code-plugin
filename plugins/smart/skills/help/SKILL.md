@@ -1,6 +1,6 @@
 ---
 name: help
-description: List Smart skills, hooks, and agents with optional category filtering.
+description: Show Smart skills, hooks, or agents, optionally filtered by component type.
 disable-model-invocation: true
 argument-hint: "[skill|hook|agent] (empty=show all)"
 ---

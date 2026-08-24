@@ -1,6 +1,6 @@
 ---
 name: ask
-description: Provide concise, non-persistent guidance without modifying files or running tools.
+description: Return a concise judgment, command, snippet, or checklist while remaining read-only.
 disable-model-invocation: true
 ---
 

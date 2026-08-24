@@ -1,6 +1,6 @@
 ---
 name: commit
-description: Group and commit staged or unstaged changes without CI checks, version bumps, or pushes.
+description: Analyze, group, and commit current changes without checks, version bumps, pushes, or PRs.
 disable-model-invocation: true
 argument-hint: No arguments needed. Automatically identifies single or multiple features based on files and performs grouped commits.
 model: haiku

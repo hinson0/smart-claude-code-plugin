@@ -1,6 +1,6 @@
 ---
 name: help
-description: 列出 Smart 的 skills、hooks 和 agents，可按类别筛选。
+description: 展示 Smart 的 skills、hooks 或 agents，可按组件类型筛选。
 disable-model-invocation: true
 argument-hint: "[skill|hook|agent]（空=显示全部）"
 ---

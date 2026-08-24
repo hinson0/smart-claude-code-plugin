@@ -1,6 +1,6 @@
 ---
 name: my-weekly
-description: 将当前用户在指定自然周的 Git 提交汇总为个人 Markdown 周报。
+description: 将当前用户在指定自然周的 Git 提交汇总为有证据支持的 Markdown 周报。
 disable-model-invocation: true
 ---
 

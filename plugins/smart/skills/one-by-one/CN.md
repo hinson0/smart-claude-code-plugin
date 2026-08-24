@@ -1,6 +1,6 @@
 ---
 name: one-by-one
-description: 执行一个最小 Red-to-Green Cycle，由 Agent 落盘 Red，用户落盘 Green。
+description: 执行一个 Red-to-Green Cycle：Agent 落盘并验证 Red，再由用户落盘 Green。
 disable-model-invocation: true
 ---
 

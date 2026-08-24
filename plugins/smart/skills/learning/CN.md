@@ -1,6 +1,6 @@
 ---
 name: learning
-description: 切换持久化协作编码模式，由用户亲手写代码，Agent 负责审查。
+description: 切换持久化学习模式，由用户亲手输入每处代码改动，Agent 负责审查。
 disable-model-invocation: true
 argument-hint: "[0|1] —— 1=开启，0=关闭，留空=查看状态"
 ---

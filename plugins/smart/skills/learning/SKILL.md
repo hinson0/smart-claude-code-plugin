@@ -1,6 +1,6 @@
 ---
 name: learning
-description: Toggle a persistent co-coding mode where the user hand-writes code and the agent reviews it.
+description: Toggle persistent learning mode, where the user types every code change and the agent reviews it.
 disable-model-invocation: true
 argument-hint: "[0|1] — 1=enable, 0=disable, empty=status"
 ---

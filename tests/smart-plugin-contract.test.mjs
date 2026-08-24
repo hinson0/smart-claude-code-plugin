@@ -69,6 +69,18 @@ test("Smart exposes exactly the agreed skill surface", async () => {
   await assert.rejects(access(new URL("plugins/fuzz/.codex-plugin/plugin.json", ROOT)));
 });
 
+test("agent instructions have one root source of truth", async () => {
+  const [agents, claude] = await Promise.all([
+    readFile(new URL("AGENTS.md", ROOT), "utf8"),
+    readFile(new URL("CLAUDE.md", ROOT), "utf8"),
+  ]);
+
+  assert.match(agents, /根目录 `CLAUDE\.md`/);
+  assert.match(claude, /^# Smart Dual-Host Plugin$/m);
+  assert.match(claude, /disable-model-invocation: true/);
+  await assert.rejects(access(new URL(".claude/CLAUDE.md", ROOT)));
+});
+
 test("every Smart skill and reference has its Chinese companion", async () => {
   for (const skill of SMART_SKILLS) {
     const files = await readdir(new URL(`plugins/smart/skills/${skill}/`, ROOT));
@@ -88,6 +100,24 @@ test("every Smart skill and reference has its Chinese companion", async () => {
       translation,
       /^disable-model-invocation: true$/m,
       `${skill} Chinese companion allows model invocation`,
+    );
+
+    const sourceDescription = source.match(/^description: (.+)$/m)?.[1];
+    const translatedDescription = translation.match(/^description: (.+)$/m)?.[1];
+    assert.ok(sourceDescription, `${skill} is missing a one-line description`);
+    assert.ok(
+      translatedDescription,
+      `${skill} Chinese companion is missing a one-line description`,
+    );
+    assert.ok(sourceDescription.length <= 140, `${skill} description is too long`);
+    assert.ok(
+      translatedDescription.length <= 140,
+      `${skill} Chinese description is too long`,
+    );
+    assert.doesNotMatch(
+      sourceDescription,
+      /\b(?:use when|trigger on|should be used when)\b/i,
+      `${skill} description contains model-facing trigger language`,
     );
   }
 
