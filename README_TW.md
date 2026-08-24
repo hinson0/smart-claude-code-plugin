@@ -63,9 +63,9 @@ Claude Code 使用 `/smart:*`；Codex 提供對應的 `$smart:*` skills。
 codex plugin add smart@smart
 ```
 
-Smart 包含十三個 skills：`ask`、`close-issue`、`commit`、`generate-wiki`、
+Smart 包含十四個 skills：`ask`、`close-issue`、`commit`、`generate-wiki`、
 `github-skills-pdf`、`help`、`html`、`hud`、`learning`、`local`、`my-weekly`、
-`one-by-one` 與 `show`。部分流程依賴 Git、`glab`、Node.js、Python/PDF 工具、
+`one-by-one`、`pair-write` 與 `show`。部分流程依賴 Git、`glab`、Node.js、Python/PDF 工具、
 瀏覽器或文件能力；每個 skill 都會檢查自己的前置條件。
 所有 skill 都只由使用者主動調用：請明確使用對應的 `/smart:*` 或
 `$smart:*` 名稱，不依賴模型自動調用。
@@ -93,6 +93,7 @@ Smart 包含十三個 skills：`ask`、`close-issue`、`commit`、`generate-wiki
 - **說明概覽** — `/smart:help` 動態掃描並列出所有技能、hook 和 agent 及其描述。
 - **唯讀指導** — `/smart:ask` 回傳簡潔判斷、指令、片段或清單，不修改檔案、不執行工具。
 - **單 Cycle TDD** — `/smart:one-by-one` 驗證一個最小 Red，再引導使用者完成對應 Green。
+- **結對手寫** — `/smart:pair-write` 為一個使用者手寫步驟同輪提供註解骨架和直接展開的完整參考實作，並在推進前 Review 真實落盤檔案。
 - **Markdown 轉 HTML** — `/smart:html` 確定性地把 Markdown 轉為安全自包含 HTML，不自動開啟瀏覽器。
 - **Wiki 產生** — `/smart:generate-wiki` 把資料整理為 GitLab、GitHub 或本機 Markdown Wiki，並安全發佈。
 - **雙語 Skills PDF** — `/smart:github-skills-pdf` 固定 GitHub skills 倉庫版本並產生經驗證的英中 A4 手冊。
@@ -123,6 +124,7 @@ Claude Code 使用 `/smart:*`，Codex 使用 `$smart:*`。
 | `/smart:learning [0\|1]` | 切換學習模式——由*你*親手寫程式碼；Claude 把每段印到主控台並標明 新增檔案 / 新增程式碼 / 修改 / 刪除 供你敲入，再審查你落盤的程式碼。`1`=開，`0`=關，留空=狀態。狀態就是注入到 `.claude/CLAUDE.local.md` 的塊——無設定、無占比 |
 | `/smart:my-weekly <repo> [-N]` | 依指定自然週彙總目前使用者的 Git 提交 |
 | `/smart:one-by-one` | 每次執行一個最小 Red-to-Green Cycle |
+| `/smart:pair-write` | 用註解骨架、完整參考實作和真實檔案 Review 引導使用者手寫一個編碼步驟 |
 | `/smart:show [<path>.md]` | 把當前對話交付物（或指定 Markdown 檔案）渲染成帶時間戳的全新自包含零 JS HTML 審閱頁，寫入 `.smart/pages/`，保留舊頁面並在瀏覽器開啟。三種版式配方：plan-review / explainer / report |
 
 ---
