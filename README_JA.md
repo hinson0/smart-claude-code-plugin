@@ -8,7 +8,7 @@
 
 > コーディングが終わったら **「コミット」** と言うだけです。Smart が無関係な変更を分離し、焦点の合った message を作成してグループごとにコミットします。
 
-**Claude Code** と **Codex** の両方をサポートし、低コストの意味ベースコミット、監査可能な GitLab Issue クローズ、セッションユーティリティ、エンジニアリングルールを提供するプラグインです。
+**Claude Code** と **Codex** の両方をサポートし、開発ワークフロー、コンテンツツール、セッションユーティリティ、エンジニアリングルールを提供するプラグインです。
 
 ---
 
@@ -47,53 +47,27 @@
 
 ## この Marketplace のプラグイン
 
-このリポジトリは、Claude Code と Codex の両方をサポートする独立した 2 つのプラグインを配布します。
+このリポジトリは、Claude Code と Codex の両方をサポートする 1 つのプラグインを配布します。
 
 | プラグイン | インストール名 | 用途 |
 |------------|----------------|------|
-| Smart | `smart@smart` | 意味ベースのコミット、安全な GitLab Issue クローズ、セッションユーティリティ |
-| Fuzz | `fuzz@smart` | 読み取り専用ガイド、Cycle TDD、チケット campaign、HTML/PDF/Wiki、週報 |
+| Smart | `smart@smart` | 開発ワークフロー、HTML/PDF/Wiki ツール、週報、セッションユーティリティ |
 
-各プラグインは個別にも同時にもインストールできます。Claude Code は `/smart:*` と
-`/fuzz:*` を使用し、Codex も対応するプラグイン名前空間の skill を提供します。類似機能が
-ある場合は、完全な名前空間で意図する契約を明示してください。
+Claude Code は `/smart:*`、Codex は対応する `$smart:*` skills を使用します。
 
 ```bash
 # Claude Code：marketplace 追加後に実行
 /plugin install smart@smart
-/plugin install fuzz@smart
 
 # Codex：marketplace 追加後に実行
 codex plugin add smart@smart
-codex plugin add fuzz@smart
 ```
 
-Fuzz には `ask`、`close-issue`、`generate-wiki`、`github-skills-pdf`、
-`handle-all-tickets`、`html`、`my-weekly`、`one-by-one`、`verify-all-tickets` の
-9 個の skill が含まれます。一部のフローは Git、`glab`、
-Python/PDF ツール、またはホスト提供の Goal、Review、ブラウザ、文書機能を必要とし、
-各 skill は書き込み前に自身の前提条件を確認します。
-
-### 旧 Marketplace から Fuzz を移行
-
-`fuzz@ce-workflow` と `fuzz@smart` を同時にインストールしないでください。新しい配布元を
-隔離環境で先に検証し、次の順序で切り替えて新しいセッションを開始します。
-
-```bash
-# Claude Code
-claude plugin uninstall fuzz@ce-workflow
-claude plugin marketplace add hinson0/smart-claude-code-plugins
-claude plugin install fuzz@smart
-
-# Codex
-codex plugin remove fuzz@ce-workflow
-codex plugin marketplace add hinson0/smart-claude-code-plugins --ref main
-codex plugin add fuzz@smart
-```
-
-`ce-workflow` の他のプラグインを使う場合、その marketplace は残してください。
-ロールバック時は `fuzz@smart` を削除し、`fuzz@ce-workflow` をインストールして
-新しいセッションを開始します。
+Smart には `ask`、`close-issue`、`commit`、`generate-wiki`、
+`github-skills-pdf`、`help`、`html`、`hud`、`learning`、`local`、
+`my-weekly`、`one-by-one`、`show` の 13 個の skill が含まれます。
+一部のフローは Git、`glab`、Node.js、Python/PDF ツール、ブラウザ、文書機能を必要とし、
+各 skill は自身の前提条件を確認します。
 
 ---
 
@@ -116,7 +90,12 @@ codex plugin add fuzz@smart
 
 - **HUD / Statusline インストーラー** — 1つのコマンドでモデル、Git ブランチ、コンテキスト使用量、レート制限、システムリソース、ツール呼び出し統計を表示するステータスラインをインストールします。2つのインストールレベル（最小 / フル）とバックアップ復元をサポート、user スコープのみ。
 - **ヘルプ概要** — `/smart:help` で全スキル、フック、エージェントを動的にスキャンし、説明付きで一覧表示します。
-- **Joke Teller Agent** — 適切なタイミングでプログラマージョークを提供し、作業ストレスを和らげます。
+- **読み取り専用ガイド** — `/smart:ask` はファイルやツールを変更せず、簡潔な判断、コマンド、スニペット、チェックリストを返します。
+- **単一 Cycle TDD** — `/smart:one-by-one` は最小 Red を 1 つ検証し、対応する Green 実装を案内します。
+- **Markdown to HTML** — `/smart:html` は Markdown を安全な自己完結型 HTML に決定的に変換し、ブラウザを自動で開きません。
+- **Wiki 生成** — `/smart:generate-wiki` は資料を GitLab、GitHub、ローカル Markdown Wiki に整理して安全に公開します。
+- **バイリンガル Skills PDF** — `/smart:github-skills-pdf` は GitHub skills リポジトリを固定し、検証済み英中 A4 ハンドブックを生成します。
+- **個人週報** — `/smart:my-weekly` は選択した自然週の現在ユーザーの Git コミットを要約します。
 - **組み込みコーディングルール** — 事前に用意されたルールファイル（例：Pydantic V2 標準）が `rules/` に格納されています。プロジェクトの `.claude/rules/` にシンボリックリンクを作成するだけで有効化できます。
 - **学習モード** — `/smart:learning 1` は*あなたが*コードを自分の手で書く、シンプルな協働コーディングモードを有効にします。割合も設定もない、単純なオン/オフのスイッチです。オンの間、Claude が書くはずのコードは代わりにコンソールへ出力され——各片は 新規ファイル / 新規コード / 修正 / 削除 とファイル・位置つきでラベル付けされ——あなたが入力し、Claude はあなたが保存したコードをレビューしてから次へ進みます（一度に一タスク）。有効化するとルールが `.claude/CLAUDE.local.md`（Claude Code が毎セッション読み込む、git-ignore されたプロジェクト別メモリ）に注入されて持続し、そのブロックの有無こそが状態のすべてで、`/smart:learning 0` がそれを削除します。`.smart/settings.json` には何も保存しません。
 - **HTML レビューページ** — `/smart:show` は長い成果物——現在の会話のプラン/分析/レビュー、または Markdown ファイル——を単一ファイル・ゼロ JavaScript の自己完結型 HTML レビューページにレンダリングし、ブラウザで開きます。グレー地に白カードのビジュアルシステム：固定目次、番号付きセクション、リスクバッジ、代替案比較カード（採用案をハイライト）、インライン SVG 図、`<details>` 折りたたみ。3 つの固定レイアウトレシピ（plan-review / explainer / report）がページ構造の一貫性を保証します。全ページに出所フッター（時刻、commit SHA、ソース）を必須で刻み、あくまで派生ビュー——Markdown が事実の源泉のままです。実行のたびに `.smart/pages/`（git-ignore 済み）へタイムスタンプ付きの新規ファイルを書き出し、以前のページを上書きせず、不変のレビュー資産として保持します。デモは `assets/demos/` を参照。
@@ -137,10 +116,16 @@ codex plugin add fuzz@smart
 | コマンド | 機能 |
 |---|---|
 | `/smart:commit` | コミットのみ（スマートグルーピング、メッセージ自動生成） |
+| `/smart:ask` | 実行や変更をせず簡潔な読み取り専用ガイドを返す |
 | `/smart:close-issue <IID-or-URL>` | 単一 GitLab Issue を読み取り専用で確認し、明示的なクローズ承認後に監査可能な開発資産 note を公開してから閉じる |
+| `/smart:generate-wiki` | 資料を保護された GitLab、GitHub、ローカル Wiki に整理 |
+| `/smart:github-skills-pdf [--notes 2\|4]` | GitHub skills リポジトリから検証済み英中 A4 ハンドブックを生成 |
+| `/smart:html <input.md> [output.html]` | Markdown を安全な自己完結型 HTML に変換 |
 | `/smart:hud [0\|1\|2\|reset\|normal\|all]` | ステータスライン設置（`1`/`normal`=最小、`2`/`all`=フル）またはバックアップ復元（`0`/`reset`）、user スコープ |
 | `/smart:help [skill\|hook\|agent]` | 全プラグインコンポーネントの概要表示（カテゴリ別フィルタも可能） |
 | `/smart:learning [0\|1]` | 学習モードの切り替え — *あなたが*コードを自分で書く；Claude が各片を 新規ファイル / 新規コード / 修正 / 削除 とラベル付けしてコンソールに出力し、あなたが入力、保存したコードをレビュー。`1`=オン、`0`=オフ、空=状態。状態は `.claude/CLAUDE.local.md` に注入されたブロック——設定も割合もなし |
+| `/smart:my-weekly <repo> [-N]` | 選択した自然週の現在ユーザーの Git コミットを要約 |
+| `/smart:one-by-one` | 一度に 1 つの最小 Red-to-Green Cycle を実行 |
 | `/smart:show [<path>.md]` | 現在の会話の成果物（または Markdown ファイル）をタイムスタンプ付きの新しい自己完結型ゼロ JS HTML レビューページにレンダリングし、以前のページを保持したまま `.smart/pages/` に書き出してブラウザで開く。レイアウトレシピ 3 種：plan-review / explainer / report |
 
 ---
@@ -209,22 +194,6 @@ ln -s /path/to/plugin/rules/pydantic-v2.md .claude/rules/pydantic-v2.md
 
 ---
 
-## Agents
-
-### ジョークテラー（Joke Teller）
-
-プログラマージョークを提供して作業ストレスを和らげます。
-
-```
-"tell me a joke" / "ジョーク言って" / "I need a laugh"
-```
-
-- 会話言語を自動検出し、該当言語でジョークを提供
-- 短い形式（2–4文、オチスタイル — Q&A 形式ではない）
-- やさしいセルフケアリマインダー付き（水分補給、ストレッチ、休憩）
-
----
-
 ## セッション Hooks
 
 セッション境界とツール呼び出し時にトリガーされる hook が含まれています：
@@ -243,6 +212,8 @@ ln -s /path/to/plugin/rules/pydantic-v2.md .claude/rules/pydantic-v2.md
 - **Claude Code** または **Codex**（プラグイン対応）—— プラグインは両方のマニフェストを同梱し、どちらのホストでもネイティブに動作
 - `git`
 - [`glab` CLI](https://gitlab.com/gitlab-org/cli) — `/smart:close-issue` の書き込み操作にのみ使用
+- Node.js — `/smart:html` とクローズスクリプトに使用
+- Python 3、`reportlab`、埋め込み可能な CJK フォント — `/smart:github-skills-pdf` に使用
 - `jq` — HUD ステータスラインのみ必要（その他の機能には不要）
 
 ---
