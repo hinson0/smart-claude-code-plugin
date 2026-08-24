@@ -52,7 +52,7 @@
 | プラグイン | インストール名 | 用途 |
 |------------|----------------|------|
 | Smart | `smart@smart` | 意味ベースのコミット、安全な GitLab Issue クローズ、セッションユーティリティ |
-| Fuzz | `fuzz@smart` | 読み取り専用ガイド、Cycle TDD、チケット campaign、HTML/PDF/Wiki、週報、任意の宮廷モード |
+| Fuzz | `fuzz@smart` | 読み取り専用ガイド、Cycle TDD、チケット campaign、HTML/PDF/Wiki、週報 |
 
 各プラグインは個別にも同時にもインストールできます。Claude Code は `/smart:*` と
 `/fuzz:*` を使用し、Codex も対応するプラグイン名前空間の skill を提供します。類似機能が
@@ -69,8 +69,8 @@ codex plugin add fuzz@smart
 ```
 
 Fuzz には `ask`、`close-issue`、`generate-wiki`、`github-skills-pdf`、
-`handle-all-tickets`、`html`、`i-am-the-king`、`my-weekly`、`one-by-one`、
-`verify-all-tickets` の 10 個の skill が含まれます。一部のフローは Git、`glab`、
+`handle-all-tickets`、`html`、`my-weekly`、`one-by-one`、`verify-all-tickets` の
+9 個の skill が含まれます。一部のフローは Git、`glab`、
 Python/PDF ツール、またはホスト提供の Goal、Review、ブラウザ、文書機能を必要とし、
 各 skill は書き込み前に自身の前提条件を確認します。
 
@@ -91,10 +91,9 @@ codex plugin marketplace add hinson0/smart-claude-code-plugins --ref main
 codex plugin add fuzz@smart
 ```
 
-`ce-workflow` の他のプラグインを使う場合、その marketplace は残してください。Fuzz は
-引き続き `.fuzz/`、`$CODEX_HOME/fuzz/`、`fuzz-*` Agent ファイルを使用するため、既存の
-宮廷モード状態は引き継がれます。ロールバック時は `fuzz@smart` を削除し、
-`fuzz@ce-workflow` をインストールして新しいセッションを開始します。
+`ce-workflow` の他のプラグインを使う場合、その marketplace は残してください。
+ロールバック時は `fuzz@smart` を削除し、`fuzz@ce-workflow` をインストールして
+新しいセッションを開始します。
 
 ---
 

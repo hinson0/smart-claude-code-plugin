@@ -1,6 +1,6 @@
 {
   "name": "fuzz",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "On-demand guidance, cycle-based TDD, ticket delivery and verification, safe Issue closeout, and content generation tools.",
   "author": {
     "name": "CE"
@@ -9,7 +9,7 @@
   "interface": {
     "displayName": "Fuzz",
     "shortDescription": "Guidance, ticket delivery, closeout, and content generation.",
-    "longDescription": "Fuzz provides explicit read-only guidance, cycle-based Red to Green collaboration, serial or explicit parallel parent-ticket delivery, fresh-task campaign verification, safe single-Issue closeout, Markdown-to-HTML conversion, bilingual GitHub skills PDFs, Wiki publishing, personal Git weekly reports, and optional imperial-court session conventions.",
+    "longDescription": "Fuzz provides explicit read-only guidance, cycle-based Red to Green collaboration, serial or explicit parallel parent-ticket delivery, fresh-task campaign verification, safe single-Issue closeout, Markdown-to-HTML conversion, bilingual GitHub skills PDFs, Wiki publishing, and personal Git weekly reports.",
     "developerName": "CE",
     "category": "Developer Tools",
     "capabilities": ["Read", "Write"],
@@ -26,4 +26,3 @@
     ]
   }
 }
-

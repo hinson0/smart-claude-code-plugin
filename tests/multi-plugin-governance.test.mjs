@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
 const ROOT = new URL("../", import.meta.url);
@@ -23,7 +23,7 @@ test("smart and fuzz are independent dual-host releases", async () => {
   assert.equal(smartCodex.version, smartClaude.version);
   assert.equal(smartCodex.version, "5.0.0");
   assert.equal(fuzzCodex.version, fuzzClaude.version);
-  assert.equal(fuzzCodex.version, "2.0.0");
+  assert.equal(fuzzCodex.version, "3.0.0");
   assert.notEqual(smartCodex.version, fuzzCodex.version);
   assert.deepEqual(codexMarket.plugins.map((p) => p.name).sort(), ["fuzz", "smart"]);
   assert.deepEqual(claudeMarket.plugins.map((p) => p.name).sort(), ["fuzz", "smart"]);
@@ -35,15 +35,11 @@ test("smart and fuzz are independent dual-host releases", async () => {
   assert.equal(smartTree, "ad9d3639e31805814e736afda21f43e59eb86302");
 });
 
-test("plugin payloads do not proxy each other", async () => {
-  const [smartHooks, fuzzHooks, fuzzSession] = await Promise.all([
-    readFile(new URL("plugins/smart/hooks/hooks.json", ROOT), "utf8"),
-    readFile(new URL("plugins/fuzz/hooks/hooks.json", ROOT), "utf8"),
-    readFile(new URL("plugins/fuzz/scripts/session-start.mjs", ROOT), "utf8"),
-  ]);
-
+test("plugin payloads do not proxy each other or retain imperial mode", async () => {
+  const smartHooks = await readFile(new URL("plugins/smart/hooks/hooks.json", ROOT), "utf8");
   assert.doesNotMatch(smartHooks, /i-am-the-king|fuzz-|imperial/i);
-  assert.doesNotMatch(fuzzHooks, /session-logs|notebook-capture|greet\.sh/);
-  assert.doesNotMatch(fuzzSession, /plugins\/smart|\.smart\//);
+  await assert.rejects(access(new URL("plugins/fuzz/skills/i-am-the-king/SKILL.md", ROOT)));
+  await assert.rejects(access(new URL("plugins/fuzz/hooks/hooks.json", ROOT)));
+  await assert.rejects(access(new URL("plugins/fuzz/codex-agents/qinchai.toml", ROOT)));
+  await assert.rejects(access(new URL("plugins/fuzz/scripts/session-start.mjs", ROOT)));
 });
-

@@ -52,7 +52,7 @@
 | 外掛 | 安裝名稱 | 用途 |
 |------|----------|------|
 | Smart | `smart@smart` | 語意提交、安全 GitLab Issue 收尾與會話工具 |
-| Fuzz | `fuzz@smart` | 唯讀指導、逐 Cycle TDD、票據 campaign、HTML/PDF/Wiki、週報與可選宮廷模式 |
+| Fuzz | `fuzz@smart` | 唯讀指導、逐 Cycle TDD、票據 campaign、HTML/PDF/Wiki 與週報 |
 
 兩個外掛可分別安裝，也可同時安裝。Claude Code 使用 `/smart:*` 與 `/fuzz:*`；Codex 提供
 對應的外掛命名空間 skill。兩個外掛有相近能力時，請使用完整命名空間明確選擇。
@@ -67,8 +67,8 @@ codex plugin add smart@smart
 codex plugin add fuzz@smart
 ```
 
-Fuzz 包含十個 skills：`ask`、`close-issue`、`generate-wiki`、`github-skills-pdf`、
-`handle-all-tickets`、`html`、`i-am-the-king`、`my-weekly`、`one-by-one` 與
+Fuzz 包含九個 skills：`ask`、`close-issue`、`generate-wiki`、`github-skills-pdf`、
+`handle-all-tickets`、`html`、`my-weekly`、`one-by-one` 與
 `verify-all-tickets`。部分流程依賴 Git、`glab`、Python/PDF 工具或宿主提供的 Goal、Review、
 瀏覽器與文件能力；每個 skill 都會在寫入前檢查自己的前置條件。
 
@@ -89,9 +89,8 @@ codex plugin marketplace add hinson0/smart-claude-code-plugins --ref main
 codex plugin add fuzz@smart
 ```
 
-若仍使用 `ce-workflow` 的其他外掛，請保留該 marketplace。Fuzz 會繼續使用 `.fuzz/`、
-`$CODEX_HOME/fuzz/` 與 `fuzz-*` Agent 檔案，因此既有宮廷模式狀態會延續。回復時先解除安裝
-`fuzz@smart`，再安裝 `fuzz@ce-workflow` 並建立新會話。
+若仍使用 `ce-workflow` 的其他外掛，請保留該 marketplace。回復時先解除安裝 `fuzz@smart`，
+再安裝 `fuzz@ce-workflow` 並建立新會話。
 
 ---
 

@@ -52,7 +52,7 @@
 | 플러그인 | 설치 이름 | 용도 |
 |----------|-----------|------|
 | Smart | `smart@smart` | 의미 기반 커밋, 안전한 GitLab Issue 마감, 세션 유틸리티 |
-| Fuzz | `fuzz@smart` | 읽기 전용 안내, Cycle TDD, 티켓 campaign, HTML/PDF/Wiki, 주간 보고서, 선택적 궁정 모드 |
+| Fuzz | `fuzz@smart` | 읽기 전용 안내, Cycle TDD, 티켓 campaign, HTML/PDF/Wiki, 주간 보고서 |
 
 각 플러그인을 따로 설치하거나 둘 다 설치할 수 있습니다. Claude Code는 `/smart:*`와
 `/fuzz:*`를 사용하며, Codex도 대응하는 플러그인 네임스페이스 skill을 제공합니다. 비슷한
@@ -69,7 +69,7 @@ codex plugin add fuzz@smart
 ```
 
 Fuzz는 `ask`, `close-issue`, `generate-wiki`, `github-skills-pdf`, `handle-all-tickets`,
-`html`, `i-am-the-king`, `my-weekly`, `one-by-one`, `verify-all-tickets`의 열 개 skill을
+`html`, `my-weekly`, `one-by-one`, `verify-all-tickets`의 아홉 개 skill을
 포함합니다. 일부 흐름은 Git, `glab`, Python/PDF 도구 또는 호스트의 Goal, Review, 브라우저,
 문서 기능이 필요하며, 각 skill은 쓰기 전에 자체 전제 조건을 확인합니다.
 
@@ -90,10 +90,8 @@ codex plugin marketplace add hinson0/smart-claude-code-plugins --ref main
 codex plugin add fuzz@smart
 ```
 
-`ce-workflow`의 다른 플러그인을 사용한다면 해당 marketplace는 유지하세요. Fuzz는 계속
-`.fuzz/`, `$CODEX_HOME/fuzz/`, `fuzz-*` Agent 파일을 사용하므로 기존 궁정 모드 상태가
-이어집니다. 롤백하려면 `fuzz@smart`를 제거하고 `fuzz@ce-workflow`를 설치한 뒤 새 세션을
-시작하세요.
+`ce-workflow`의 다른 플러그인을 사용한다면 해당 marketplace는 유지하세요. 롤백하려면
+`fuzz@smart`를 제거하고 `fuzz@ce-workflow`를 설치한 뒤 새 세션을 시작하세요.
 
 ---
 

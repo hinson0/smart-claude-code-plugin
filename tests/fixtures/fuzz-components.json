@@ -55,8 +55,8 @@
     "version": "5.0.0"
   },
   "fuzz": {
-    "version": "2.0.0",
-    "targetFileCount": 59,
+    "version": "3.0.0",
+    "targetFileCount": 41,
     "skills": [
       "ask",
       "close-issue",
@@ -64,7 +64,6 @@
       "github-skills-pdf",
       "handle-all-tickets",
       "html",
-      "i-am-the-king",
       "my-weekly",
       "one-by-one",
       "verify-all-tickets"
@@ -75,20 +74,27 @@
       "skills/github-skills-pdf/references/translation-guide.md",
       "skills/my-weekly/references/report-format.md"
     ],
-    "agents": [
-      "butou.toml",
-      "dali.toml",
-      "jinyiwei.toml",
-      "junji.toml",
-      "qinchai.toml",
-      "shangshu.toml",
-      "shiwei.toml",
-      "xueshi.toml",
-      "yushi.toml",
-      "zongguan.toml"
+    "removedFiles": [
+      "codex-agents/butou.toml",
+      "codex-agents/dali.toml",
+      "codex-agents/jinyiwei.toml",
+      "codex-agents/junji.toml",
+      "codex-agents/qinchai.toml",
+      "codex-agents/shangshu.toml",
+      "codex-agents/shiwei.toml",
+      "codex-agents/xueshi.toml",
+      "codex-agents/yushi.toml",
+      "codex-agents/zongguan.toml",
+      "hooks/CN.md",
+      "hooks/hooks.json",
+      "scripts/install-codex-agents.mjs",
+      "scripts/session-start.mjs",
+      "skills/i-am-the-king/CN.md",
+      "skills/i-am-the-king/SKILL.md",
+      "skills/i-am-the-king/agents/openai.yaml",
+      "skills/i-am-the-king/scripts/toggle-i-am-the-king.mjs"
     ],
     "additionalFiles": [
-      "hooks/CN.md",
       "references/CN[ticket-campaign].md",
       "skills/ask/CN.md",
       "skills/close-issue/CN.md",
@@ -98,7 +104,6 @@
       "skills/github-skills-pdf/references/CN[translation-guide].md",
       "skills/handle-all-tickets/CN.md",
       "skills/html/CN.md",
-      "skills/i-am-the-king/CN.md",
       "skills/my-weekly/CN.md",
       "skills/my-weekly/references/CN[report-format].md",
       "skills/one-by-one/CN.md",

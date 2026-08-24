@@ -44,7 +44,7 @@ test("both marketplaces publish independent smart and fuzz plugins", async () =>
   assert.equal(claudeFuzz.source, "./plugins/fuzz");
 });
 
-test("fuzz manifests are independent version 2.0.0", async () => {
+test("fuzz manifests are independent version 3.0.0", async () => {
   const [codex, claude] = await Promise.all([
     readJson("plugins/fuzz/.codex-plugin/plugin.json"),
     readJson("plugins/fuzz/.claude-plugin/plugin.json"),
@@ -57,11 +57,17 @@ test("fuzz manifests are independent version 2.0.0", async () => {
   assert.equal(codex.skills, "./skills/");
 });
 
-test("fuzz ships the complete 59-file payload", async () => {
+test("fuzz ships the complete 41-file payload without imperial mode", async () => {
   const actual = await collectFiles(new URL("plugins/fuzz/", ROOT));
-  const expected = [...inventory.source.files, ...inventory.fuzz.additionalFiles].sort();
+  const removed = new Set(inventory.fuzz.removedFiles);
+  const expected = [...inventory.source.files, ...inventory.fuzz.additionalFiles]
+    .filter((file) => !removed.has(file))
+    .sort();
   assert.equal(actual.length, inventory.fuzz.targetFileCount);
   assert.deepEqual(actual, expected);
+  assert.ok(actual.every((file) => !file.includes("i-am-the-king")));
+  assert.ok(actual.every((file) => !file.startsWith("codex-agents/")));
+  assert.ok(actual.every((file) => !file.startsWith("hooks/")));
 });
 
 test("every fuzz skill and reference has its Chinese companion", async () => {
@@ -94,4 +100,3 @@ test("smart payload and version remain unchanged", async () => {
   assert.equal(codex.version, inventory.smart.version);
   assert.equal(claude.version, inventory.smart.version);
 });
-
