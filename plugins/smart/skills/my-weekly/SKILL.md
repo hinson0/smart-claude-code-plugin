@@ -10,16 +10,11 @@ Read verifiable Git history from the repository selected by the user and generat
 a personal weekly report. Remain read-only and do not add claims that Git history
 cannot prove.
 
-## Invocation
-
-- Codex: `$smart:my-weekly <repo> [-N]`
-- Claude Code: `/smart:my-weekly <repo> [-N]`
-
 ## Parse the request
 
-1. Accept `$smart:my-weekly <repo> [-N]`, where `repo` is a local repository path or a
-   remote clone URL. An omitted period means this week, `-1` means last week,
-   `-2` means the week before that, and so on.
+1. Accept arguments in the form `<repo> [-N]`, where `repo` is a local repository
+   path or a remote clone URL. An omitted period means this week, `-1` means last
+   week, `-2` means the week before that, and so on.
 2. Accept only an omitted period or a negative integer `-N`. Stop with correct
    usage rather than silently correcting a missing repository, positive number,
    non-integer, or multiple period arguments.

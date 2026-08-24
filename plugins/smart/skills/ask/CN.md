@@ -6,12 +6,6 @@ disable-model-invocation: true
 
 # Smart Ask
 
-## 调用边界
-
-- 仅在用户显式调用 Codex 的 `$smart:ask` 或 Claude Code 的 `/smart:ask` 时启动。
-- 其他工作流不得自动调用本 Skill。
-- 不从“简明扼要”“只告诉我怎么做”等自然语言自动推断调用。
-
 ## 响应模式
 
 - 直接说明可能原因、判断结论或下一步动作。

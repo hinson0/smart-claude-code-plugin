@@ -16,15 +16,14 @@ test("Smart ask exposes one explicit read-only contract on both hosts", async ()
     skill,
     /^---\nname: ask\ndescription: .+\ndisable-model-invocation: true\n---\n/,
   );
-  assert.match(skill, /explicitly invokes `\$smart:ask`/);
-  assert.match(skill, /`\/smart:ask`/);
+  assert.doesNotMatch(skill, /Invocation boundary|explicitly invokes/);
   assert.match(skill, /Do not modify files/);
   assert.match(skill, /run shell commands/);
   assert.match(skill, /call external services/);
   assert.match(skill, /start subagents/);
   assert.doesNotMatch(skill, /[\p{Script=Han}]/u);
 
-  assert.match(translation, /\$smart:ask/);
+  assert.doesNotMatch(translation, /调用边界|显式调用/);
   assert.match(translation, /不修改文件/);
   assert.match(metadata, /default_prompt: "Use \$smart:ask/);
   assert.match(metadata, /allow_implicit_invocation: false/);

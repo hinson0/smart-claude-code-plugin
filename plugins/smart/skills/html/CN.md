@@ -8,8 +8,6 @@ disable-model-invocation: true
 
 将一个 Markdown 文件转换为派生 HTML 视图。以 Markdown 为唯一事实来源。
 
-Codex 用户调用 `$smart:html`；Claude Code 用户调用 `/smart:html`。两个宿主使用同一 Skill 和脚本。
-
 ## 转换
 
 运行：

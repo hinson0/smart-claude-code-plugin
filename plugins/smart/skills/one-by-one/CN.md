@@ -6,9 +6,8 @@ disable-model-invocation: true
 
 # Smart One by One
 
-## 调用边界
+## Cycle 边界
 
-- 仅在用户显式调用 Codex 的 `$smart:one-by-one` 或 Claude Code 的 `/smart:one-by-one` 时启动。
 - 每轮只处理一个最小 Cycle，同一时刻只保留一个当前 Cycle。
 - 不建立完整 Cycle 地图，不创建或更新 HTML，不为后续 Cycle 生成持久化留痕。
 

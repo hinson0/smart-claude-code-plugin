@@ -6,14 +6,6 @@ disable-model-invocation: true
 
 # Smart Ask
 
-## Invocation boundary
-
-- Start only when the user explicitly invokes `$smart:ask` in Codex or
-  `/smart:ask` in Claude Code.
-- Other workflows must not invoke this skill automatically.
-- Do not infer invocation from requests such as "be concise" or "just tell me
-  what to do."
-
 ## Response mode
 
 - State the likely cause, conclusion, or next action directly.

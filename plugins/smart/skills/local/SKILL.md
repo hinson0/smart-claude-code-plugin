@@ -19,7 +19,7 @@ Claude Code Plan Mode plan files are stored in the **current project directory**
 
 ## Action: bootstrap a git-ignored `.claude/CLAUDE.local.md`
 
-When this skill is invoked explicitly (`/smart:local`), set up a per-project personal memory file that stays out of version control. The point is a place for machine- or person-specific notes (the preferences above, local paths, scratch context) that should never reach a shared commit.
+Set up a per-project personal memory file that stays out of version control. The point is a place for machine- or person-specific notes (the preferences above, local paths, scratch context) that should never reach a shared commit.
 
 1. **Resolve the project root.** Use `git rev-parse --show-toplevel`; if not in a git repo, fall back to the current working directory.
 2. **Ensure the directory.** `mkdir -p <root>/.claude`.

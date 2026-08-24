@@ -9,9 +9,6 @@ disable-model-invocation: true
 Convert one Markdown file into a derived HTML view while keeping Markdown as the
 single source of truth.
 
-Use `$smart:html` in Codex or `/smart:html` in Claude Code. Both hosts use the same
-skill and deterministic script.
-
 ## Conversion
 
 Run:

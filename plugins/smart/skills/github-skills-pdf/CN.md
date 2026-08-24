@@ -9,11 +9,6 @@ argument-hint: "<仓库或 URL> [--notes 2|4] —— --notes 在每章后插入 
 
 把一个 GitHub skills 仓库制作成可复现、可核对的英中双语学习手册。
 
-## 调用方式
-
-- Codex：`$smart:github-skills-pdf`
-- Claude Code：`/smart:github-skills-pdf`
-
 ## 固定范围
 
 1. 使用宿主提供的 GitHub 能力读取仓库；需要完整文件树时再 clone。
@@ -69,8 +64,7 @@ python3 <this-skill-directory>/scripts/build_bilingual_skills_pdf.py <project-di
 python3 <this-skill-directory>/scripts/build_bilingual_skills_pdf.py <project-dir> --output <output.pdf> --notes 2
 ```
 
-用户可直接写 `$smart:github-skills-pdf --notes 2` 或 `$smart:github-skills-pdf --notes 4`；省略
-`--notes` 时不插入笔记页。
+可选参数 `--notes` 只接受 `2` 或 `4`；省略时不插入笔记页。
 
 从本 `SKILL.md` 所在目录解析 `<this-skill-directory>`，不要按用户当前工作目录猜测
 `scripts/` 的位置。
