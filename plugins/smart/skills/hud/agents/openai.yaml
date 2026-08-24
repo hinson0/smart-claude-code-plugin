@@ -1,0 +1,3 @@
+interface:
+  display_name: "smart:hud"
+  short_description: "Install or restore Smart's user-scoped statusline"

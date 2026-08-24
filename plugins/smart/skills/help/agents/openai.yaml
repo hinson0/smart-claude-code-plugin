@@ -1,0 +1,3 @@
+interface:
+  display_name: "smart:help"
+  short_description: "List Smart skills, hooks, and agents by component type"

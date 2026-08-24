@@ -37,7 +37,7 @@ test("Smart matt-implement-all-tickets serializes Matt implement workers and clo
   assert.match(translation, /严格遵循 `\/to-tickets` 的发布顺序/);
   assert.match(translation, /其他 tracker 一律报告为不支持/);
 
-  assert.match(metadata, /display_name: "Matt implement all tickets"/);
+  assert.match(metadata, /display_name: "smart:matt-implement-all-tickets"/);
   assert.match(metadata, /\$smart:matt-implement-all-tickets/);
   assert.match(metadata, /\$mattpocock-skills:implement/);
   assert.match(metadata, /allow_implicit_invocation: false/);

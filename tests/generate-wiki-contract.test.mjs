@@ -91,7 +91,7 @@ test("Smart publishes the cross-platform generate-wiki skill", async () => {
   ]) {
     assert.match(chinese, new RegExp(contract));
   }
-  assert.match(openaiMetadata, /display_name: "Generate Wiki"/);
+  assert.match(openaiMetadata, /display_name: "smart:generate-wiki"/);
   assert.match(
     openaiMetadata,
     /default_prompt: ".*\$smart:generate-wiki.*"/,

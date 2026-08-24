@@ -1,0 +1,3 @@
+interface:
+  display_name: "smart:learning"
+  short_description: "Toggle user-written coding and persistent agent review mode"

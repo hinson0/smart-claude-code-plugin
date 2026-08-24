@@ -1,5 +1,5 @@
 interface:
-  display_name: "One Red-to-Green cycle"
+  display_name: "smart:one-by-one"
   short_description: "Validate Red, then let the user land and validate Green"
   default_prompt: "Use $smart:one-by-one to validate Red and guide me through the current Green."
 
