@@ -1,7 +1,0 @@
-interface:
-  display_name: "i-am-the-king"
-  short_description: "Enable or disable imperial mode at user or project scope"
-  default_prompt: "Use $fuzz:i-am-the-king to enable or disable imperial mode."
-
-policy:
-  allow_implicit_invocation: false
