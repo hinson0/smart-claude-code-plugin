@@ -63,9 +63,9 @@ Claude Code는 `/smart:*`를 사용하고 Codex는 대응하는 `$smart:*` skill
 codex plugin add smart@smart
 ```
 
-Smart는 `ask`, `close-issue`, `commit`, `generate-wiki`, `github-skills-pdf`,
+Smart는 `ask`, `close-issue`, `code-simplifier`, `commit`, `generate-wiki`, `github-skills-pdf`,
 `help`, `html`, `hud`, `learning`, `local`, `matt-implement-all-tickets`,
-`my-weekly`, `one-by-one`, `pair-write`, `show`의 열다섯 개 skill을 포함합니다.
+`my-weekly`, `one-by-one`, `pair-write`, `show`의 열여섯 개 skill을 포함합니다.
 일부 흐름은 Git, `gh`, `glab`, Node.js, Python/PDF 도구,
 브라우저 또는 문서 기능이 필요하며 각 skill은 자체 전제 조건을 확인합니다.
 모든 skill은 사용자가 직접 호출해야 합니다. 모델의 자동 호출에 의존하지 말고
@@ -96,6 +96,7 @@ Codex UI는 Claude Code의 원래 호출 이름에서 `/`만 뺀 `smart:<name>`�
 - **HUD / Statusline 설치기** — 한 줄 명령어로 모델, Git 브랜치, 컨텍스트 사용량, 속도 제한, 시스템 리소스, 도구 호출 통계를 표시하는 상태 표시줄을 설치합니다. 두 가지 설치 레벨(최소 / 전체)과 백업 복원을 지원하며, user 스코프만 지원합니다.
 - **도움말 개요** — `/smart:help`로 모든 스킬, 훅, 에이전트를 동적으로 스캔하여 설명과 함께 나열합니다.
 - **읽기 전용 안내** — `/smart:ask`는 파일이나 도구를 변경하지 않고 간결한 판단, 명령, 코드 조각 또는 체크리스트를 반환합니다.
+- **새 컨텍스트 코드 단순화** — `/smart:code-simplifier`는 전체 실행을 대화 기록이 없는 직렬 비재귀 worker 하나에 맡깁니다. 기본 agent는 대상 코드를 다루지 않으며, worker가 최근 변경 범위를 정하고 저장소 규칙을 따르며 동작 동등성을 입증합니다.
 - **단일 Cycle TDD** — `/smart:one-by-one`은 최소 Red 하나를 검증한 뒤 대응하는 Green 구현을 안내합니다.
 - **페어 라이팅** — `/smart:pair-write`는 사용자가 작성할 한 단계에 주석 골격과 펼쳐진 전체 참고 구현을 함께 제공하고, 실제 저장 파일을 리뷰한 뒤 다음 단계로 진행합니다.
 - **Markdown to HTML** — `/smart:html`은 Markdown을 안전한 자체 완결형 HTML로 결정적으로 변환하며 브라우저를 자동으로 열지 않습니다.
@@ -120,6 +121,7 @@ Claude Code에서는 `/smart:*`, Codex에서는 `$smart:*`를 사용하세요.
 | `/smart:commit` | 커밋만 수행 (스마트 그룹화, 자동 메시지 생성) |
 | `/smart:ask` | 실행이나 변경 없이 간결한 읽기 전용 안내 반환 |
 | `/smart:close-issue <IID-or-URL>` | 단일 GitLab Issue를 읽기 전용으로 확인하고, 명시적 종료 승인 후 감사 가능한 개발 자산 note를 게시한 다음 닫기 |
+| `/smart:code-simplifier [paths-or-diff]` | 새 컨텍스트 worker 하나로 관찰 가능한 동작을 유지하며 최근 코드 단순화 |
 | `/smart:matt-implement-all-tickets` | Matt `/implement`를 명시적으로 로드한 뒤 현재 `/to-tickets` 출력을 직렬로 구현하고 닫기 |
 | `/smart:generate-wiki` | 자료를 보호된 GitLab, GitHub 또는 로컬 Wiki로 정리 |
 | `/smart:github-skills-pdf [--notes 2\|4]` | GitHub skills 저장소에서 검증된 영중 A4 핸드북 생성 |
