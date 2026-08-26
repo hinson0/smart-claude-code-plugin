@@ -10,6 +10,7 @@ const REQUIRED = [
   "smart:<name>",
   "ask",
   "close-issue",
+  "code-simplifier",
   "matt-implement-all-tickets",
   "generate-wiki",
   "github-skills-pdf",

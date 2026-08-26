@@ -6,6 +6,7 @@ const ROOT = new URL("../", import.meta.url);
 const SMART_SKILLS = [
   "ask",
   "close-issue",
+  "code-simplifier",
   "commit",
   "generate-wiki",
   "github-skills-pdf",
@@ -21,6 +22,7 @@ const SMART_SKILLS = [
   "show",
 ];
 const REFERENCES = [
+  "skills/code-simplifier/references/worker.md",
   "skills/github-skills-pdf/references/book-format.md",
   "skills/github-skills-pdf/references/translation-guide.md",
   "skills/my-weekly/references/report-format.md",
@@ -45,7 +47,7 @@ test("both marketplaces publish only Smart", async () => {
   assert.deepEqual(pluginNames(claude), ["smart"]);
 });
 
-test("Smart is one dual-host version 6.2.1 release", async () => {
+test("Smart is one dual-host version 6.4.0 release", async () => {
   const [codex, claude] = await Promise.all([
     readJson("plugins/smart/.codex-plugin/plugin.json"),
     readJson("plugins/smart/.claude-plugin/plugin.json"),
@@ -53,9 +55,10 @@ test("Smart is one dual-host version 6.2.1 release", async () => {
 
   assert.equal(codex.name, "smart");
   assert.equal(claude.name, "smart");
-  assert.equal(codex.version, "6.2.1");
-  assert.equal(claude.version, "6.2.1");
+  assert.equal(codex.version, "6.4.0");
+  assert.equal(claude.version, "6.4.0");
   assert.equal(codex.skills, "./skills/");
+  assert.ok(codex.interface.defaultPrompt.length <= 3);
 });
 
 test("Smart exposes exactly the agreed skill surface", async () => {
