@@ -63,8 +63,8 @@ Claude Code uses `/smart:*`; Codex exposes the corresponding `$smart:*` skills.
 codex plugin add smart@smart
 ```
 
-Smart includes fifteen skills: `ask`, `close-issue`, `commit`, `generate-wiki`,
-`github-skills-pdf`, `help`, `html`, `hud`, `learning`, `local`,
+Smart includes sixteen skills: `ask`, `close-issue`, `code-simplifier`, `commit`,
+`generate-wiki`, `github-skills-pdf`, `help`, `html`, `hud`, `learning`, `local`,
 `matt-implement-all-tickets`, `my-weekly`, `one-by-one`, `pair-write`, and `show`.
 Some workflows require Git, `gh`, `glab`, Node.js, Python/PDF
 tooling, browser access, or document capabilities; each skill checks its own prerequisites.
@@ -96,6 +96,7 @@ invocation name without the leading slash or a separate title.
 - **HUD / Statusline Installer** — One command to install a feature-rich statusline showing model, git branch, context usage, rate limits, system stats, and tool call counts. Two install levels (minimal / full) plus restore from backup, user scope.
 - **Help Overview** — `/smart:help` dynamically scans and lists all skills, hooks, and agents with descriptions.
 - **Read-Only Guidance** — `/smart:ask` returns a concise judgment, command, snippet, or checklist without modifying files or running tools.
+- **Fresh-Context Code Simplification** — `/smart:code-simplifier` sends the complete run to one serial, non-recursive worker with no conversation history. The primary stays out of the target code while the worker scopes recent changes, follows repository standards, and proves behavior equivalence.
 - **One-Cycle TDD** — `/smart:one-by-one` validates one minimal Red test, then guides the user through the matching Green implementation.
 - **Pair Writing** — `/smart:pair-write` gives one user-written coding step a comment skeleton and a directly expanded reference implementation, then reviews the real landed files before advancing.
 - **Markdown to HTML** — `/smart:html` deterministically converts one Markdown file into safe, self-contained HTML without opening a browser.
@@ -120,6 +121,7 @@ invocation name without the leading slash or a separate title.
 | `/smart:commit` | Stage & commit only (smart grouping, auto message) |
 | `/smart:ask` | Return concise read-only guidance without executing or changing anything |
 | `/smart:close-issue <IID-or-URL>` | Check one GitLab Issue read-only; with explicit close authorization, publish an auditable development asset note and then close it |
+| `/smart:code-simplifier [paths-or-diff]` | Use one fresh-context worker to simplify recent code while preserving observable behavior |
 | `/smart:matt-implement-all-tickets` | With Matt `/implement` explicitly loaded, implement and close the current `/to-tickets` output serially |
 | `/smart:generate-wiki` | Distill source material into a guarded GitLab, GitHub, or local Wiki |
 | `/smart:github-skills-pdf [--notes 2\|4]` | Build a verified English-Chinese A4 handbook from a GitHub skills repository |

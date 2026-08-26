@@ -63,8 +63,8 @@ Claude Code 使用 `/smart:*`；Codex 提供對應的 `$smart:*` skills。
 codex plugin add smart@smart
 ```
 
-Smart 包含十五個 skills：`ask`、`close-issue`、`commit`、`generate-wiki`、
-`github-skills-pdf`、`help`、`html`、`hud`、`learning`、`local`、
+Smart 包含十六個 skills：`ask`、`close-issue`、`code-simplifier`、`commit`、
+`generate-wiki`、`github-skills-pdf`、`help`、`html`、`hud`、`learning`、`local`、
 `matt-implement-all-tickets`、`my-weekly`、`one-by-one`、`pair-write` 與 `show`。
 部分流程依賴 Git、`gh`、`glab`、Node.js、Python/PDF 工具、
 瀏覽器或文件能力；每個 skill 都會檢查自己的前置條件。
@@ -95,6 +95,7 @@ Codex 介面統一顯示 `smart:<name>`，保留 Claude Code 原調用名稱但�
 - **HUD / Statusline 安裝器** — 一條指令安裝功能豐富的狀態列，顯示模型、Git 分支、上下文用量、速率限制、系統資源和工具呼叫統計。提供兩個安裝級別（簡化版 / 完整版）及從備份還原，僅 user 作用域。
 - **說明概覽** — `/smart:help` 動態掃描並列出所有技能、hook 和 agent 及其描述。
 - **唯讀指導** — `/smart:ask` 回傳簡潔判斷、指令、片段或清單，不修改檔案、不執行工具。
+- **全新上下文程式碼簡化** — `/smart:code-simplifier` 把完整流程交給一個串行、不可遞迴委派且不帶對話歷史的 worker。主 agent 不接觸目標程式碼；worker 負責限定近期改動範圍、遵循儲存庫規範並證明行為等價。
 - **單 Cycle TDD** — `/smart:one-by-one` 驗證一個最小 Red，再引導使用者完成對應 Green。
 - **結對手寫** — `/smart:pair-write` 為一個使用者手寫步驟同輪提供註解骨架和直接展開的完整參考實作，並在推進前 Review 真實落盤檔案。
 - **Markdown 轉 HTML** — `/smart:html` 確定性地把 Markdown 轉為安全自包含 HTML，不自動開啟瀏覽器。
@@ -119,6 +120,7 @@ Claude Code 使用 `/smart:*`，Codex 使用 `$smart:*`。
 | `/smart:commit` | 僅提交（智慧分組，自動產生 message） |
 | `/smart:ask` | 回傳簡潔唯讀指導，不執行指令或修改內容 |
 | `/smart:close-issue <IID或URL>` | 唯讀核對單一 GitLab Issue；明確授權關閉後，先發布可稽核的開發資產記錄，再關閉 Issue |
+| `/smart:code-simplifier [路徑或diff]` | 使用一個全新上下文 worker 簡化近期程式碼，同時保持可觀察行為不變 |
 | `/smart:matt-implement-all-tickets` | 明確載入 Matt `/implement` 後，串行實作並關閉目前 `/to-tickets` 輸出 |
 | `/smart:generate-wiki` | 把資料整理為受保護的 GitLab、GitHub 或本機 Wiki |
 | `/smart:github-skills-pdf [--notes 2\|4]` | 從 GitHub skills 倉庫產生經驗證的英中 A4 手冊 |

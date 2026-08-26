@@ -1,0 +1,7 @@
+interface:
+  display_name: "smart:code-simplifier"
+  short_description: "Simplify recent code without changing observable behavior"
+  default_prompt: "Use $smart:code-simplifier to simplify my recent code changes without changing behavior."
+
+policy:
+  allow_implicit_invocation: false

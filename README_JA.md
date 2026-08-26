@@ -63,10 +63,10 @@ Claude Code は `/smart:*`、Codex は対応する `$smart:*` skills を使用�
 codex plugin add smart@smart
 ```
 
-Smart には `ask`、`close-issue`、`commit`、`generate-wiki`、
+Smart には `ask`、`close-issue`、`code-simplifier`、`commit`、`generate-wiki`、
 `github-skills-pdf`、`help`、`html`、`hud`、`learning`、`local`、
 `matt-implement-all-tickets`、`my-weekly`、`one-by-one`、`pair-write`、`show` の
-15 個の skill が含まれます。一部のフローは Git、`gh`、`glab`、Node.js、
+16 個の skill が含まれます。一部のフローは Git、`gh`、`glab`、Node.js、
 Python/PDF ツール、ブラウザ、文書機能を必要とし、
 各 skill は自身の前提条件を確認します。
 すべての skill はユーザーが明示的に呼び出します。モデルの自動呼び出しに頼らず、
@@ -96,6 +96,7 @@ Codex UI は Claude Code の元の呼び出し名から `/` だけを省いた `
 - **HUD / Statusline インストーラー** — 1つのコマンドでモデル、Git ブランチ、コンテキスト使用量、レート制限、システムリソース、ツール呼び出し統計を表示するステータスラインをインストールします。2つのインストールレベル（最小 / フル）とバックアップ復元をサポート、user スコープのみ。
 - **ヘルプ概要** — `/smart:help` で全スキル、フック、エージェントを動的にスキャンし、説明付きで一覧表示します。
 - **読み取り専用ガイド** — `/smart:ask` はファイルやツールを変更せず、簡潔な判断、コマンド、スニペット、チェックリストを返します。
+- **新規コンテキストでのコード簡略化** — `/smart:code-simplifier` は実行全体を会話履歴のない直列・非再帰 worker 1 つに任せます。primary agent は対象コードに触れず、worker が最近の変更範囲を定め、リポジトリ規則に従い、動作の同等性を証明します。
 - **単一 Cycle TDD** — `/smart:one-by-one` は最小 Red を 1 つ検証し、対応する Green 実装を案内します。
 - **ペアライティング** — `/smart:pair-write` はユーザーが書く 1 ステップにコメント骨格と展開済みの完全な参考実装を同時に示し、実際に保存されたファイルをレビューしてから次へ進みます。
 - **Markdown to HTML** — `/smart:html` は Markdown を安全な自己完結型 HTML に決定的に変換し、ブラウザを自動で開きません。
@@ -120,6 +121,7 @@ Claude Code では `/smart:*`、Codex では `$smart:*` を使用してくださ
 | `/smart:commit` | コミットのみ（スマートグルーピング、メッセージ自動生成） |
 | `/smart:ask` | 実行や変更をせず簡潔な読み取り専用ガイドを返す |
 | `/smart:close-issue <IID-or-URL>` | 単一 GitLab Issue を読み取り専用で確認し、明示的なクローズ承認後に監査可能な開発資産 note を公開してから閉じる |
+| `/smart:code-simplifier [paths-or-diff]` | 新規コンテキスト worker 1 つで観測可能な動作を保ちながら最近のコードを簡略化 |
 | `/smart:matt-implement-all-tickets` | Matt `/implement` を明示的に読み込んだ上で、現在の `/to-tickets` 出力を直列に実装してクローズ |
 | `/smart:generate-wiki` | 資料を保護された GitLab、GitHub、ローカル Wiki に整理 |
 | `/smart:github-skills-pdf [--notes 2\|4]` | GitHub skills リポジトリから検証済み英中 A4 ハンドブックを生成 |

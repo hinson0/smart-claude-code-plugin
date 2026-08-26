@@ -1,7 +1,7 @@
 {
   "name": "smart",
-  "version": "6.2.1",
-  "description": "Focused developer workflows, serial Ticket delivery, content tools, session utilities, and engineering rules.",
+  "version": "6.4.0",
+  "description": "Focused developer workflows, fresh-worker code simplification, content tools, session utilities, and engineering rules.",
   "author": {
     "name": "Hinson",
     "email": "hinson0@qq.com",
@@ -10,26 +10,19 @@
   "homepage": "https://github.com/hinson0/smart-claude-code-plugins",
   "repository": "https://github.com/hinson0/smart-claude-code-plugins",
   "license": "MIT",
-  "keywords": ["git", "github", "gitlab", "issues", "tickets", "commit", "automation", "productivity", "wiki", "pdf", "html"],
+  "keywords": ["git", "github", "gitlab", "issues", "tickets", "commit", "refactoring", "automation", "productivity", "wiki", "pdf", "html"],
   "skills": "./skills/",
   "interface": {
     "displayName": "Smart",
     "shortDescription": "Run focused developer workflows and content tools.",
-    "longDescription": "Smart adds semantic commits, serial delivery of /to-tickets output through Matt /implement, safe Issue closeout, read-only guidance, guided pair-writing, one-cycle TDD, Wiki and weekly report generation, bilingual skills PDFs, deterministic Markdown-to-HTML conversion, statusline setup, and focused engineering utilities.",
+    "longDescription": "Smart adds semantic commits, fresh-context behavior-preserving code simplification, serial delivery of /to-tickets output through Matt /implement, safe Issue closeout, read-only guidance, guided pair-writing, one-cycle TDD, Wiki and weekly report generation, bilingual skills PDFs, deterministic Markdown-to-HTML conversion, statusline setup, and focused engineering utilities.",
     "developerName": "Hinson",
     "category": "Productivity",
     "capabilities": ["Automation", "Git", "Read", "Write"],
     "defaultPrompt": [
-      "Group and commit my current changes.",
-      "Check whether this GitLab Issue is ready to close.",
-      "Use $smart:ask for concise read-only guidance.",
-      "Use $smart:one-by-one for one Red-to-Green cycle.",
-      "Use $smart:pair-write to guide one coding step while I write the business code.",
-      "Use $smart:html to convert Markdown to self-contained HTML.",
-      "Use $smart:generate-wiki to organize these materials into a Wiki.",
-      "Use $smart:github-skills-pdf to build a bilingual skills PDF.",
-      "Use $smart:my-weekly to summarize my commits for this natural week.",
-      "Install the Smart statusline."
+      "Use $smart:code-simplifier to simplify my recent code changes without changing behavior.",
+      "Use $smart:generate-wiki to organize these materials, or $smart:github-skills-pdf to build a bilingual handbook.",
+      "Use $smart:my-weekly to summarize my commits for this natural week."
     ],
     "brandColor": "#2563EB"
   }
