@@ -1,6 +1,6 @@
 interface:
   display_name: "smart:pair-write"
-  short_description: "Guide one user-written coding step and review the landed files"
+  short_description: "Guide one user-written step and compare it with the reference"
   default_prompt: "Use $smart:pair-write to guide one coding step while I write the business code."
 
 policy:

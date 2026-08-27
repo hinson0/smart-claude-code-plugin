@@ -98,7 +98,7 @@ Codex UI は Claude Code の元の呼び出し名から `/` だけを省いた `
 - **読み取り専用ガイド** — `/smart:ask` はファイルやツールを変更せず、簡潔な判断、コマンド、スニペット、チェックリストを返します。
 - **新規コンテキストでのコード簡略化** — `/smart:code-simplifier` は実行全体を会話履歴のない直列・非再帰 worker 1 つに任せます。primary agent は対象コードに触れず、worker が最近の変更範囲を定め、リポジトリ規則に従い、動作の同等性を証明します。
 - **単一 Cycle TDD** — `/smart:one-by-one` は最小 Red を 1 つ検証し、対応する Green 実装を案内します。
-- **ペアライティング** — `/smart:pair-write` はユーザーが書く 1 ステップにコメント骨格と展開済みの完全な参考実装を同時に示し、実際に保存されたファイルをレビューしてから次へ進みます。
+- **ペアライティング** — `/smart:pair-write` はユーザーが書く 1 ステップにコメント骨格と展開済みの完全な参考実装を示し、デフォルトでは記述の正しさとガイドとの一致だけを確認します。
 - **Markdown to HTML** — `/smart:html` は Markdown を安全な自己完結型 HTML に決定的に変換し、ブラウザを自動で開きません。
 - **Wiki 生成** — `/smart:generate-wiki` は資料を GitLab、GitHub、ローカル Markdown Wiki に整理して安全に公開します。
 - **バイリンガル Skills PDF** — `/smart:github-skills-pdf` は GitHub skills リポジトリを固定し、検証済み英中 A4 ハンドブックを生成します。
@@ -131,7 +131,7 @@ Claude Code では `/smart:*`、Codex では `$smart:*` を使用してくださ
 | `/smart:learning [0\|1]` | 学習モードの切り替え — *あなたが*コードを自分で書く；Claude が各片を 新規ファイル / 新規コード / 修正 / 削除 とラベル付けしてコンソールに出力し、あなたが入力、保存したコードをレビュー。`1`=オン、`0`=オフ、空=状態。状態は `.claude/CLAUDE.local.md` に注入されたブロック——設定も割合もなし |
 | `/smart:my-weekly <repo> [-N]` | 選択した自然週の現在ユーザーの Git コミットを要約 |
 | `/smart:one-by-one` | 一度に 1 つの最小 Red-to-Green Cycle を実行 |
-| `/smart:pair-write` | コメント骨格、完全な参考実装、保存済みファイルのレビューでユーザー作成の 1 ステップを案内 |
+| `/smart:pair-write` | ユーザー作成の 1 ステップを案内し、保存済みコードを骨格と参考実装に照合 |
 | `/smart:show [<path>.md]` | 現在の会話の成果物（または Markdown ファイル）をタイムスタンプ付きの新しい自己完結型ゼロ JS HTML レビューページにレンダリングし、以前のページを保持したまま `.smart/pages/` に書き出してブラウザで開く。レイアウトレシピ 3 種：plan-review / explainer / report |
 
 ---

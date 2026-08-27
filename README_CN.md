@@ -97,7 +97,7 @@ Codex 界面统一显示 `smart:<name>`，保留 Claude Code 原调用名但省�
 - **只读指导** — `/smart:ask` 返回简洁判断、命令、片段或清单，不修改文件、不运行工具。
 - **全新上下文代码简化** — `/smart:code-simplifier` 把完整流程交给一个串行、不可递归委派且不带对话历史的 worker。主 agent 不接触目标代码；worker 负责限定近期改动范围、遵循仓库规范并证明行为等价。
 - **单 Cycle TDD** — `/smart:one-by-one` 验证一个最小 Red，再指导用户完成对应 Green。
-- **结对手写** — `/smart:pair-write` 为一个用户手写步骤同轮提供注释骨架和直接展开的完整参考实现，并在推进前 Review 真实落盘文件。
+- **结对手写** — `/smart:pair-write` 为一个用户手写步骤同轮提供注释骨架和直接展开的完整参考实现，默认只检查书写是否正确以及落盘内容是否与指导一致。
 - **Markdown 转 HTML** — `/smart:html` 确定性地把 Markdown 转为安全自包含 HTML，不自动打开浏览器。
 - **Wiki 生成** — `/smart:generate-wiki` 把资料整理为 GitLab、GitHub 或本地 Markdown Wiki，并安全发布。
 - **双语 Skills PDF** — `/smart:github-skills-pdf` 固定 GitHub skills 仓库版本并生成经验证的英中 A4 手册。
@@ -130,7 +130,7 @@ Claude Code 使用 `/smart:*`，Codex 使用 `$smart:*`。
 | `/smart:learning [0\|1]` | 切换学习模式——由*你*亲手写代码；Claude 把每段打到控制台并标明 新增文件 / 新增代码 / 修改 / 删除 供你敲入，再审查你落盘的代码。`1`=开，`0`=关，留空=状态。状态就是注入到 `.claude/CLAUDE.local.md` 的块——无设置、无占比 |
 | `/smart:my-weekly <repo> [-N]` | 按指定自然周汇总当前用户的 Git 提交 |
 | `/smart:one-by-one` | 每次执行一个最小 Red-to-Green Cycle |
-| `/smart:pair-write` | 用注释骨架、完整参考实现和真实文件 Review 引导用户手写一个编码步骤 |
+| `/smart:pair-write` | 引导用户手写一个步骤，再对照骨架和参考实现检查落盘代码 |
 | `/smart:show [<path>.md]` | 把当前对话交付物（或指定 Markdown 文件）渲染成带时间戳的全新自包含零 JS HTML 审阅页，写入 `.smart/pages/`，保留旧页面并在浏览器打开。三种版式配方：plan-review / explainer / report |
 
 ---

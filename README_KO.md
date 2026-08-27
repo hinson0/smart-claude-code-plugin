@@ -98,7 +98,7 @@ Codex UI는 Claude Code의 원래 호출 이름에서 `/`만 뺀 `smart:<name>`�
 - **읽기 전용 안내** — `/smart:ask`는 파일이나 도구를 변경하지 않고 간결한 판단, 명령, 코드 조각 또는 체크리스트를 반환합니다.
 - **새 컨텍스트 코드 단순화** — `/smart:code-simplifier`는 전체 실행을 대화 기록이 없는 직렬 비재귀 worker 하나에 맡깁니다. 기본 agent는 대상 코드를 다루지 않으며, worker가 최근 변경 범위를 정하고 저장소 규칙을 따르며 동작 동등성을 입증합니다.
 - **단일 Cycle TDD** — `/smart:one-by-one`은 최소 Red 하나를 검증한 뒤 대응하는 Green 구현을 안내합니다.
-- **페어 라이팅** — `/smart:pair-write`는 사용자가 작성할 한 단계에 주석 골격과 펼쳐진 전체 참고 구현을 함께 제공하고, 실제 저장 파일을 리뷰한 뒤 다음 단계로 진행합니다.
+- **페어 라이팅** — `/smart:pair-write`는 사용자가 작성할 한 단계에 주석 골격과 펼쳐진 전체 참고 구현을 제공하며, 기본적으로 작성 정확성과 안내와의 일치만 확인합니다.
 - **Markdown to HTML** — `/smart:html`은 Markdown을 안전한 자체 완결형 HTML로 결정적으로 변환하며 브라우저를 자동으로 열지 않습니다.
 - **Wiki 생성** — `/smart:generate-wiki`는 자료를 GitLab, GitHub 또는 로컬 Markdown Wiki로 정리하고 안전하게 게시합니다.
 - **이중 언어 Skills PDF** — `/smart:github-skills-pdf`는 GitHub skills 저장소를 고정하고 검증된 영중 A4 핸드북을 만듭니다.
@@ -131,7 +131,7 @@ Claude Code에서는 `/smart:*`, Codex에서는 `$smart:*`를 사용하세요.
 | `/smart:learning [0\|1]` | 학습 모드 토글 — *당신이* 코드를 직접 작성; Claude가 각 조각을 새 파일 / 새 코드 / 수정 / 삭제로 표시해 콘솔에 출력하면 당신이 입력하고, 저장한 코드를 검토. `1`=켜기, `0`=끄기, 비어 있음=상태. 상태는 `.claude/CLAUDE.local.md`에 주입된 블록 — 설정도 비율도 없음 |
 | `/smart:my-weekly <repo> [-N]` | 선택한 자연 주의 현재 사용자 Git 커밋 요약 |
 | `/smart:one-by-one` | 한 번에 하나의 최소 Red-to-Green Cycle 실행 |
-| `/smart:pair-write` | 주석 골격, 전체 참고 구현, 실제 저장 파일 리뷰로 사용자가 작성할 한 단계 안내 |
+| `/smart:pair-write` | 사용자가 한 단계를 작성하도록 안내한 뒤 저장된 코드를 골격 및 참고 구현과 비교 |
 | `/smart:show [<path>.md]` | 현재 대화 산출물(또는 Markdown 파일)을 타임스탬프가 붙은 새로운 자체 완결형 제로 JS HTML 리뷰 페이지로 렌더링해 `.smart/pages/`에 쓰고, 이전 페이지를 보존한 채 브라우저로 열기. 레이아웃 레시피 3종: plan-review / explainer / report |
 
 ---

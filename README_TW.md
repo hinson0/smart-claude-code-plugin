@@ -97,7 +97,7 @@ Codex 介面統一顯示 `smart:<name>`，保留 Claude Code 原調用名稱但�
 - **唯讀指導** — `/smart:ask` 回傳簡潔判斷、指令、片段或清單，不修改檔案、不執行工具。
 - **全新上下文程式碼簡化** — `/smart:code-simplifier` 把完整流程交給一個串行、不可遞迴委派且不帶對話歷史的 worker。主 agent 不接觸目標程式碼；worker 負責限定近期改動範圍、遵循儲存庫規範並證明行為等價。
 - **單 Cycle TDD** — `/smart:one-by-one` 驗證一個最小 Red，再引導使用者完成對應 Green。
-- **結對手寫** — `/smart:pair-write` 為一個使用者手寫步驟同輪提供註解骨架和直接展開的完整參考實作，並在推進前 Review 真實落盤檔案。
+- **結對手寫** — `/smart:pair-write` 為一個使用者手寫步驟同輪提供註解骨架和直接展開的完整參考實作，預設只檢查書寫是否正確及落盤內容是否與指引一致。
 - **Markdown 轉 HTML** — `/smart:html` 確定性地把 Markdown 轉為安全自包含 HTML，不自動開啟瀏覽器。
 - **Wiki 產生** — `/smart:generate-wiki` 把資料整理為 GitLab、GitHub 或本機 Markdown Wiki，並安全發佈。
 - **雙語 Skills PDF** — `/smart:github-skills-pdf` 固定 GitHub skills 倉庫版本並產生經驗證的英中 A4 手冊。
@@ -130,7 +130,7 @@ Claude Code 使用 `/smart:*`，Codex 使用 `$smart:*`。
 | `/smart:learning [0\|1]` | 切換學習模式——由*你*親手寫程式碼；Claude 把每段印到主控台並標明 新增檔案 / 新增程式碼 / 修改 / 刪除 供你敲入，再審查你落盤的程式碼。`1`=開，`0`=關，留空=狀態。狀態就是注入到 `.claude/CLAUDE.local.md` 的塊——無設定、無占比 |
 | `/smart:my-weekly <repo> [-N]` | 依指定自然週彙總目前使用者的 Git 提交 |
 | `/smart:one-by-one` | 每次執行一個最小 Red-to-Green Cycle |
-| `/smart:pair-write` | 用註解骨架、完整參考實作和真實檔案 Review 引導使用者手寫一個編碼步驟 |
+| `/smart:pair-write` | 引導使用者手寫一個步驟，再對照骨架和參考實作檢查落盤程式碼 |
 | `/smart:show [<path>.md]` | 把當前對話交付物（或指定 Markdown 檔案）渲染成帶時間戳的全新自包含零 JS HTML 審閱頁，寫入 `.smart/pages/`，保留舊頁面並在瀏覽器開啟。三種版式配方：plan-review / explainer / report |
 
 ---
