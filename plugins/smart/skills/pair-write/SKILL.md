@@ -1,6 +1,6 @@
 ---
 name: pair-write
-description: Guide one user-written coding step with a comment skeleton and reference implementation, then review the landed files.
+description: Guide one user-written coding step, then compare the landed code with the provided skeleton and reference.
 disable-model-invocation: true
 ---
 
@@ -44,22 +44,22 @@ The reference is guidance, not evidence of what the user wrote.
 ## Review the landed work
 
 When the user says the work is ready, re-read the files on disk and the current
-diff before reviewing. Never assume the reference was copied.
+step's diff before comparing. Never assume the reference was copied.
 
-1. Confirm the correct parts first.
-2. Separate **Must fix** findings from **Optional improvements**, with exact file
-   locations, evidence, and impact.
-3. Run real, risk-matched formatting, type, unit, or integration checks and report
-   the commands and actual results.
-4. If review fails, keep this step current and provide a corrected comment
+1. Check only transcription correctness and agreement with this step's comment
+   skeleton, reference implementation, and acceptance criteria. Equivalent code is
+   valid; catch misspelled identifiers, syntax mistakes, misplaced code, and
+   behavioral mismatches.
+2. Confirm the correct parts first, then report only **Must fix** findings with
+   exact file locations, evidence, and impact.
+3. Treat the comparison as the default validation. Run formatting, type, unit, or
+   integration checks only when the user requests them. If the comparison cannot
+   establish a high-risk condition, state the uncertainty and propose the smallest
+   relevant check instead of running a broad suite.
+4. If the comparison fails, keep this step current and provide a corrected comment
    skeleton and directly expanded reference implementation.
-5. Complete the step only when the landed code satisfies its acceptance criteria,
-   required checks pass, and any remaining risk is disclosed. Then select the
-   next minimal step.
-
-After the business-code review passes, the agent is authorized by default to add
-necessary unit tests. Re-read the files first, keep the tests within the reviewed
-behavior, and report every file changed and every real validation result.
+5. Complete the step when the comparison has no errors and any unverified risk is
+   disclosed. Then select the next minimal step.
 
 ## Agent landing branch
 
